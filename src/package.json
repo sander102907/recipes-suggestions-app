@@ -1,0 +1,14 @@
+{
+    "name": "recipes_web_app",
+    "version": "1.0.0",
+    "description": "Suggest recipes for AH groceries web app",
+    "author": "Sander de Bruin s.d.bruin@hotmail.com",
+    "main": "server.js",
+    "scripts": {
+      "start": "node server.js"
+    },
+    "dependencies": {
+      "express": "^4.16.1"
+    }
+  }
+  
