@@ -18,7 +18,7 @@ RUN npm install
 # RUN npm ci --only=production
 
 # Bundle app source
-COPY ./recipes_app/ .
+COPY ./src/ .
 
 EXPOSE 8443
 CMD [ "node", "server.js" ]
