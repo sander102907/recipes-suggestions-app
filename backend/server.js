@@ -56,4 +56,4 @@ app.put("/update/:recipeId", (req, res) => {
     })
 })
 
-app.listen('8001', () => { })
+app.listen('3001', () => { })

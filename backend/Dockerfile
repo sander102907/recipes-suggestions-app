@@ -2,7 +2,7 @@
 FROM arm32v7/node:latest
 
 # Create app directory
-WORKDIR /usr/src/recipes_app/frontend
+WORKDIR /usr/src/recipes_app/backend
 
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied

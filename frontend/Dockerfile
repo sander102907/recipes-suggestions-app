@@ -8,6 +8,7 @@ WORKDIR /usr/src/recipes_app/frontend
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 # where available (npm@5+)
 COPY ./package*.json ./
+COPY ./.env ./
 
 RUN npm install
 
@@ -15,4 +16,5 @@ RUN npm install
 COPY ./ ./
 
 RUN npm i
+RUN export NODE_OPTIONS=--openssl-legacy-provider
 CMD ["npm", "run", "start"]
