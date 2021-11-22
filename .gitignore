@@ -151,3 +151,8 @@ dist
     About
 
 Loading complete
+
+nginx/
+Dockerfile.dev
+docker-compose.yml
+setup.sql

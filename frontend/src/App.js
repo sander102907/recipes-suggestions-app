@@ -7,9 +7,9 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      setRecipeName: '',
-      setReview: '',
-      fetchData: [],
+      recipes: [],
+      newRecipeName: '',
+      updateRecipeName: ''
     }
   }
 
@@ -23,46 +23,78 @@ class App extends Component {
   
   handleChange2 = (event) => {
     this.setState({
-      reviewUpdate: event.target.value
+      updateRecipeName: event.target.value
     })
+  }
+
+  updateRecipes = (oldRecipesList, id, newName) => {
+    return oldRecipesList.map((item) => {
+      if (item.id === id) {
+        const updatedItem = {
+          ...item,
+          name: newName,
+        };
+
+        return updatedItem;
+      }  
+    return item;
+    });
   }
   
   componentDidMount() {
-    axios.get("/api/get")
+    axios.get("/api/recipe")
         .then((response) => {
             this.setState({
-                fetchData: response.data
+              recipes: response.data
             })
         })
   }
   
   submit = () => {
-    axios.post('/api/insert', this.state)
-        .then(() => { alert('success post') })
-    console.log(this.state)
-    document.location.reload();
+    const newRecipe = {
+      name: this.state.newRecipeName
+    };
+
+    axios.post('/api/recipe', newRecipe)
+        .then(response => { 
+          this.setState(prevState =>({
+          recipes: [...prevState.recipes, response.data],
+          newRecipeName: ''
+        })) 
+      })
   }
   
   delete = (id) => {
     if (window.confirm("Do you want to delete? ")) {
-        axios.delete(`/api/delete/${id}`)
-        document.location.reload()
+        axios.delete(`/api/recipe/${id}`).then(() => {
+          this.setState(prevState =>({
+            recipes: prevState.recipes.filter((item) => item.id !== id)
+          }))
+        })
     }
   }
   
   edit = (id) => {
-    axios.put(`/api/update/${id}`, this.state)
-    document.location.reload();
+    const updateRecipe = {
+      name: this.state.updateRecipeName
+    };
+
+    axios.put(`/api/recipe/${id}`, updateRecipe).then(response => {
+      this.setState(prevState =>({
+        recipes: this.updateRecipes(prevState.recipes, id, response.data.name),
+        updateRecipeName: ''
+      }))
+    })
   }
 
   render() {
-    let card = this.state.fetchData.map((val, key) => {
+    let card = this.state.recipes.map((val, key) => {
         return (
             <React.Fragment>
                 <Card style={{ width: '18rem' }} className='m-2'>
                     <Card.Body>
-                        <Card.Title>{val.recipe_name}</Card.Title>
-                        <input name='recipeUpdate' onChange={this.handleChange2} placeholder='Update Recipe' ></input>
+                        <Card.Title>{val.name}</Card.Title>
+                        <input name='updateRecipeName' onChange={this.handleChange2} placeholder='Update Recipe' ></input>
                         <Button className='m-2' onClick={() => { this.edit(val.id) }}>Update</Button>
                         <Button onClick={() => { this.delete(val.id) }}>Delete</Button>
                     </Card.Body>
@@ -75,7 +107,7 @@ class App extends Component {
         <div className='App'>
             <h1>Dockerized Fullstack React Application</h1>
             <div className='form'>
-                <input name='setRecipeName' placeholder='Enter Recipe Name' onChange={this.handleChange} />
+                <input name='newRecipeName' placeholder='Enter Recipe Name' onChange={this.handleChange} />
             </div>
             <Button className='my-2' variant="primary" onClick={this.submit}>Submit</Button> <br /><br />
             <Container>
