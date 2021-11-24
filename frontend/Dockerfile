@@ -1,5 +1,5 @@
 # recipes subdomain frontend
-FROM node:latest
+FROM arm32v7/node:latest
 
 # Create app directory
 WORKDIR /usr/src/recipes_app/frontend
