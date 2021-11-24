@@ -1,3 +1,6 @@
+require("dotenv").config();
+
+const dbConfig = require("./config/db.config");
 const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
@@ -5,10 +8,10 @@ const HttpStatusCodes = require('http-status-codes').StatusCodes;
 
 
 const db = mysql.createPool({
-    host: '2fa231a0073c', // the host name MYSQL_DATABASE: node_mysql
-    user: 'sander', // database user MYSQL_USER: MYSQL_USER
-    password: 'cXGv6&2FM3op', // database user password MYSQL_PASSWORD: MYSQL_PASSWORD
-    database: 'MYSQL_DATABASE' // database name MYSQL_HOST_IP: mysql_db
+    host: dbConfig.HOST, // the host name MYSQL_DATABASE: node_mysql
+    user: dbConfig.USER, // database user MYSQL_USER: MYSQL_USER
+    password: dbConfig.PASSWORD, // database user password MYSQL_PASSWORD: MYSQL_PASSWORD
+    database: dbConfig.DB // database name MYSQL_HOST_IP: mysql_db
   })
 
 
@@ -74,4 +77,9 @@ app.put("/recipe/:recipeId", (req, res) => {
     })
 })
 
-app.listen('3001', () => { })
+// set port, listen for requests
+const PORT = process.env.NODE_DOCKER_PORT || 3001;
+
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}.`);
+  });
