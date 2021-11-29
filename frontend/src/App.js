@@ -42,7 +42,7 @@ class App extends Component {
   }
   
   componentDidMount() {
-    axios.get("/api/recipe")
+    axios.get("/api/recipes")
         .then((response) => {
             this.setState({
               recipes: response.data
