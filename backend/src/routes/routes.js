@@ -2,6 +2,7 @@ const express = require('express');
 const recipes = require('../recipes');
 const ingredients = require('../ingredients');
 const recipe_ingredients = require('../recipe_ingredients');
+const ah = require('../ah');
 const router = new express.Router();
 
 router.get('/recipe/:recipeId', recipes.getRecipe);
@@ -16,8 +17,11 @@ router.post('/ingredient', ingredients.addIngredient);
 router.delete("/ingredient/:ingredientId", ingredients.deleteIngredient);
 router.put("/ingredient/:ingredientId", ingredients.updateIngredient);
 
-router.get('/recipe/:recipeId/ingredients', recipe_ingredients.getIngredientsOfRecipe)
+router.get('/recipe/:recipeId/ingredients', recipe_ingredients.getIngredientsOfRecipe);
 router.post('/recipe/ingredient', recipe_ingredients.addIngredientToRecipe);
-router.get('/ingredient/:ingredientId/recipes', recipe_ingredients.getRecipesWithIngredient)
+router.get('/ingredient/:ingredientId/recipes', recipe_ingredients.getRecipesWithIngredient);
+
+router.get('/ah/search', ah.searchProducts);
+router.get('/ah/bonus', ah.getBonusProducts);
 
 module.exports = router;
