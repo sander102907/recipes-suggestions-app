@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import axios from 'axios';
 import { Button, Container, Card, Row } from 'react-bootstrap'
+import IngredientsSearchBar from "./components/searchIngredients/searchIngredients";
 
 class App extends Component {
   constructor(props) {
@@ -9,7 +10,8 @@ class App extends Component {
     this.state = {
       recipes: [],
       newRecipeName: '',
-      updateRecipeName: ''
+      updateRecipeName: '',
+      ingredients: []
     }
   }
 
@@ -87,6 +89,7 @@ class App extends Component {
     })
   }
 
+
   render() {
     let card = this.state.recipes.map((val, key) => {
         return (
@@ -106,6 +109,7 @@ class App extends Component {
     return (
         <div className='App'>
             <h1>Dockerized Fullstack React Application</h1>
+            <IngredientsSearchBar />
             <div className='form'>
                 <input name='newRecipeName' placeholder='Enter Recipe Name' onChange={this.handleChange} />
             </div>

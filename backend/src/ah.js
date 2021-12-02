@@ -21,7 +21,7 @@ const searchProducts = async (req, res) => {
         if (err || resp.statusCode !== HttpStatusCodes.OK) {
             res.status(HttpStatusCodes.BAD_REQUEST).send({ error: err, message: err.message }); // 400
           }
-          res.send(JSON.parse(body));
+          res.send(JSON.parse(body).products);
     })
     .auth(null, null, true, access_token);
 }
