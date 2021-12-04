@@ -3,10 +3,9 @@ import { useState } from "react";
 import axios from 'axios';
 import './searchIngredients.css';
 import { Button, Badge } from 'react-bootstrap'
-import { Plus } from 'react-bootstrap-icons';
+import { Plus, Search } from 'react-bootstrap-icons';
 
-
-const IngredientsSearchBar = () => {
+const IngredientsSearchBar = (props) => {
     
   const [suggestions, setSuggestions] = useState([]);
   const [suggestionsActive, setSuggestionsActive] = useState(false);
@@ -34,14 +33,19 @@ const IngredientsSearchBar = () => {
 
   const close = (e) => {
     if (!e.currentTarget.contains(e.relatedTarget)) {
-      // setSuggestionsActive(false);
+      setSuggestionsActive(false);
     }
   }
 
-  const handleClick = (e) => {
-    setSuggestions([]);
-    setValue(e.target.innerText);
-    setSuggestionsActive(false);
+  const handleClick = (suggestion) => {
+    axios.get(`/api/ingredient/ah/${suggestion.webshopId}`, {params: { name: suggestion.title }}).then((response) => {
+      axios.post("api/recipe/ingredient", { recipe_id: props.recipeId, ingredient_id: response.data.id }).then((response) => {
+        setSuggestionsActive(false);
+        setSuggestions([]);
+        setValue("");
+        props.getIngredients();
+      });
+    })
   };
 
   const Suggestions = () => {
@@ -58,9 +62,9 @@ const IngredientsSearchBar = () => {
                 </div>
                 <span className="dropdownItemText">
                   {suggestion.title}
-                  {suggestion.isBonus ? <Badge className="dropdownItemBonusBadge" bg="info">BONUS</Badge> : null}
+                  {suggestion.isBonus ? <Badge className="dropdownItemBonusBadge" bg="info">{suggestion.bonusMechanism}</Badge> : null}
                 </span>
-                <Button className="dropdownItemButton" variant="success"><Plus size={24} /></Button>
+                <Button className="dropdownItemButton" variant="success" onClick={() => handleClick(suggestion)}><Plus size={24} /></Button>
               </div>
             );
           })}
@@ -70,11 +74,13 @@ const IngredientsSearchBar = () => {
 
   return (
     <div className="autocomplete" tabIndex="0" onFocus={expand} onBlur={close}>
+      <Search size={16} color="darkgrey" class="searchIcon" />
       <input
         className="searchBar"
         type="text"
         value={value}
         onChange={handleChange}
+        placeholder="Add ingredient"
       />
       {suggestionsActive && suggestions.length > 0 && <Suggestions />}
     </div>

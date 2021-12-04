@@ -1,0 +1,13 @@
+.card.recipeCard {
+    width: 20rem;
+}
+
+.ingredients {
+    padding: 12px 0;
+    text-align: left;
+}
+
+.ingredient {
+    min-height: 30px;
+    padding: 4px 16px;
+}

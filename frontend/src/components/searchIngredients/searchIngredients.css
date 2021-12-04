@@ -1,7 +1,7 @@
 .autocomplete {
     position: relative;
     display: inline-block;
-    min-width: 300px;
+    width: 100%;
   }
 
 .dropdown {
@@ -41,7 +41,15 @@
 
 .searchBar {
     min-height: 44px;
-    border-radius: 20px;
-    padding: 0 20px;
+    border-radius: 15px;
+    padding: 0 40px;
     width: 100%;
+    border: #bfa8a8 solid 1px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.1);
+}
+
+.searchIcon {
+    position: absolute;
+    left: 10px;
+    top: 13px;
 }

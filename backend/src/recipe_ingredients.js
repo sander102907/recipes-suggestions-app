@@ -31,13 +31,13 @@ const getRecipesWithIngredient = (req, res) => {
 const addIngredientToRecipe = (req, res) => {
     const recipeId = req.body.recipe_id;
     const ingredientId = req.body.ingredient_id;
-    const InsertQuery = "INSERT INTO recipe_ingredients (recipe_id, ingredient_id) VALUES (?, ?)";
+    const InsertQuery = "INSERT IGNORE INTO recipe_ingredients (recipe_id, ingredient_id) VALUES (?, ?)";
     db.query(InsertQuery, [recipeId, ingredientId], (err, result) => {
         if (err) {
             res.status(HttpStatusCodes.BAD_REQUEST).send({ error: err, message: err.message }); // 400
           }
     
-          res.status(HttpStatusCodes.OK).send({ "recipeId": recipeId, "ingredientId": ingredientId }); // 200
+          res.status(HttpStatusCodes.OK).send({ "recipe_id": recipeId, "ingredient_id": ingredientId }); // 200
     })
 };
 
