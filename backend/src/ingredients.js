@@ -29,10 +29,10 @@ const getIngredients = (req, res) => {
 
 // add a ingredient to the database
 const addIngredient = (req, res) => {
-    const ingredientName = req.body.name;
+    const name = req.body.name;
     const ahId = req.body.ah_id;
     const InsertQuery = "INSERT INTO ingredient (name, ah_id) VALUES (?, ?)";
-    db.query(InsertQuery, [ingredientName, ahId], (err, result) => {
+    db.query(InsertQuery, [name, ahId], (err, result) => {
         if (err) {
             res.status(HttpStatusCodes.BAD_REQUEST).send({ error: err, message: err.message }); // 400
         }
@@ -71,6 +71,9 @@ const updateIngredient = (req, res) => {
 const getIngredientFromAhId = (req, res) => {
     const ahId = req.params.ahId;
     const name = req.query.name;
+    const price = req.query.price;
+    const unitSize = req.query.unit_size;
+    const category = req.query.category;
 
     const query = "SELECT * FROM ingredient WHERE ah_id = ?";
     db.query(query, ahId, (err, result) => {
@@ -78,8 +81,8 @@ const getIngredientFromAhId = (req, res) => {
             res.status(HttpStatusCodes.BAD_REQUEST).send({ error: err, message: err.message }); // 400
         }
         else if (result.length == 0) {
-            const InsertQuery = "INSERT INTO ingredient (name, ah_id) VALUES (?, ?)";
-            db.query(InsertQuery, [name, ahId], (err, result) => {
+            const InsertQuery = "INSERT INTO ingredient (name, ah_id, price, unit_size, category) VALUES (?, ?, ?, ?, ?)";
+            db.query(InsertQuery, [name, ahId, price, unitSize, category], (err, result) => {
                 if (err) {
                     res.status(HttpStatusCodes.BAD_REQUEST).send({ error: err, message: err.message }); // 400
                 }
