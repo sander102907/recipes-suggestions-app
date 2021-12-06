@@ -58,12 +58,22 @@ const IngredientsSearchBar = (props) => {
                 key={index}
               >
                 <div>
-                  {suggestion.images.length > 0 ? <img src={suggestion.images[0].url} alt="" /> : null}
+                  {suggestion.images.length > 1 ? <img src={suggestion.images[1].url} alt="" /> : null}
                 </div>
-                <span className="dropdownItemText">
-                  {suggestion.title}
-                  {suggestion.isBonus ? <Badge className="dropdownItemBonusBadge" bg="info">{suggestion.bonusMechanism}</Badge> : null}
-                </span>
+                <div className="dropdownItemInfo">
+                  <div className="dropdownItemText">
+                    {suggestion.title} 
+                    {suggestion.isBonus ? <Badge className="dropdownItemBonusBadge" bg="info">{suggestion.bonusMechanism}</Badge> : null}
+                  </div>
+                  <div className="dropdownItemDetails">
+                    <div className="dropdownItemUnitSize">
+                      {suggestion.salesUnitSize}
+                    </div>
+                    <div className="dropdownItemPrice">
+                      €{suggestion.priceBeforeBonus}
+                    </div>
+                  </div>
+                </div>
                 <Button className="dropdownItemButton" variant="success" onClick={() => handleClick(suggestion)}><Plus size={24} /></Button>
               </div>
             );

@@ -65,7 +65,9 @@ const RecipeCard = (props) => {
         <Card className='m-2 recipeCard'>
             <Card.Body>
                 <Card.Title>{props.recipe.name}</Card.Title>
-                <input name='updateRecipeName' onChange={handleChange} placeholder='Update Recipe' ></input>
+                <div>
+                    <input name='updateRecipeName' onChange={handleChange} placeholder='Update Recipe' ></input>
+                </div>
                 <Button className='m-2' onClick={() => { update() }}>Update</Button>
                 <Button onClick={() => { remove() }}>Delete</Button>
                 <IngredientsSearchBar recipeId={recipeId} getIngredients={getIngredients} />
