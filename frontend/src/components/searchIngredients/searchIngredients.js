@@ -58,7 +58,7 @@ const IngredientsSearchBar = (props) => {
                 key={index}
               >
                 <div>
-                  <img src={suggestion.images[0].url} alt="" />
+                  {suggestion.images.length > 0 ? <img src={suggestion.images[0].url} alt="" /> : null}
                 </div>
                 <span className="dropdownItemText">
                   {suggestion.title}
