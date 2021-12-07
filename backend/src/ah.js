@@ -1,7 +1,7 @@
 const HttpStatusCodes = require('http-status-codes').StatusCodes;
 var request = require('request');
 const db = require('./database');
-
+var cron = require('node-cron');
 
 function getAccessToken() {
     return new Promise((resolve, reject) => {
@@ -75,19 +75,51 @@ const getProduct = async (req, res) => {
     .auth(null, null, true, access_token);
 }
 
-const suggestWeeklyRecipes = async (req, res) => {
+cron.schedule('* 1 * * *', () => {
+    console.log("running daily cron schedule to update bonus products");
+
+    // Get bonus products
     getBonusProducts(true).then((bonus_products) => {
-        let bonusRecipes = [];
         const product_ids = bonus_products.map((i) => i.webshopId);
-        const SelectQuery = `SELECT DISTINCT recipe.id AS id, recipe.name AS name FROM recipe JOIN recipe_ingredients on (recipe.id=recipe_ingredients.recipe_id) JOIN ingredient on (ingredient.id=recipe_ingredients.ingredient_id) WHERE ingredient.ah_id IN (${product_ids.join(',')});`; 
-        db.query(SelectQuery, (err, result) => {
+        const query = `SELECT ah_id FROM ingredient WHERE ah_id IN (${product_ids.join(',')});`
+        // Select bonus ingredients in database
+        db.query(query, (err, result) => {
             if (err) {
-                res.status(HttpStatusCodes.BAD_REQUEST).send({ error: err, message: err.message }); // 400
+                console.log(`Could not get bonus products from DB in automatic schedule for updating bonus ingredients, error: ${err}`, );
             } else {
-                bonusRecipes.push(...result);
-                res.send(bonusRecipes);
+                // Remove old bonus properties from ingredients
+                const removeBonusQuery = "UPDATE ingredient SET is_bonus = 0, bonus_mechanism = NULL, bonus_price = NULL WHERE is_bonus = 1;"
+                db.query(removeBonusQuery, (err, result) => {
+                    if (err) {
+                        console.log(`Could not remove bonus products from DB in automatic schedule for updating bonus ingredients, error: ${err}`, );
+                    }
+                });
+
+                // Set bonus properties for ingredients
+                result.forEach((ingredient, index) => {
+                    const product = bonus_products.filter(p => p.webshopId == ingredient.ah_id)[0];
+                    const updateQuery = "UPDATE ingredient SET is_bonus = ?, bonus_mechanism = ?, bonus_price = ? WHERE ah_id = ?;"
+                    db.query(updateQuery, [product.isBonus, product.bonusMechanism, product.currentPrice, product.webshopId], (err, result) => {
+                        if (err) {
+                            console.log(`Could not update bonus products from DB in automatic schedule for updating bonus ingredients, error: ${err}`, );
+                        }
+                    })
+                })
             }
         });
+    })
+});
+
+const suggestWeeklyRecipes = (req, res) => {
+    let bonusRecipes = [];
+    const SelectQuery = `SELECT DISTINCT recipe.id AS id, recipe.name AS name FROM recipe JOIN recipe_ingredients on (recipe.id=recipe_ingredients.recipe_id) JOIN ingredient on (ingredient.id=recipe_ingredients.ingredient_id) WHERE ingredient.is_bonus = 1;`; 
+    db.query(SelectQuery, (err, result) => {
+        if (err) {
+            res.status(HttpStatusCodes.BAD_REQUEST).send({ error: err, message: err.message }); // 400
+        } else {
+            bonusRecipes.push(...result);
+            res.send(bonusRecipes);
+        }
     });
 };
 

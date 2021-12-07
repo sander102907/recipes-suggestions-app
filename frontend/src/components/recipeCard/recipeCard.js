@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from 'react';
 import { useState } from "react";
 import axios from 'axios';
 import './recipeCard.css';
-import { Button, Card } from 'react-bootstrap'
+import { Button, Card, Badge } from 'react-bootstrap'
 import IngredientsSearchBar from "../searchIngredients/searchIngredients";
 
 
@@ -16,6 +16,7 @@ const RecipeCard = (props) => {
         axios.get(`/api/recipe/${recipeId}/ingredients`)
             .then((response) => {
                 setIngredients(response.data);
+                console.log(response.data);
         });
     }, []);
 
@@ -51,9 +52,23 @@ const RecipeCard = (props) => {
             <div className="ingredients">
                     {ingredients.map((ingredient, index) => {
                         return (
-                            <div key={index} className="ingredient">
-                                {ingredient.name}
-                            </div>
+                            <div className="item">
+                                <div className="itemText">
+                                    {ingredient.name} 
+                                    {ingredient.is_bonus ? <Badge className="itemBonusBadge" bg="info">{ingredient.bonus_mechanism}</Badge> : null}
+                                </div>
+                                <div className="itemDetails">
+                                    <div className="itemUnitSize">
+                                    {ingredient.unit_size}
+                                    </div>
+                                    <div className="itemPrice">
+                                    €{ingredient.bonus_price != null ? ingredient.bonus_price : ingredient.price}
+                                    </div>
+                                </div>
+                            </div>                            
+                            // <div key={index} className="ingredient">
+                            //     {ingredient.name}
+                            // </div>
                         );
                     })}
             </div>

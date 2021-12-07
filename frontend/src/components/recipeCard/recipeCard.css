@@ -11,3 +11,26 @@
     min-height: 30px;
     padding: 4px 16px;
 }
+
+.item {
+    padding: 0 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.itemBonusBadge {
+    margin-left: 8px;
+}
+
+.itemDetails {
+    display: flex;
+    justify-content: space-between;
+}
+
+.itemPrice {
+    color: rgb(94, 94, 94);
+}
+
+.itemUnitSize {
+    color: rgb(94, 94, 94);
+}

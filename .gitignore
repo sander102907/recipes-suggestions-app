@@ -157,3 +157,4 @@ Dockerfile.dev
 docker-compose.yml
 setup.sql
 .env
+*.sh

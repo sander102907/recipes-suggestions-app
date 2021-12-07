@@ -41,7 +41,10 @@ const IngredientsSearchBar = (props) => {
     axios.get(`/api/ingredient/ah/${suggestion.webshopId}`, {
       params: { 
         name: suggestion.title,
-        price: suggestion.priceBeforeBonus, 
+        price: suggestion.priceBeforeBonus,
+        bonus_price: suggestion.currentPrice, 
+        is_bonus: suggestion.isBonus,
+        bonus_mechanism: suggestion.bonusMechanism,
         unit_size: suggestion.salesUnitSize,
         category: suggestion.mainCategory
       }}).then((response) => {
@@ -76,7 +79,7 @@ const IngredientsSearchBar = (props) => {
                       {suggestion.salesUnitSize}
                     </div>
                     <div className="dropdownItemPrice">
-                      €{suggestion.priceBeforeBonus}
+                      €{suggestion.priceBeforeBonus != null ? suggestion.priceBeforeBonus : suggestion.currentPrice}
                     </div>
                   </div>
                 </div>

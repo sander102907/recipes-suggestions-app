@@ -70,10 +70,6 @@ const updateIngredient = (req, res) => {
 
 const getIngredientFromAhId = (req, res) => {
     const ahId = req.params.ahId;
-    const name = req.query.name;
-    const price = req.query.price;
-    const unitSize = req.query.unit_size;
-    const category = req.query.category;
 
     const query = "SELECT * FROM ingredient WHERE ah_id = ?";
     db.query(query, ahId, (err, result) => {
@@ -81,8 +77,16 @@ const getIngredientFromAhId = (req, res) => {
             res.status(HttpStatusCodes.BAD_REQUEST).send({ error: err, message: err.message }); // 400
         }
         else if (result.length == 0) {
-            const InsertQuery = "INSERT INTO ingredient (name, ah_id, price, unit_size, category) VALUES (?, ?, ?, ?, ?)";
-            db.query(InsertQuery, [name, ahId, price, unitSize, category], (err, result) => {
+            const name = req.query.name;
+            const price = req.query.price;
+            const unitSize = req.query.unit_size;
+            const category = req.query.category;
+            const bonusPrice = req.query.bonus_price;
+            const isBonus = req.query.is_bonus;
+            const bonusMechanism = req.query.bonus_mechanism;
+
+            const InsertQuery = "INSERT INTO ingredient (name, ah_id, price, unit_size, category, bonus_price, is_bonus, bonus_mechanism) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            db.query(InsertQuery, [name, ahId, price, unitSize, category, bonusPrice, isBonus, bonusMechanism], (err, result) => {
                 if (err) {
                     res.status(HttpStatusCodes.BAD_REQUEST).send({ error: err, message: err.message }); // 400
                 }
