@@ -1,5 +1,6 @@
 .card.recipeCard {
     width: 25rem;
+    max-width: 100%;
 }
 
 .ingredients {
