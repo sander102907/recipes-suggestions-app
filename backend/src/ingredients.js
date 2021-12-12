@@ -82,7 +82,7 @@ const getIngredientFromAhId = (req, res) => {
             const unitSize = req.query.unit_size;
             const category = req.query.category;
             const bonusPrice = req.query.bonus_price;
-            const isBonus = req.query.is_bonus ? 1 : 0;
+            const isBonus = req.query.is_bonus === 'true' ? 1 : 0;
             const bonusMechanism = req.query.bonus_mechanism;
 
             const InsertQuery = "INSERT INTO ingredient (name, ah_id, price, unit_size, category, bonus_price, is_bonus, bonus_mechanism) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";

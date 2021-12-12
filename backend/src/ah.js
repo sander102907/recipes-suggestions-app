@@ -19,7 +19,7 @@ const searchProducts = async (req, res) => {
     const query = req.query.query;
 
     const access_token = await getAccessToken();
-    request.get({url:'https://ms.ah.nl/mobile-services/product/search/v2?sortOn=RELEVANCE', qs:{"query": query, "size": 6}}, function(err, resp, body) {
+    request.get({url:'https://ms.ah.nl/mobile-services/product/search/v2?sortOn=RELEVANCE', qs:{"query": query, "size": 8}}, function(err, resp, body) {
         if (err || resp.statusCode !== HttpStatusCodes.OK) {
             res.status(HttpStatusCodes.BAD_REQUEST).send({ error: err, message: err.message }); // 400
           }
@@ -75,40 +75,63 @@ const getProduct = async (req, res) => {
     .auth(null, null, true, access_token);
 }
 
+const filterBonusProductsOnCurrentWeek = (prod) => {
+    // get end date and correct it by adding 24 hours (e.g. end date is 12-12-2021 at 00:00, set it to 13-12-2021 at 00:00)
+    const endDate = new Date(prod.bonusEndDate).setHours(new Date(prod.bonusEndDate).getHours() + 24);
+    const startDate = new Date(prod.bonusStartDate)
+
+    return endDate >= Date.now() && startDate <= Date.now();
+}
+
+const syncBonus = () => {
+    return new Promise((resolve, reject) => {
+        // Get bonus products
+        getBonusProducts(true).then((bonus_products) => {
+            bonus_products = bonus_products.filter(filterBonusProductsOnCurrentWeek);
+            const product_ids = bonus_products.map((i) => i.webshopId);
+            const query = `SELECT ah_id FROM ingredient WHERE ah_id IN (${product_ids.join(',')});`
+            // Select bonus ingredients in database
+            db.query(query, (err, result) => {
+                if (err) {
+                    reject(`Could not get bonus products from DB in for updating bonus ingredients, error: ${err}`);
+                } else {
+                    // Remove old bonus properties from ingredients
+                    const removeBonusQuery = "UPDATE ingredient SET is_bonus = 0, bonus_mechanism = NULL, bonus_price = NULL WHERE is_bonus = 1;"
+                    db.query(removeBonusQuery, (err, result) => {
+                        if (err) {
+                            reject(`Could not remove bonus products from DB for updating bonus ingredients, error: ${err}`);
+                        }
+                    });
+
+                    // Set bonus properties for ingredients
+                    result.forEach((ingredient, _) => {
+                        const product = bonus_products.filter(p => p.webshopId == ingredient.ah_id)[0];
+                        const updateQuery = "UPDATE ingredient SET is_bonus = ?, bonus_mechanism = ?, bonus_price = ? WHERE ah_id = ?;"
+                        db.query(updateQuery, [product.isBonus, product.bonusMechanism, product.currentPrice, product.webshopId], (err, result) => {
+                            if (err) {
+                                reject(`Could not update bonus products from DB for updating bonus ingredients, error: ${err}`);
+                            }
+                        });
+                    });
+                    resolve();
+                }
+            });
+        });
+    });
+}
+
+// Sync bonus products every night at 01:00
 cron.schedule('* 1 * * *', () => {
     console.log("running daily cron schedule to update bonus products");
 
-    // Get bonus products
-    getBonusProducts(true).then((bonus_products) => {
-        const product_ids = bonus_products.map((i) => i.webshopId);
-        const query = `SELECT ah_id FROM ingredient WHERE ah_id IN (${product_ids.join(',')});`
-        // Select bonus ingredients in database
-        db.query(query, (err, result) => {
-            if (err) {
-                console.log(`Could not get bonus products from DB in automatic schedule for updating bonus ingredients, error: ${err}`, );
-            } else {
-                // Remove old bonus properties from ingredients
-                const removeBonusQuery = "UPDATE ingredient SET is_bonus = 0, bonus_mechanism = NULL, bonus_price = NULL WHERE is_bonus = 1;"
-                db.query(removeBonusQuery, (err, result) => {
-                    if (err) {
-                        console.log(`Could not remove bonus products from DB in automatic schedule for updating bonus ingredients, error: ${err}`, );
-                    }
-                });
-
-                // Set bonus properties for ingredients
-                result.forEach((ingredient, index) => {
-                    const product = bonus_products.filter(p => p.webshopId == ingredient.ah_id)[0];
-                    const updateQuery = "UPDATE ingredient SET is_bonus = ?, bonus_mechanism = ?, bonus_price = ? WHERE ah_id = ?;"
-                    db.query(updateQuery, [product.isBonus, product.bonusMechanism, product.currentPrice, product.webshopId], (err, result) => {
-                        if (err) {
-                            console.log(`Could not update bonus products from DB in automatic schedule for updating bonus ingredients, error: ${err}`, );
-                        }
-                    })
-                })
-            }
-        });
-    })
+    syncBonus();    
 });
+
+const syncBonusRequest = async (req, res) => {
+    await syncBonus()
+        .then(() => res.sendStatus(HttpStatusCodes.OK))
+        .catch((err) => res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ error: err, message: err.message })); // 500
+}
 
 const suggestWeeklyRecipes = (req, res) => {
     let bonusRecipes = [];
@@ -126,5 +149,6 @@ const suggestWeeklyRecipes = (req, res) => {
 module.exports = {
     searchProducts,
     getProduct,
-    suggestWeeklyRecipes
+    suggestWeeklyRecipes,
+    syncBonusRequest
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Spinner } from 'react-bootstrap'
+import { Button, Spinner } from 'react-bootstrap';
 import './loadButton.css';
 
 const LoadButton = (props) => {

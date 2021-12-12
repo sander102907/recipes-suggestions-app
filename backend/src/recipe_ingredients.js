@@ -31,14 +31,32 @@ const getRecipesWithIngredient = (req, res) => {
 const addIngredientToRecipe = (req, res) => {
     const recipeId = req.body.recipe_id;
     const ingredientId = req.body.ingredient_id;
-    const InsertQuery = "INSERT IGNORE INTO recipe_ingredients (recipe_id, ingredient_id) VALUES (?, ?)";
-    db.query(InsertQuery, [recipeId, ingredientId], (err, result) => {
+
+    const query = "SELECT * FROM recipe_ingredients WHERE recipe_id = ? AND ingredient_id = ?";
+    db.query(query, [recipeId, ingredientId], (err, result) => {
         if (err) {
             res.status(HttpStatusCodes.BAD_REQUEST).send({ error: err, message: err.message }); // 400
-          }
-    
-          res.status(HttpStatusCodes.OK).send({ "recipe_id": recipeId, "ingredient_id": ingredientId }); // 200
-    })
+        }
+        else if (result.length == 0) {
+            const InsertQuery = "INSERT INTO recipe_ingredients (recipe_id, ingredient_id) VALUES (?, ?)";
+            db.query(InsertQuery, [recipeId, ingredientId], (err, result) => {
+                if (err) {
+                    res.status(HttpStatusCodes.BAD_REQUEST).send({ error: err, message: err.message }); // 400
+                }
+            
+                res.status(HttpStatusCodes.OK).send({ "recipe_id": recipeId, "ingredient_id": ingredientId }); // 200
+            })
+        } else {
+            const InsertQuery = "UPDATE recipe_ingredients SET amount = amount + 1 WHERE recipe_id = ? AND ingredient_id = ?";
+            db.query(InsertQuery, [recipeId, ingredientId], (err, result) => {
+                if (err) {
+                    res.status(HttpStatusCodes.BAD_REQUEST).send({ error: err, message: err.message }); // 400
+                }
+            
+                res.status(HttpStatusCodes.OK).send({ "recipe_id": recipeId, "ingredient_id": ingredientId }); // 200
+            });
+        }
+    });
 };
 
 

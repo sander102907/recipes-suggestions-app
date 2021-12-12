@@ -23,7 +23,7 @@ router.post('/recipe/ingredient', recipe_ingredients.addIngredientToRecipe);
 router.get('/ingredient/:ingredientId/recipes', recipe_ingredients.getRecipesWithIngredient);
 
 router.get('/ah/search', ah.searchProducts);
-// router.get('/ah/bonus', ah.getBonusProducts);
+router.get('/ah/syncbonus', ah.syncBonusRequest);
 router.get('/ah/product', ah.getProduct);
 router.get('/suggest', ah.suggestWeeklyRecipes);
 
