@@ -1,13 +1,12 @@
 import React, { useCallback, useEffect } from 'react';
 import { useState } from "react";
 import axios from 'axios';
-import './recipeCard.css';
+import './suggestionCard.css';
 import { Button, Card, Badge } from 'react-bootstrap'
 import IngredientsSearchBar from "../searchIngredients/searchIngredients";
 
 
-const RecipeCard = (props) => {
-    const [updateRecipeName, setUpdateRecipeName] = useState("");
+const SuggestionCard = (props) => {
     const [ingredients, setIngredients] = useState([]);
 
     const recipeId = props.recipe.id;
@@ -32,24 +31,11 @@ const RecipeCard = (props) => {
         };
     };
       
-    const update = () => {
-        const updateRecipe = {
-          name: updateRecipeName
-        };
-    
-        axios.put(`/api/recipe/${recipeId}`, updateRecipe).then(() => {
-            props.getRecipes();
-            setUpdateRecipeName('');
-        });
-    };
-
-    const handleChange = (event) => {
-        setUpdateRecipeName(event.target.value);
-    };
 
     const Ingredients = () => {
         return (
             <div className="ingredients">
+                <h5 className='ingredients-title'>Ingredients</h5>
                     {ingredients.map((ingredient, index) => {
                         return (
                             <div className="item">
@@ -77,12 +63,7 @@ const RecipeCard = (props) => {
         <Card className='recipeCard'>
             <Card.Body>
                 <Card.Title>{props.recipe.name}</Card.Title>
-                <div>
-                    <input name='updateRecipeName' onChange={handleChange} placeholder='Update Recipe' ></input>
-                </div>
-                <Button className='m-2' onClick={() => { update() }}>Update</Button>
-                <Button onClick={() => { remove() }}>Delete</Button>
-                <IngredientsSearchBar recipeId={recipeId} getIngredients={getIngredients} />
+                {props.recipe.description}
                 <Ingredients />
             </Card.Body>
         </Card>
@@ -91,4 +72,4 @@ const RecipeCard = (props) => {
   
 };
 
-export default RecipeCard;
+export default SuggestionCard;

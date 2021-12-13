@@ -4,6 +4,16 @@
     margin: 10px auto;
 }
 
+.card .card-title {
+    padding: 0 10px;
+    font-size: x-large;
+}
+
+.card .ingredients-title {
+  padding: 0 10px;
+  color: purple;
+}
+
 .ingredients {
     padding: 12px 0;
     text-align: left;

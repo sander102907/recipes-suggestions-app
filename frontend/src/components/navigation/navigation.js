@@ -1,7 +1,7 @@
 import React from 'react';
-import { Nav, NavItem} from 'react-bootstrap';
+import { Nav, NavItem } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
-import { Basket, Star, Gear } from 'react-bootstrap-icons';
+import { Basket, Star, Gear, StarFill } from 'react-bootstrap-icons';
 import './navigation.css';
 
 const tabs = [{
@@ -24,21 +24,41 @@ const Navigation = (props) => {
         {/* Top Bar*/}
         <nav className="navbar navbar-expand-md navbar-light d-none d-lg-block sticky-top" role="navigation">
             <div className="container-fluid">
-                <a className="navbar-brand" href="/home">Recipes</a>
+                <a className="navbar-logo" href="/">Recipes</a>
                 <Nav className="ml-auto">
                 <NavItem>
-                    <NavLink to="/" className="nav-link">
-                    Suggestions
+                    <NavLink to="/" className="nav-link" activeClassName="active">
+                    <div className='nav-item top'>
+                            <div className='nav-item-text'>
+                                <div className='nav-item-top'>
+                                    This weeks
+                                </div>
+                                <div className='nav-item-bottom'>
+                                    Suggestions
+                                </div>
+                            </div>
+                            <Basket className='icon' size={24} />
+                        </div>
                     </NavLink>
                 </NavItem>
                 <NavItem>
-                    <NavLink to="/recipes" className="nav-link">
-                    Recipes
+                    <NavLink to="/recipes" className="nav-link" activeClassName="active">
+                        <div className='nav-item top'>
+                            <div className='nav-item-text'>
+                                <div className='nav-item-top'>
+                                    My
+                                </div>
+                                <div className='nav-item-bottom'>
+                                    Recipes
+                                </div>
+                            </div>
+                            <StarFill className='icon' size={24} />
+                        </div>
                     </NavLink>
                 </NavItem>
                 <NavItem>
-                    <NavLink to="/settings" className="nav-link">
-                    Settings
+                    <NavLink to="/settings" className="nav-link last" activeClassName="active">
+                        <Gear className='icon' size={24} />
                     </NavLink>
                 </NavItem>
                 </Nav>

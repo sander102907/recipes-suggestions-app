@@ -1,17 +1,66 @@
 .navbar {
-    border-bottom: solid 1px #EBEBEB;
-    background: white;
-  }
-  .bottom-tab-nav {
-    border-top: solid 1px #EBEBEB;
-  }
-  .nav-link,
-  .bottom-nav-link {
-    color: #55575b;
-  }
-  .bottom-nav-link.active {
-    color: #922c88;
-  }
-  .bottom-tab-label {
-    font-size: 12px;
-  }
+  border-bottom: solid 2px #EBEBEB;
+}
+.bottom-tab-nav {
+  border-top: solid 1px #EBEBEB;
+  background: white;
+}
+.nav-link,
+a.bottom-nav-link {
+  color: #55575b;
+}
+.bottom-nav-link.active {
+  color: #6a00bb;
+}
+.bottom-tab-label {
+  font-size: 12px;
+}
+
+.navbar-logo {
+  color: #ae44ff;
+  text-decoration: none;
+  font-size: xx-large;
+  font-weight: 300;
+}
+
+.navbar-logo:hover {
+  text-decoration: none;
+  font-weight: 400;
+}
+
+.nav-item-text {
+  text-align: right;
+  display: inline-block;
+  margin-right: 5px;
+
+}
+
+.nav-item-top {
+  font-size: small;
+  margin-bottom: -7px;
+}
+
+.nav-item-bottom {
+  font-size: x-large;
+}
+
+.nav-item .top {
+  margin-right: 50px;
+  color: black;
+
+}
+
+.nav-item .last {
+  margin-left: 15px;
+  margin-right: 0;
+}
+
+.nav-item .icon {
+  margin: 0;
+  position: absolute;
+  top: 55%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+  margin-left: 5px;
+  color: black;
+}
