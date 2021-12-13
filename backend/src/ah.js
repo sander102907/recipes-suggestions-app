@@ -78,7 +78,7 @@ const getProduct = async (req, res) => {
 const filterBonusProductsOnCurrentWeek = (prod) => {
     // get end date and correct it by adding 24 hours (e.g. end date is 12-12-2021 at 00:00, set it to 13-12-2021 at 00:00)
     const endDate = new Date(prod.bonusEndDate).setHours(new Date(prod.bonusEndDate).getHours() + 24);
-    const startDate = new Date(prod.bonusStartDate)
+    const startDate = new Date(prod.bonusStartDate);
 
     return endDate >= Date.now() && startDate <= Date.now();
 }
@@ -120,8 +120,8 @@ const syncBonus = () => {
     });
 }
 
-// Sync bonus products every night at 01:00
-cron.schedule('* 1 * * *', () => {
+// Sync bonus products every night at 02:00
+cron.schedule('* 2 * * *', () => {
     console.log("running daily cron schedule to update bonus products");
 
     syncBonus();    
