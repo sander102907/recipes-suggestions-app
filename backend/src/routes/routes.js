@@ -19,6 +19,7 @@ router.put("/ingredient/:ingredientId", ingredients.updateIngredient);
 router.get('/ingredient/ah/:ahId', ingredients.getIngredientFromAhId);
 
 router.get('/recipe/:recipeId/ingredients', recipe_ingredients.getIngredientsOfRecipe);
+router.get('/recipe/:recipeId/price', recipe_ingredients.getRecipePrice);
 router.post('/recipe/ingredient', recipe_ingredients.addIngredientToRecipe);
 router.get('/ingredient/:ingredientId/recipes', recipe_ingredients.getRecipesWithIngredient);
 

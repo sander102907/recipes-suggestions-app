@@ -5,6 +5,12 @@
     }
 }
 
+@media only screen and (max-width: 992px) {
+    .App {
+        padding-bottom: 60px;
+    }
+}
+
 #root {
     background-color: rgb(251, 251, 251);
 }

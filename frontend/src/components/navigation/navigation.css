@@ -16,6 +16,10 @@ a.bottom-nav-link {
   font-size: 12px;
 }
 
+nav.fixed-bottom {
+  padding: 0;
+}
+
 .navbar-logo {
   color: #ae44ff;
   text-decoration: none;

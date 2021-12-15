@@ -7,6 +7,25 @@
   margin: 15px 0;
 }
 
+@media only screen and (min-width: 992px) {
+  .card-body.info-body {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+  }
+}
+
+@media only screen and (max-width: 992px) {
+  .info-card-text {
+    display: block;
+  }
+
+  .info > .row {
+    max-width: 95%;
+    margin: auto;
+  }
+}
+
 div > .info-item {
   width: 18rem;
   max-width: 45%;
@@ -21,6 +40,14 @@ div > .info-item {
   background-color: rgb(99, 0, 99);
 }
 
+.btn.info-item:focus {
+  background-color: rgb(65, 0, 65);
+}
+
+.card-body.info-body {
+  padding: 10px;
+}
+
 .info-card-amount {
   color: purple;
   font-size: x-large;
@@ -29,5 +56,10 @@ div > .info-item {
 }
 
 .info-card-text {
-  width: fit-content;
+  font-weight: 600;
+  font-size: large;
+}
+
+.btn > svg {
+  margin-right:10px;
 }

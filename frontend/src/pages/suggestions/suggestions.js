@@ -2,19 +2,49 @@ import React, { useEffect, useState } from 'react';
 import './suggestions.css';
 import axios from 'axios';
 import { Container, Row, Col, Card, Button } from 'react-bootstrap'
-import { Clipboard, Shuffle } from 'react-bootstrap-icons';
+import { Shuffle, Share } from 'react-bootstrap-icons';
 import SuggestionCard from "../../components/suggestionCard/suggestionCard";
 
 const Suggestions = () => {
   const [suggestedRecipes, setsuggestedRecipes] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [bonus, setBonus] = useState(0);
 
-  useEffect(() => {getSuggestions()}, []);
+  useEffect(() => {
+    getSuggestions();
+  }, []);
+
+  useEffect(() => {
+    getPriceInfo();
+  }, [suggestedRecipes]);
 
   const getSuggestions = () => {
     axios.get("/api/suggest")
       .then((response) => {
-        setsuggestedRecipes(response.data)
+        setsuggestedRecipes(response.data);
       });
+  }
+
+  const getPriceInfo = () => {
+    let totPrice = 0;
+    let bonusPrice = 0;
+
+    let promises = [];
+
+    suggestedRecipes.forEach(recipe => {
+      promises.push(axios.get(`/api/recipe/${recipe.id}/price`));
+    });
+
+    Promise.all(promises).then(responses => {
+      responses.forEach(response => {
+        totPrice += parseFloat(response.data.current_price);
+        console.log(parseFloat(response.data.full_price), parseFloat(response.data.current_price))
+        bonusPrice += parseFloat(response.data.full_price) - parseFloat(response.data.current_price);
+      });
+
+      setTotalPrice(totPrice.toFixed(2));
+      setBonus(bonusPrice.toFixed(2));
+    });
   }
 
   const suggestedRecipeCards = suggestedRecipes.map((val, key) => {
@@ -28,15 +58,19 @@ const Suggestions = () => {
         <Container className='info' fluid>
           <Row>
               <Card className='info-item'>
-                <span className='info-card-text'>Total cost:</span>
-                <span className='info-card-amount'>€39.45</span> 
+                <div className='card-body info-body'>
+                  <span className='info-card-text'>Total cost:</span>
+                  <span className='info-card-amount'>€{totalPrice}</span> 
+                </div>
               </Card>
 
               <Card className='info-item'>
-                <span className='info-card-text'>Bonus:</span>
-                <span className='info-card-amount'>€7.32</span> 
+                <div className='card-body info-body'>
+                  <span className='info-card-text'>Bonus:</span>
+                  <span className='info-card-amount'>€{bonus}</span> 
+                </div>
               </Card>
-              <Button className='info-item'><Clipboard size={24} /> Copy Ingredients</Button>
+              <Button className='info-item'><Share size={24} /> Ingredients</Button>
               <Button className='info-item'><Shuffle size={24} /> Re-suggest All</Button>
           </Row> 
         </Container>

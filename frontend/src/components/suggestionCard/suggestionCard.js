@@ -2,12 +2,13 @@ import React, { useCallback, useEffect } from 'react';
 import { useState } from "react";
 import axios from 'axios';
 import './suggestionCard.css';
+import { Shuffle, XLg } from 'react-bootstrap-icons';
 import { Button, Card, Badge } from 'react-bootstrap'
-import IngredientsSearchBar from "../searchIngredients/searchIngredients";
-
 
 const SuggestionCard = (props) => {
     const [ingredients, setIngredients] = useState([]);
+    const [currentRecipePrice, setCurrentRecipePrice] = useState(0);
+    const [fullRecipePrice, setFullRecipePrice] = useState(0);
 
     const recipeId = props.recipe.id;
 
@@ -19,9 +20,18 @@ const SuggestionCard = (props) => {
         });
     }, []);
 
+    const getRecipePrice = useCallback(() => {
+        axios.get(`/api/recipe/${recipeId}/price`)
+            .then((response) => {
+                setCurrentRecipePrice(response.data.current_price);
+                setFullRecipePrice(response.data.full_price);
+        });
+    }, []);
+
     useEffect(() => {
         getIngredients();
-    }, [getIngredients]);        
+        getRecipePrice();
+    }, [getIngredients, getRecipePrice()]);        
 
     const remove = () => {
         if (window.confirm("Do you want to delete? ")) {
@@ -61,10 +71,22 @@ const SuggestionCard = (props) => {
   return (
     <React.Fragment>
         <Card className='recipeCard'>
-            <Card.Body>
+            <Card.Body className='suggestion-card-body'>
                 <Card.Title>{props.recipe.name}</Card.Title>
                 {props.recipe.description}
-                <Ingredients />
+                <div className='card-data'>
+                    <Ingredients />
+                    <div className='card-bottom'>
+                        <div className='card-buttons'>
+                            <Button className='card-button-delete'><XLg size={20} /></Button>
+                            <Button className='card-button-shuffle'><Shuffle size={20} /></Button>
+                        </div>
+                        <div className='card-price'>
+                            <span className='full-price'>€{fullRecipePrice}</span>
+                            <span className='current-price'>€{currentRecipePrice}</span>
+                        </div>
+                    </div>
+                </div>
             </Card.Body>
         </Card>
     </React.Fragment>
