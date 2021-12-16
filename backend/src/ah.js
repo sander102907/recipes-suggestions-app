@@ -135,7 +135,7 @@ const syncBonusRequest = async (req, res) => {
 
 const suggestWeeklyRecipes = (req, res) => {
     let bonusRecipes = [];
-    const SelectQuery = `SELECT DISTINCT recipe.id AS id, recipe.name AS name FROM recipe JOIN recipe_ingredients on (recipe.id=recipe_ingredients.recipe_id) JOIN ingredient on (ingredient.id=recipe_ingredients.ingredient_id) WHERE ingredient.is_bonus = 1;`; 
+    const SelectQuery = `SELECT DISTINCT recipe.id AS id, recipe.name AS name, recipe.description AS description, recipe.rating AS rating FROM recipe JOIN recipe_ingredients on (recipe.id=recipe_ingredients.recipe_id) JOIN ingredient on (ingredient.id=recipe_ingredients.ingredient_id) WHERE ingredient.is_bonus = 1;`; 
     db.query(SelectQuery, (err, result) => {
         if (err) {
             res.status(HttpStatusCodes.BAD_REQUEST).send({ error: err, message: err.message }); // 400

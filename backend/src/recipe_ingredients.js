@@ -4,7 +4,7 @@ const HttpStatusCodes = require('http-status-codes').StatusCodes;
   //get all of the ingredients of a recipe
   const getIngredientsOfRecipe = (req, res) => {
     const recipeId = req.params.recipeId;
-    const SelectQuery =  "SELECT ingredient.id AS id, ingredient.name AS name, ingredient.ah_id AS ah_id, ingredient.is_bonus AS is_bonus, ingredient.unit_size AS unit_size, ingredient.bonus_price AS bonus_price, ingredient.price AS price, ingredient.bonus_mechanism AS bonus_mechanism, ingredient.category AS category FROM recipe JOIN recipe_ingredients on (recipe.id=recipe_ingredients.recipe_id) JOIN ingredient on (ingredient.id=recipe_ingredients.ingredient_id) WHERE recipe.id = ?;";
+    const SelectQuery =  "SELECT ingredient.id AS id, ingredient.name AS name, ingredient.ah_id AS ah_id, ingredient.is_bonus AS is_bonus, ingredient.unit_size AS unit_size, ingredient.bonus_price AS bonus_price, ingredient.price AS price, ingredient.bonus_mechanism AS bonus_mechanism, ingredient.category AS category, ingredient.image_tiny AS image_tiny, ingredient.image_small AS image_small, ingredient.image_medium AS image_medium, ingredient.image_large AS image_large FROM recipe JOIN recipe_ingredients on (recipe.id=recipe_ingredients.recipe_id) JOIN ingredient on (ingredient.id=recipe_ingredients.ingredient_id) WHERE recipe.id = ?;";
     db.query(SelectQuery, recipeId, (err, result) => {
         if (err) {
             res.status(HttpStatusCodes.BAD_REQUEST).send({ error: err, message: err.message }); // 400

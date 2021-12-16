@@ -29,14 +29,17 @@ const getRecipes = (req, res) => {
 
 // add a recipe to the database
 const addRecipe = (req, res) => {
-    const recipeName = req.body.name;
-    const InsertQuery = "INSERT INTO recipe (name) VALUES (?)";
-    db.query(InsertQuery, [recipeName], (err, result) => {
+    const name = req.body.name;
+    const description = req.body.description;
+    const rating = req.body.rating;
+
+    const InsertQuery = "INSERT INTO recipe (name, description, rating) VALUES (?, ?, ?)";
+    db.query(InsertQuery, [name, description, rating], (err, result) => {
         if (err) {
             res.status(HttpStatusCodes.BAD_REQUEST).send({ error: err, message: err.message }); // 400
         }
 
-        res.status(HttpStatusCodes.OK).send({ "id": result.insertId, "name": recipeName }); // 200
+        res.status(HttpStatusCodes.OK).send({ "id": result.insertId}); // 200
     })
 };
 

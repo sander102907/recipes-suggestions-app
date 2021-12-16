@@ -84,9 +84,13 @@ const getIngredientFromAhId = (req, res) => {
             const bonusPrice = req.query.bonus_price;
             const isBonus = req.query.is_bonus === 'true' ? 1 : 0;
             const bonusMechanism = req.query.bonus_mechanism;
+            const imageTiny = req.query.image_tiny;
+            const imageSmall = req.query.image_small;
+            const imageMedium = req.query.image_medium;
+            const imageLarge = req.query.image_large;
 
-            const InsertQuery = "INSERT INTO ingredient (name, ah_id, price, unit_size, category, bonus_price, is_bonus, bonus_mechanism) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-            db.query(InsertQuery, [name, ahId, price, unitSize, category, bonusPrice, isBonus, bonusMechanism], (err, result) => {
+            const InsertQuery = "INSERT INTO ingredient (name, ah_id, price, unit_size, category, bonus_price, is_bonus, bonus_mechanism, image_tiny, image_small, image_medium, image_large) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            db.query(InsertQuery, [name, ahId, price, unitSize, category, bonusPrice, isBonus, bonusMechanism, imageTiny, imageSmall, imageMedium, imageLarge], (err, result) => {
                 if (err) {
                     res.status(HttpStatusCodes.BAD_REQUEST).send({ error: err, message: err.message }); // 400
                 }
