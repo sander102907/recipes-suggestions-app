@@ -3,7 +3,9 @@ import { useState } from "react";
 import axios from 'axios';
 import './suggestionCard.css';
 import { Shuffle, XLg } from 'react-bootstrap-icons';
-import { Button, Card, Badge } from 'react-bootstrap'
+import { Button, Card } from 'react-bootstrap'
+import IngredientsList from '../ingredientsList/ingredientsList';
+import ReactStars from "react-rating-stars-component";
 
 const SuggestionCard = (props) => {
     const [ingredients, setIngredients] = useState([]);
@@ -40,42 +42,21 @@ const SuggestionCard = (props) => {
             });
         };
     };
-      
-
-    const Ingredients = () => {
-        return (
-            <div className="ingredients">
-                <h5 className='ingredients-title'>Ingredients</h5>
-                    {ingredients.map((ingredient, index) => {
-                        return (
-                            <div className="item">
-                                <div className="itemText">
-                                    {ingredient.name} 
-                                    {ingredient.is_bonus ? <Badge className="itemBonusBadge" bg="info">{ingredient.bonus_mechanism}</Badge> : null}
-                                </div>
-                                <div className="itemDetails">
-                                    <div className="itemUnitSize">
-                                    {ingredient.unit_size}
-                                    </div>
-                                    <div className="itemPrice">
-                                    €{ingredient.bonus_price != null ? ingredient.bonus_price : ingredient.price}
-                                    </div>
-                                </div>
-                            </div>                            
-                        );
-                    })}
-            </div>
-        );
-    } 
 
   return (
     <React.Fragment>
         <Card className='recipeCard'>
             <Card.Body className='suggestion-card-body'>
+                <ReactStars
+                    value={props.recipe.rating}
+                    size={32}
+                    activeColor="#8c0269"
+                    edit={false}
+                />
                 <Card.Title>{props.recipe.name}</Card.Title>
                 {props.recipe.description}
                 <div className='card-data'>
-                    <Ingredients />
+                    <IngredientsList ingredients={ingredients}/>
                     <div className='card-bottom'>
                         <div className='card-buttons'>
                             <Button className='card-button-delete'><XLg size={20} /></Button>

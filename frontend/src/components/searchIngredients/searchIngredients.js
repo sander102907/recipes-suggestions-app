@@ -38,23 +38,10 @@ const IngredientsSearchBar = (props) => {
   }
 
   const handleClick = (suggestion) => {
-    axios.get(`/api/ingredient/ah/${suggestion.webshopId}`, {
-      params: { 
-        name: suggestion.title,
-        price: suggestion.priceBeforeBonus,
-        bonus_price: suggestion.currentPrice, 
-        is_bonus: suggestion.isBonus,
-        bonus_mechanism: suggestion.bonusMechanism,
-        unit_size: suggestion.salesUnitSize,
-        category: suggestion.mainCategory
-      }}).then((response) => {
-      axios.post("api/recipe/ingredient", { recipe_id: props.recipeId, ingredient_id: response.data.id }).then((response) => {
-        setSuggestionsActive(false);
-        setSuggestions([]);
-        setValue("");
-        props.getIngredients();
-      });
-    })
+    props.onClick(suggestion);
+    setSuggestionsActive(false);
+    setValue('');
+    setSuggestions([]);
   };
 
   const Suggestions = () => {

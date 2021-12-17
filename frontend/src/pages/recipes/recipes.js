@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import './recipes.css';
 import axios from 'axios';
-import { Button, Container, Row } from 'react-bootstrap'
+import { Button, Container, Row, Card } from 'react-bootstrap'
 import RecipeCard from "../../components/recipeCard/recipeCard";
+import { Plus } from 'react-bootstrap-icons';
+import CreateRecipeModal from '../../components/createRecipeModal/createRecipeModal';
+
 
 const Recipes = () => {
   const [recipes, setRecipes] = useState([]);
   const [newRecipeName, setNewRecipeName] = useState("");
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   useEffect(() => {getRecipes()}, []);
   
@@ -38,7 +42,24 @@ const Recipes = () => {
   
   return (
     <div className='Recipes'>
-        <h1>All recipes</h1>
+        <Container className='info' fluid>
+          <Row>
+              <Card className='info-item'>
+                <div className='card-body info-body'>
+                  <span className='info-card-text'>Average cost:</span>
+                  <span className='info-card-amount'>€6.96</span> 
+                </div>
+              </Card>
+
+              <Card className='info-item'>
+                <div className='card-body info-body'>
+                  <span className='info-card-text'>Average bonus:</span>
+                  <span className='info-card-amount'>€1.21</span> 
+                </div>
+              </Card>
+              <Button className='info-item' onClick={() => setShowCreateModal(true)}><Plus size={24} /> New</Button>
+          </Row> 
+        </Container>
         <div className='form'>
             <input name='newRecipeName' placeholder='Enter Recipe Name' onChange={handleChange} />
         </div>
@@ -48,6 +69,7 @@ const Recipes = () => {
                 {recipeCards}
             </Row>
         </Container>
+        <CreateRecipeModal show={showCreateModal} onHide={() => setShowCreateModal(false)} getRecipes={getRecipes} />
     </div>
   );
 }
