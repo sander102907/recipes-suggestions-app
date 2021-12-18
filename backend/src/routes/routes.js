@@ -27,5 +27,6 @@ router.get('/ah/search', ah.searchProducts);
 router.get('/ah/syncbonus', ah.syncBonusRequest);
 router.get('/ah/product', ah.getProduct);
 router.get('/suggest', ah.suggestWeeklyRecipes);
+router.get('/ah/update', ah.updateProducts);
 
 module.exports = router;

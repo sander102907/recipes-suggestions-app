@@ -9,6 +9,10 @@ const HttpStatusCodes = require('http-status-codes').StatusCodes;
         if (err) {
             res.status(HttpStatusCodes.BAD_REQUEST).send({ error: err, message: err.message }); // 400
         } else {
+            // Sort, bonus items first
+            result.sort((a, b) => {
+                return b.is_bonus - a.is_bonus;
+            });
             res.send(result);
         }
     });

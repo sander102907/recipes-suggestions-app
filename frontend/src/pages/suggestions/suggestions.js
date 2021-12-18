@@ -71,7 +71,7 @@ const Suggestions = () => {
                 </div>
               </Card>
               <Button className='info-item'><Share size={24} /> Ingredients</Button>
-              <Button className='info-item'><Shuffle size={24} /> Re-suggest All</Button>
+              <Button className='info-item'><Shuffle size={24} /> Re-suggest</Button>
           </Row> 
         </Container>
         <Container className='suggestion-cards' fluid>
