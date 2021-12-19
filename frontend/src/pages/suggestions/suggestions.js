@@ -1,29 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import './suggestions.css';
 import axios from 'axios';
-import { Container, Row, Col, Card, Button } from 'react-bootstrap'
+import { Container, Row, Card, Button } from 'react-bootstrap'
 import { Shuffle, Share } from 'react-bootstrap-icons';
-import SuggestionCard from "../../components/suggestionCard/suggestionCard";
+import RecipeCard from '../../components/recipeCard/recipeCard';
 
 const Suggestions = () => {
   const [suggestedRecipes, setsuggestedRecipes] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const [bonus, setBonus] = useState(0);
-
-  useEffect(() => {
-    getSuggestions();
-  }, []);
-
-  useEffect(() => {
-    getPriceInfo();
-  }, [suggestedRecipes]);
-
-  const getSuggestions = () => {
-    axios.get("/api/suggest")
-      .then((response) => {
-        setsuggestedRecipes(response.data);
-      });
-  }
 
   const getPriceInfo = () => {
     let totPrice = 0;
@@ -47,9 +32,25 @@ const Suggestions = () => {
     });
   }
 
+  useEffect(() => {
+    getSuggestions();
+  }, []);
+
+  useEffect(() => {
+    getPriceInfo();
+  }, [suggestedRecipes]);
+
+  const getSuggestions = () => {
+    axios.get("/api/suggest")
+      .then((response) => {
+        setsuggestedRecipes(response.data);
+      });
+  }
+
+
   const suggestedRecipeCards = suggestedRecipes.map((val, key) => {
     return (
-        <SuggestionCard recipe={val} key={key} />
+        <RecipeCard recipe={val} key={key} secondButtonIcon={Shuffle} />
     )
   });
   

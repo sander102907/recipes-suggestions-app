@@ -87,6 +87,7 @@ const IngredientsSearchBar = (props) => {
         value={value}
         onChange={handleChange}
         placeholder="Add ingredient"
+        ref={props.refVar}
       />
       {suggestionsActive && suggestions.length > 0 && <Suggestions />}
     </div>

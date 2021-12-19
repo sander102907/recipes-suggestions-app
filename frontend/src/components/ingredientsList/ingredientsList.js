@@ -7,8 +7,9 @@ import { XLg } from 'react-bootstrap-icons';
 const IngredientsList = (props) => {
     const maxHeight = props.maxHeight;
     return (
-        <div className="ingredients" style={{'max-height': maxHeight}}>
+        <div className="ingredients" style={{'maxHeight': maxHeight}}>
             <h5 className='ingredients-title'>Ingredients</h5>
+                {props.ingredients.length === 0 ? 'No ingredients yet, try adding some' : ''}
                 {props.ingredients.map((ingredient, index) => {
                     return (
                         <div className="ingredient-item" key={index}>
@@ -26,9 +27,14 @@ const IngredientsList = (props) => {
                                         </div>
                                     </div>
                                     <div className="ingredient-item-info-right">
-                                        {props.onRemove != null ? <div className='ingredient-item-close' onClick={() => props.onRemove(index)}>
-                                            <XLg />
-                                        </div> : null}
+                                        <div className='ingredient-item-info-right-buttons'>
+                                            {props.onOr != null ? <div className='ingredient-item-or' onClick={() => props.onOr(index)}>
+                                                <Badge bg="info">OR</Badge>
+                                            </div> : null}
+                                            {props.onRemove != null ? <div className='ingredient-item-close' onClick={() => props.onRemove(index)}>
+                                                <XLg />
+                                            </div> : null}
+                                        </div>
                                         <div className="ingredient-price">
                                         €{ingredient.bonus_price != null ? ingredient.bonus_price : ingredient.price}
                                         </div>

@@ -58,15 +58,17 @@ const deleteRecipe = (req, res) => {
 
 // update a recipe
 const updateRecipe = (req, res) => {
-    const recipeName = req.body.name;
-    const recipeId = req.params.recipeId;
-    const UpdateQuery = "UPDATE recipe SET name = ? WHERE id = ?";
-    db.query(UpdateQuery, [recipeName, recipeId], (err, result) => {
+    const name = req.body.name;
+    const description = req.body.description;
+    const rating = req.body.rating;
+    const id = req.params.recipeId;
+    const UpdateQuery = "UPDATE recipe SET name = ?, description = ?, rating = ? WHERE id = ?";
+    db.query(UpdateQuery, [name, description, rating, id], (err, result) => {
         if (err) {
             res.status(HttpStatusCodes.BAD_REQUEST).send({ error: err, message: err.message }); // 400
           }
     
-          res.status(HttpStatusCodes.OK).send({ "id": recipeId, "name": recipeName }); // 200
+          res.status(HttpStatusCodes.OK).send({ "id": id }); // 200
     })
 };
 

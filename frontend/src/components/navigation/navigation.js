@@ -27,7 +27,7 @@ const Navigation = (props) => {
                 <a className="navbar-logo" href="/">Recipes</a>
                 <Nav className="ml-auto">
                 <NavItem>
-                    <NavLink to="/" className="nav-link" activeClassName="active">
+                    <NavLink to="/" className={({ isActive }) => isActive? " nav-link active": 'nav-link'}>
                     <div className='nav-item top'>
                             <div className='nav-item-text'>
                                 <div className='nav-item-top'>
@@ -42,7 +42,7 @@ const Navigation = (props) => {
                     </NavLink>
                 </NavItem>
                 <NavItem>
-                    <NavLink to="/recipes" className="nav-link" activeClassName="active">
+                    <NavLink to="/recipes" className={({ isActive }) => isActive? " nav-link active": 'nav-link'}>
                         <div className='nav-item top'>
                             <div className='nav-item-text'>
                                 <div className='nav-item-top'>
@@ -57,7 +57,7 @@ const Navigation = (props) => {
                     </NavLink>
                 </NavItem>
                 <NavItem>
-                    <NavLink to="/settings" className="nav-link last" activeClassName="active">
+                    <NavLink to="/settings" className={({ isActive }) => isActive? " nav-link active": 'nav-link'}>
                         <Gear className='icon' size={24} />
                     </NavLink>
                 </NavItem>
@@ -72,7 +72,7 @@ const Navigation = (props) => {
                 {
                 tabs.map((tab, index) =>(
                     <NavItem key={`tab-${index}`}>
-                        <NavLink to={tab.route} className="nav-link bottom-nav-link" activeClassName="active">
+                        <NavLink to={tab.route} className={({ isActive }) => isActive? " nav-link bottom-nav-link active": 'nav-link bottom-nav-link'}>
                             <div className="row d-flex flex-column justify-content-center align-items-center">
                             <tab.icon size={24} />
                             <div className="bottom-tab-label">{tab.label}</div>

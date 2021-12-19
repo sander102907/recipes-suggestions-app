@@ -19,6 +19,7 @@ router.put("/ingredient/:ingredientId", ingredients.updateIngredient);
 router.get('/ingredient/ah/:ahId', ingredients.getIngredientFromAhId);
 
 router.get('/recipe/:recipeId/ingredients', recipe_ingredients.getIngredientsOfRecipe);
+router.delete('/recipe/:recipeId/ingredients', recipe_ingredients.removeIngredientsFromRecipe);
 router.get('/recipe/:recipeId/price', recipe_ingredients.getRecipePrice);
 router.post('/recipe/ingredient', recipe_ingredients.addIngredientToRecipe);
 router.get('/ingredient/:ingredientId/recipes', recipe_ingredients.getRecipesWithIngredient);
@@ -27,6 +28,5 @@ router.get('/ah/search', ah.searchProducts);
 router.get('/ah/syncbonus', ah.syncBonusRequest);
 router.get('/ah/product', ah.getProduct);
 router.get('/suggest', ah.suggestWeeklyRecipes);
-router.get('/ah/update', ah.updateProducts);
 
 module.exports = router;

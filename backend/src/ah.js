@@ -148,44 +148,9 @@ const suggestWeeklyRecipes = (req, res) => {
 };
 
 
-const updateProducts = async (req, res) => {
-    const access_token = await getAccessToken();
-
-    const SelectQuery = `SELECT * FROM ingredient`; 
-    db.query(SelectQuery, (err, result) => {
-        if (err) {
-            res.status(HttpStatusCodes.BAD_REQUEST).send({ error: err, message: err.message }); // 400
-        } else {
-            result.forEach((ingredient) => {
-            request.get({url:'https://ms.ah.nl/mobile-services/product/search/v2?sortOn=RELEVANCE', qs:{"query": ingredient.name}}, function(err, resp, body) {
-                if (err || resp.statusCode !== HttpStatusCodes.OK) {
-                    res.status(HttpStatusCodes.BAD_REQUEST).send({ error: err, message: err.message }); // 400
-                }
-                else {
-                    const suggestions = JSON.parse(body).products;
-                    const suggestion = suggestions.filter((sug) => sug.webshopId == ingredient.ah_id)[0];
-
-                    const updateQuery = 'UPDATE ingredient SET image_tiny = ?, image_small = ?, image_medium = ?, image_large = ?, price = ?, unit_size = ?, category = ? WHERE id = ?';
-                    db.query(updateQuery, [suggestion.images[0].url, suggestion.images[1].url, suggestion.images[2].url, suggestion.images[3].url, suggestion.priceBeforeBonus, suggestion.salesUnitSize, suggestion.mainCategory, ingredient.id], (err, result) => {
-                        if (err) {
-                            res.status(HttpStatusCodes.BAD_REQUEST).send({ error: err, message: err.message }); // 400
-                        }
-                
-                        // res.status(HttpStatusCodes.OK).send({}); // 200
-                    })
-                }
-    })
-    .auth(null, null, true, access_token);
-            })
-        }
-    });
-
-}
-
 module.exports = {
     searchProducts,
     getProduct,
     suggestWeeklyRecipes,
     syncBonusRequest,
-    updateProducts
 }

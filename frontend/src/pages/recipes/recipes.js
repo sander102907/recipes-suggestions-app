@@ -1,16 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import './recipes.css';
 import axios from 'axios';
-import { Button, Container, Row, Card } from 'react-bootstrap'
+import { Button, Container, Row, Card, Modal } from 'react-bootstrap'
 import RecipeCard from "../../components/recipeCard/recipeCard";
-import { Plus } from 'react-bootstrap-icons';
-import CreateRecipeModal from '../../components/createRecipeModal/createRecipeModal';
-
+import { Plus, Pencil } from 'react-bootstrap-icons';
+import RecipeModal from '../../components/recipeModal/recipeModal';
 
 const Recipes = () => {
   const [recipes, setRecipes] = useState([]);
-  const [newRecipeName, setNewRecipeName] = useState("");
-  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [removePopup, setRemovePopup] = useState({
+    show: false,
+    recipe_id: null,
+  });
+  const [editRecipe, setEditRecipe] = useState({
+    id: null,
+    name: '',
+    description: '',
+    rating: 0,
+    ingredients: []
+  });
+  const [edit, setEdit] = useState(false);
+  
 
   useEffect(() => {getRecipes()}, []);
   
@@ -19,24 +30,54 @@ const Recipes = () => {
       .then((response) => setRecipes(response.data));
   };
 
-  const handleChange = (event) => {
-    setNewRecipeName(event.target.value)
-  };
- 
-  const addRecipe = () => {
-    const newRecipe = {
-      name: newRecipeName
-    };
+  const handleRemove = (recipe_id) => {
+    setRemovePopup({
+      show: true,
+      recipe_id,
+    });
+  }
 
-    axios.post('/api/recipe', newRecipe)
-        .then(() => { 
-          getRecipes();
-      });
+  const handleRemoveConfirm = () => {
+    if (removePopup.show && removePopup.recipe_id) {
+      axios.delete(`/api/recipe/${removePopup.recipe_id}`).then(() => {
+        setRemovePopup({
+          show: false,
+          recipe_id: null,
+        });
+        getRecipes();
+      })
+    }
   };
+    
+  const handleRemoveCancel = () => {
+    setRemovePopup({
+      show: false,
+      recipe_id: null,
+    });
+  };
+
+  const openEditRecipeModal = (recipe, ingredients) => {
+    setEditRecipe({
+      id: recipe.id,
+      name: recipe.name,
+      description: recipe.description == null ? '' : recipe.description,
+      rating: recipe.rating,
+      ingredients: ingredients
+    });
+    setEdit(true);
+    setShowModal(true);
+  }
 
   const recipeCards = recipes.map((val, key) => {
     return (
-        <RecipeCard recipe={val} getRecipes={getRecipes} key={key} />
+        <RecipeCard 
+          recipe={val} 
+          getRecipes={getRecipes} 
+          key={key} 
+          secondButtonIcon={Pencil} 
+          onRemove={handleRemove} 
+          onSecondButtonClick={openEditRecipeModal} 
+        />
     )
   });
   
@@ -57,19 +98,39 @@ const Recipes = () => {
                   <span className='info-card-amount'>€1.21</span> 
                 </div>
               </Card>
-              <Button className='info-item' onClick={() => setShowCreateModal(true)}><Plus size={24} /> New</Button>
+              <Button className='info-item' onClick={() => setShowModal(true)}><Plus size={24} /> Add</Button>
           </Row> 
         </Container>
-        <div className='form'>
-            <input name='newRecipeName' placeholder='Enter Recipe Name' onChange={handleChange} />
-        </div>
-        <Button className='my-2' variant="primary" onClick={addRecipe}>New Recipe</Button> <br /><br />
         <Container>
             <Row>
                 {recipeCards}
             </Row>
         </Container>
-        <CreateRecipeModal show={showCreateModal} onHide={() => setShowCreateModal(false)} getRecipes={getRecipes} />
+        <RecipeModal 
+          show={showModal} 
+          onHide={() => {setShowModal(false); setEdit(false);}} 
+          getRecipes={getRecipes} 
+          edit={edit} 
+          id={editRecipe.id}
+          name={editRecipe.name} 
+          description={editRecipe.description} 
+          rating={editRecipe.rating}
+          ingredients={editRecipe.ingredients} />
+        <Modal show={removePopup.show}>
+        <Modal.Header closeButton>
+          <Modal.Title>Delete Recipe</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Are you sure that you want to delete this recipe?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleRemoveCancel}>
+            cancel
+          </Button>
+          <Button variant="primary" onClick={handleRemoveConfirm}>
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
     </div>
   );
 }

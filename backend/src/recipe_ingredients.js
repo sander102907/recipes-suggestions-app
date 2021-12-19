@@ -86,7 +86,7 @@ const addIngredientToRecipe = (req, res) => {
             res.status(HttpStatusCodes.BAD_REQUEST).send({ error: err, message: err.message }); // 400
         }
         else if (result.length == 0) {
-            const InsertQuery = "INSERT INTO recipe_ingredients (recipe_id, ingredient_id) VALUES (?, ?)";
+            const InsertQuery = "INSERT INTO recipe_ingredients recipe_id = ?, ingredient_id = ?, interchangeable_group = (SELECT MAX(interchangeable_group) FROM recipe_ingredients) + 1";
             db.query(InsertQuery, [recipeId, ingredientId], (err, result) => {
                 if (err) {
                     res.status(HttpStatusCodes.BAD_REQUEST).send({ error: err, message: err.message }); // 400
@@ -107,10 +107,27 @@ const addIngredientToRecipe = (req, res) => {
     });
 };
 
+const removeIngredientsFromRecipe = (req, res) => {
+    const recipeId = req.params.recipeId;
+
+    console.log(recipeId);
+
+    const query = "DELETE FROM recipe_ingredients WHERE recipe_id = ?";
+    db.query(query, [recipeId], (err, result) => {
+        if (err) {
+            res.status(HttpStatusCodes.BAD_REQUEST).send({ error: err, message: err.message }); // 400
+        }
+        else {
+            res.sendStatus(HttpStatusCodes.OK);
+        }
+    });
+}
+
 
 module.exports = {
     getIngredientsOfRecipe,
     getRecipesWithIngredient,
     addIngredientToRecipe,
-    getRecipePrice
+    getRecipePrice,
+    removeIngredientsFromRecipe
 }

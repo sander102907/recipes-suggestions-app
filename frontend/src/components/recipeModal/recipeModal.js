@@ -1,15 +1,30 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { Button, Modal, Form, FloatingLabel } from 'react-bootstrap'
 import IngredientsSearchBar from "../searchIngredients/searchIngredients";
 import ReactStars from "react-rating-stars-component";
 import IngredientsList from '../ingredientsList/ingredientsList';
 
-const CreateRecipeModal = (props) => {
+const RecipeModal = (props) => {
   const [ingredients, setIngredients] = useState([]);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [rating, setRating] = useState(0);
+  const ingredientsSearchBar = useRef(null);
+
+  useEffect(() => {
+    if (props.edit) {
+      setIngredients(props.ingredients);
+      setName(props.name);
+      setDescription(props.description);
+      setRating(props.rating);
+    } else {
+      setIngredients([]);
+      setName('');
+      setDescription('');
+      setRating(0);
+    }
+  }, [props.edit, props.ingredients, props.name, props.description, props.rating])
 
   const addIngredientToRecipe = (ingredient, recipe_id) => {
     axios.get(`/api/ingredient/ah/${ingredient.ah_id}`, {params: ingredient})
@@ -42,13 +57,7 @@ const CreateRecipeModal = (props) => {
     setIngredients(ingredients_copy);
   }
 
-  const submit = () => {
-    const recipe = {
-      name: name,
-      description: description,
-      rating: rating
-    };
-
+  const createRecipe = (recipe) => {
     axios.post('/api/recipe', recipe)
         .then((response) => { 
           const promises = []
@@ -64,6 +73,47 @@ const CreateRecipeModal = (props) => {
       });
   }
 
+  const updateRecipe = (recipe) => {
+    axios.put(`/api/recipe/${props.id}`, recipe)
+        .then((response) => { 
+          axios.delete(`/api/recipe/${props.id}/ingredients`).then(() => {
+            const promises = []
+
+            ingredients.forEach(ingredient => {
+              promises.push(addIngredientToRecipe(ingredient, response.data.id));
+            });
+
+            Promise.all(promises).then(() => {
+              props.getRecipes();
+              props.onHide();
+            });
+          });
+      });
+  }
+
+  const submit = () => {
+    const recipe = {
+      name: name,
+      description: description,
+      rating: rating
+    };
+
+    if (props.edit) {
+      updateRecipe(recipe);
+    } else {
+      createRecipe(recipe);
+    }
+
+    setIngredients([]);
+    setName('');
+    setDescription('');
+    setRating(0);
+  }
+
+  const coupleIngredient = (index) => {
+    ingredientsSearchBar.current.focus();
+  }
+
     return (
       <Modal
         {...props}
@@ -71,7 +121,7 @@ const CreateRecipeModal = (props) => {
       >
         <Modal.Header closeButton>
           <Modal.Title>
-            New Recipe
+          {props.edit === true ? 'Update Recipe' : 'New Recipe'}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -99,16 +149,21 @@ const CreateRecipeModal = (props) => {
               onChange={(e) => setDescription(e.target.value)}
             />
           </FloatingLabel>
-          <IngredientsSearchBar onClick={addIngredient}/>
-          <IngredientsList ingredients={ingredients} maxHeight={'260px'} onRemove={removeIngredient} />
+          <IngredientsSearchBar onClick={addIngredient} refVar={ingredientsSearchBar}/>
+          <IngredientsList 
+            ingredients={ingredients} 
+            maxHeight={'260px'} 
+            onRemove={removeIngredient}
+            onOr={coupleIngredient} 
+          />
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={props.onHide}>Close</Button>
-          <Button onClick={() => submit()}>Add</Button>
+          <Button onClick={() => submit()}>{props.edit === true ? 'Update' : 'Add'}</Button>
         </Modal.Footer>
       </Modal>
     );
 }
 
-export default CreateRecipeModal;
+export default RecipeModal;
   
