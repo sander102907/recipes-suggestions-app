@@ -8,21 +8,21 @@ import IngredientsList from '../ingredientsList/ingredientsList';
 import ReactStars from "react-rating-stars-component";
 
 const RecipeCard = (props) => {
-    const [ingredients, setIngredients] = useState([]);
+    const [groups, setGroups] = useState([]);
     const [currentRecipePrice, setCurrentRecipePrice] = useState(0);
     const [fullRecipePrice, setFullRecipePrice] = useState(0);
 
     const recipeId = props.recipe.id;
 
-    const getIngredients = useCallback(() => {
-        axios.get(`/api/recipe/${recipeId}/ingredients`)
+    const getGroups = useCallback(() => {
+        axios.get(`/api/groups/recipe/${recipeId}`)
             .then((response) => {
-                setIngredients(response.data);
+                setGroups(response.data);
         });
     }, [recipeId]);
 
     const getRecipePrice = useCallback(() => {
-        axios.get(`/api/recipe/${recipeId}/price`)
+        axios.get(`/api/recipes/${recipeId}/price`)
             .then((response) => {
                 setCurrentRecipePrice(response.data.current_price);
                 setFullRecipePrice(response.data.full_price);
@@ -30,9 +30,9 @@ const RecipeCard = (props) => {
     }, [recipeId]);
 
     useEffect(() => {
-        getIngredients();
+        getGroups();
         getRecipePrice();
-    }, [getIngredients, getRecipePrice]);        
+    }, [getGroups, getRecipePrice]);        
 
   return (
     <React.Fragment>
@@ -47,14 +47,14 @@ const RecipeCard = (props) => {
                 <Card.Title>{props.recipe.name}</Card.Title>
                 {props.recipe.description}
                 <div className='card-data'>
-                    <IngredientsList ingredients={ingredients}/>
+                    <IngredientsList groups={groups}/>
                     <div className='card-bottom'>
                         <div className='card-buttons'>
                             <Button className='card-button-delete' onClick={() => props.onRemove(props.recipe.id)}><XLg size={20} /></Button>
-                            <Button className='card-button-second' onClick={() => props.onSecondButtonClick(props.recipe, ingredients)}><props.secondButtonIcon size={20} /></Button>
+                            <Button className='card-button-second' onClick={() => props.onSecondButtonClick(props.recipe, groups)}><props.secondButtonIcon size={20} /></Button>
                         </div>
                         <div className='card-price'>
-                            <span className='full-price'>€{fullRecipePrice}</span>
+                            {fullRecipePrice > currentRecipePrice && <span className='full-price'>€{fullRecipePrice}</span>}
                             <span className='current-price'>€{currentRecipePrice}</span>
                         </div>
                     </div>

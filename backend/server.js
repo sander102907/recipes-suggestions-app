@@ -1,12 +1,20 @@
 const express = require('express');
 const cors = require('cors');
-const routes = require('./src/routes/routes');
+const errorHandler = require('./_middleware/error-handler');
 
 const app = express();
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 app.use(cors())
-app.use(routes);
+
+// api routes
+app.use('/recipes', require('./src/recipes/recipe.controller'));
+app.use('/ingredients', require('./src/ingredients/ingredient.controller'));
+app.use('/groups', require('./src/groups/group.controller'));
+app.use('/ah', require('./src/ah/ah.controller'));
+
+// global error handler
+app.use(errorHandler);
 
 
 

@@ -6,31 +6,38 @@ import ReactStars from "react-rating-stars-component";
 import IngredientsList from '../ingredientsList/ingredientsList';
 
 const RecipeModal = (props) => {
-  const [ingredients, setIngredients] = useState([]);
+  const [groups, setGroups] = useState([]);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [rating, setRating] = useState(0);
+  const [coupleMode, setCoupleMode] = useState(false);
+  const [coupleGroup, setCoupleGroup] = useState(null);
   const ingredientsSearchBar = useRef(null);
 
   useEffect(() => {
     if (props.edit) {
-      setIngredients(props.ingredients);
+      setGroups(props.groups);
       setName(props.name);
       setDescription(props.description);
       setRating(props.rating);
     } else {
-      setIngredients([]);
+      setGroups([]);
       setName('');
       setDescription('');
       setRating(0);
     }
-  }, [props.edit, props.ingredients, props.name, props.description, props.rating])
+  }, [props.edit, props.groups, props.name, props.description, props.rating])
 
-  const addIngredientToRecipe = (ingredient, recipe_id) => {
-    axios.get(`/api/ingredient/ah/${ingredient.ah_id}`, {params: ingredient})
+  const addIngredientToGroup = async (ingredient, group_id) => {
+    await axios.get(`/api/ingredients/ah/${ingredient.ah_id}`, {params: ingredient})
     .then((response) => {
-      axios.post("api/recipe/ingredient", { recipe_id: recipe_id, ingredient_id: response.data.id })
+      axios.post("api/groups/ingredient", { group_id: group_id, ingredient_id: response.data.id });
     });
+  }
+
+  const addGroupToRecipe = (recipe_id) => {
+    return axios.post('/api/groups', { recipe_id: recipe_id })
+        .then((response) => response.data.id);
   }
 
   const addIngredient = (suggestion) => {
@@ -48,43 +55,64 @@ const RecipeModal = (props) => {
       image_large: suggestion.images[3].url,
       ah_id: suggestion.webshopId
     };
-    setIngredients([...ingredients, ingredient])
+    
+    if (coupleMode) {
+      let groups_copy = [...groups];
+      groups_copy[coupleGroup].ingredients.push(ingredient);
+      setCoupleMode(false);
+      setCoupleGroup(null);
+    } else {
+      setGroups([...groups, {ingredients: [ingredient]}]);
+    }
+    
   }
 
-  const removeIngredient = (index) => {
-    const ingredients_copy = [...ingredients];
-    ingredients_copy.splice(index, 1);
-    setIngredients(ingredients_copy);
+  const removeIngredient = (group_index, ingredient_index) => {
+    const groups_copy = [...groups];
+    if (groups_copy[group_index].ingredients.length > 1) {
+      groups_copy[group_index].ingredients.splice(ingredient_index, 1);
+    } else {
+      groups_copy.splice(group_index, 1);
+    }
+    setGroups(groups_copy);
   }
 
   const createRecipe = (recipe) => {
-    axios.post('/api/recipe', recipe)
+    axios.post('/api/recipes', recipe)
         .then((response) => { 
           const promises = []
 
-          ingredients.forEach(ingredient => {
-            promises.push(addIngredientToRecipe(ingredient, response.data.id));
+          groups.forEach(group => {
+            promises.push(addGroupToRecipe(response.data.id).then((group_id) => {
+              group.ingredients.forEach(async (ingredient) => {
+                await addIngredientToGroup(ingredient, group_id);
+              });
+            }));
           });
 
           Promise.all(promises).then(() => {
             props.getRecipes();
             props.onHide();
-          })
+          });
       });
   }
 
   const updateRecipe = (recipe) => {
-    axios.put(`/api/recipe/${props.id}`, recipe)
-        .then((response) => { 
-          axios.delete(`/api/recipe/${props.id}/ingredients`).then(() => {
+    axios.put(`/api/recipes/${props.id}`, recipe)
+        .then(() => { 
+          axios.delete(`/api/groups/recipe/${props.id}`).then(() => {
             const promises = []
 
-            ingredients.forEach(ingredient => {
-              promises.push(addIngredientToRecipe(ingredient, response.data.id));
+            groups.forEach(group => {
+              promises.push(addGroupToRecipe(props.id).then((group_id) => {
+                group.ingredients.forEach(async (ingredient) => {
+                  await addIngredientToGroup(ingredient, group_id);
+                });
+              }));
             });
 
             Promise.all(promises).then(() => {
-              props.getRecipes();
+              props.getRecipes(props.id);
               props.onHide();
             });
           });
@@ -104,14 +132,16 @@ const RecipeModal = (props) => {
       createRecipe(recipe);
     }
 
-    setIngredients([]);
+    setGroups([]);
     setName('');
     setDescription('');
     setRating(0);
   }
 
-  const coupleIngredient = (index) => {
+  const coupleIngredient = (group_index) => {
     ingredientsSearchBar.current.focus();
+    setCoupleMode(true);
+    setCoupleGroup(group_index);
   }
 
     return (
@@ -151,7 +181,7 @@ const RecipeModal = (props) => {
           </FloatingLabel>
           <IngredientsSearchBar onClick={addIngredient} refVar={ingredientsSearchBar}/>
           <IngredientsList 
-            ingredients={ingredients} 
+            groups={groups} 
             maxHeight={'260px'} 
             onRemove={removeIngredient}
             onOr={coupleIngredient} 

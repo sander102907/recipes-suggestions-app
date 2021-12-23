@@ -4,6 +4,10 @@
     overflow-y: auto;
 }
 
+.ingredient-group {
+    border-bottom: rgb(197, 197, 197) 1px solid;
+}
+
 .ingredient {
     min-height: 30px;
     padding: 4px 16px;
@@ -13,6 +17,7 @@
     padding: 10px 0px;
     display: flex;
     align-items: center;
+    
 }
 
 .ingredient-item-info-container {

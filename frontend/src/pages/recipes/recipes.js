@@ -18,7 +18,7 @@ const Recipes = () => {
     name: '',
     description: '',
     rating: 0,
-    ingredients: []
+    groups: []
   });
   const [edit, setEdit] = useState(false);
   
@@ -27,7 +27,10 @@ const Recipes = () => {
   
   const getRecipes = () => {
     axios.get("/api/recipes")
-      .then((response) => setRecipes(response.data));
+      .then((response) => {
+        setRecipes([])
+        setRecipes(response.data);
+      });
   };
 
   const handleRemove = (recipe_id) => {
@@ -39,7 +42,7 @@ const Recipes = () => {
 
   const handleRemoveConfirm = () => {
     if (removePopup.show && removePopup.recipe_id) {
-      axios.delete(`/api/recipe/${removePopup.recipe_id}`).then(() => {
+      axios.delete(`/api/recipes/${removePopup.recipe_id}`).then(() => {
         setRemovePopup({
           show: false,
           recipe_id: null,
@@ -56,13 +59,13 @@ const Recipes = () => {
     });
   };
 
-  const openEditRecipeModal = (recipe, ingredients) => {
+  const openEditRecipeModal = (recipe, groups) => {
     setEditRecipe({
       id: recipe.id,
       name: recipe.name,
       description: recipe.description == null ? '' : recipe.description,
       rating: recipe.rating,
-      ingredients: ingredients
+      groups: groups
     });
     setEdit(true);
     setShowModal(true);
@@ -115,7 +118,7 @@ const Recipes = () => {
           name={editRecipe.name} 
           description={editRecipe.description} 
           rating={editRecipe.rating}
-          ingredients={editRecipe.ingredients} />
+          groups={editRecipe.groups} />
         <Modal show={removePopup.show}>
         <Modal.Header closeButton>
           <Modal.Title>Delete Recipe</Modal.Title>

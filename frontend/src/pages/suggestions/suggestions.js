@@ -17,7 +17,7 @@ const Suggestions = () => {
     let promises = [];
 
     suggestedRecipes.forEach(recipe => {
-      promises.push(axios.get(`/api/recipe/${recipe.id}/price`));
+      promises.push(axios.get(`/api/recipes/${recipe.id}/price`));
     });
 
     Promise.all(promises).then(responses => {
@@ -41,7 +41,7 @@ const Suggestions = () => {
   }, [suggestedRecipes]);
 
   const getSuggestions = () => {
-    axios.get("/api/suggest")
+    axios.get("/api/recipes/bonus")
       .then((response) => {
         setsuggestedRecipes(response.data);
       });
