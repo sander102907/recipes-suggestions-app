@@ -1,5 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
-import { useState } from "react";
+import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import './recipeCard.css';
 import { XLg } from 'react-bootstrap-icons';
@@ -9,8 +8,9 @@ import ReactStars from "react-rating-stars-component";
 
 const RecipeCard = (props) => {
     const [groups, setGroups] = useState([]);
-    const [currentRecipePrice, setCurrentRecipePrice] = useState(0);
-    const [fullRecipePrice, setFullRecipePrice] = useState(0);
+    const [bonusPrice, setBonusPrice] = useState(0);
+    const [minPrice, setMinPrice] = useState(0);
+    const [maxPrice, setMaxPrice] = useState(0);
 
     const recipeId = props.recipe.id;
 
@@ -24,8 +24,15 @@ const RecipeCard = (props) => {
     const getRecipePrice = useCallback(() => {
         axios.get(`/api/recipes/${recipeId}/price`)
             .then((response) => {
-                setCurrentRecipePrice(response.data.current_price);
-                setFullRecipePrice(response.data.full_price);
+                if (props.addPrice != null && props.addBonus != null) {
+                    props.addPrice(response.data.bonus_price, props.index);
+                    props.addBonus(Number(response.data.min_price)-Number(response.data.bonus_price), props.index);
+                }
+
+                setBonusPrice(response.data.bonus_price);
+                setMinPrice(response.data.min_price);
+                setMaxPrice(response.data.max_price);
+                console.log(response.data.bonus_price, props.recipe.description);
         });
     }, [recipeId]);
 
@@ -45,7 +52,7 @@ const RecipeCard = (props) => {
                     edit={false}
                 />
                 <Card.Title>{props.recipe.name}</Card.Title>
-                {props.recipe.description}
+                <div className="description" dangerouslySetInnerHTML={{__html: props.recipe.description}}></div>
                 <div className='card-data'>
                     <IngredientsList groups={groups}/>
                     <div className='card-bottom'>
@@ -54,8 +61,9 @@ const RecipeCard = (props) => {
                             <Button className='card-button-second' onClick={() => props.onSecondButtonClick(props.recipe, groups)}><props.secondButtonIcon size={20} /></Button>
                         </div>
                         <div className='card-price'>
-                            {fullRecipePrice > currentRecipePrice && <span className='full-price'>€{fullRecipePrice}</span>}
-                            <span className='current-price'>€{currentRecipePrice}</span>
+                            {minPrice > bonusPrice && maxPrice > minPrice && <span className='full-price'>€{minPrice} - €{maxPrice}</span>}
+                            {minPrice > bonusPrice && maxPrice <= minPrice && <span className='full-price'>€{minPrice}</span>}
+                            <span className='current-price'>€{bonusPrice}</span>
                         </div>
                     </div>
                 </div>

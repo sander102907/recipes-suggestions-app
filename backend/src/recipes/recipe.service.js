@@ -83,10 +83,30 @@ const getBonusRecipes = async () => {
                    recipe.description AS description, 
                    recipe.rating AS rating 
                    FROM recipe 
-                   JOIN recipe_ingredients on (recipe.id=recipe_ingredients.recipe_id) 
-                   JOIN ingredient on (ingredient.id=recipe_ingredients.ingredient_id) 
-                   WHERE ingredient.is_bonus = 1;`; 
+                   JOIN recipe_ingredients_group g on (recipe.id=g.recipe_id) 
+                   JOIN ingredients_in_group ig on (ig.group_id=g.id) 
+                   JOIN ingredient i on (i.id=ig.ingredient_id) 
+                   WHERE i.is_bonus = 1;`; 
     const [rows] = await db.query(query);
+    return rows;
+}
+
+const getRandomNonBonusRecipes = async (amount) => {
+    const query = `SELECT 
+                   recipe.id AS id, 
+                   recipe.name AS name, 
+                   recipe.description AS description, 
+                   recipe.rating AS rating 
+                   FROM recipe
+                   JOIN recipe_ingredients_group g on (recipe.id=g.recipe_id) 
+                   JOIN ingredients_in_group ig on (ig.group_id=g.id) 
+                   JOIN ingredient i on (i.id=ig.ingredient_id) 
+                   GROUP BY recipe.id
+                   HAVING SUM(i.is_bonus)=0 OR SUM(i.is_bonus) IS NULL
+                   ORDER BY RAND()
+                   LIMIT ?;`
+    
+    const [rows] = await db.query(query, [amount]);
     return rows;
 }
 
@@ -97,5 +117,6 @@ module.exports = {
     deleteRecipe,
     updateRecipe,
     getIngredientsOfRecipe,
-    getBonusRecipes
+    getBonusRecipes,
+    getRandomNonBonusRecipes
 }

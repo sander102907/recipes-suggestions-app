@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const HttpStatusCodes = require('http-status-codes').StatusCodes;
 const recipeService = require('./recipe.service')
+const groupService = require('../groups/group.service');
+const sanitizeHtml = require('sanitize-html');
 
 const getAllRecipes = (req, res) => {
     recipeService.getAllRecipes()
@@ -19,7 +21,7 @@ const getRecipe = (req, res) => {
 
 const addRecipe = (req, res) => {
     const name = req.body.name;
-    const description = req.body.description;
+    const description = sanitizeHtml(req.body.description);
     const rating = req.body.rating;
 
     recipeService.addRecipe(name, description, rating)
@@ -38,7 +40,7 @@ const deleteRecipe = (req, res) => {
 const updateRecipe = (req, res) => {
     const id = req.params.id;
     const name = req.body.name;
-    const description = req.body.description;
+    const description = sanitizeHtml(req.body.description);
     const rating = req.body.rating;
 
     recipeService.updateRecipe(id, name, description, rating)
@@ -56,41 +58,67 @@ const getIngredientsOfRecipe = (req, res) => {
 
 const getRecipePrice = (req, res) => {
     const id = req.params.id;
+    let bonus_price = 0;
+    let min_price = 0;
+    let max_price = 0;
 
-    recipeService.getIngredientsOfRecipe(id)
-        .then(ingredients => {
-            let current_price = 0;
-
-            ingredients.forEach(ingredient => {
-                if (ingredient.bonus_price != null) {
-                    current_price += ingredient.bonus_price;
-                } else {
-                    current_price += ingredient.price;
-                }
+    groupService.getGroupsOfRecipe(id)
+        .then(groups => {
+            const promises = [];
+            groups.forEach(group => {
+                promises.push(groupService.getIngredientsOfGroup(group.id));
             });
 
-            let full_price = 0;
+            Promise.all(promises).then((groupIngredients) => {
+                    // Calculate bonus price
+                    groupIngredients.forEach((ingredients) => {
+                        if (ingredients.length > 0) {
 
-            ingredients.forEach(ingredient => {
-                if (ingredient.price != null) {
-                    full_price += ingredient.price;
-                } else if (ingredient.bonus_price != null) {
-                    if (ingredient.bonus_mechanism.includes('KORTING')) {
-                        let percentage = ingredient.bonus_mechanism.match(/\d+/)[0];
-                        full_price += ingredient.bonus_price / (1-(percentage/100));
-                    } else {
-                        full_price += ingredient.bonus_price
-                    }
-                }
+                            let min_p = 10e20;
+                            ingredients.forEach(ingredient => {
+                                if (ingredient.bonus_price != null && ingredient.bonus_price < min_p) {
+                                    min_p = ingredient.bonus_price;
+                                } else if (ingredient.price < min_p) {
+                                    min_p = ingredient.price;
+                                }
+                            });
+                            bonus_price += min_p;
+                        }
+                    });
+
+                    // Calculate min/max price
+                    groupIngredients.forEach((ingredients) => {
+                        if (ingredients.length > 0) {
+                            let min_p = 10e20;
+                            let max_p = 0;
+                            ingredients.forEach(ingredient => {
+                                if (ingredient.price != null) {
+                                    min_p = Math.min(min_p, ingredient.price);
+                                    max_p = Math.max(max_p, ingredient.price);
+                                } else if (ingredient.bonus_price != null) {
+                                    if (ingredient.bonus_mechanism.includes('KORTING')) {
+                                        let percentage = ingredient.bonus_mechanism.match(/\d+/)[0];
+                                        let price = ingredient.bonus_price / (1-(percentage/100));
+
+                                        min_p = Math.min(min_p, price);
+                                        max_p = Math.max(max_p, price);                                
+                                    } else {
+                                        min_p = Math.min(min_p, ingredient.bonus_price);
+                                        max_p = Math.max(max_p, ingredient.bonus_price); 
+                                    }
+                                }
+                            });
+                            min_price += min_p;
+                            max_price += max_p;
+                        }
+                    });
+
+                res.send({
+                    bonus_price: bonus_price.toFixed(2),
+                    min_price: min_price.toFixed(2),
+                    max_price: max_price.toFixed(2)
+                });      
             });
-
-            current_price = current_price.toFixed(2);
-            full_price = full_price.toFixed(2);
-
-            res.send({
-                current_price: current_price,
-                full_price: full_price
-            });            
         })
         .catch(err => handleError(err, res));
 }
@@ -98,6 +126,17 @@ const getRecipePrice = (req, res) => {
 const getBonusRecipes = (req, res) => {
     recipeService.getBonusRecipes()
         .then(bonusRecipes => res.send(bonusRecipes))
+        .catch(err => handleError(err, res));
+}
+
+const suggestRecipes = (req, res) => {
+    recipeService.getBonusRecipes()
+        .then(bonusRecipes => {
+            if (bonusRecipes.length < 7) {
+                console.log(bonusRecipes);
+                recipeService.getRandomNonBonusRecipes(7 - bonusRecipes.length).then((rows) => res.send(bonusRecipes.concat(rows)));
+            }
+        })
         .catch(err => handleError(err, res));
 }
 
@@ -114,5 +153,6 @@ router.put("/:id", updateRecipe);
 router.get('/:id/ingredients', getIngredientsOfRecipe);
 router.get('/:id/price', getRecipePrice);
 router.get('/bonus', getBonusRecipes);
+router.get('/suggest', suggestRecipes);
 
 module.exports = router;

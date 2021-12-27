@@ -8,6 +8,8 @@ import RecipeModal from '../../components/recipeModal/recipeModal';
 
 const Recipes = () => {
   const [recipes, setRecipes] = useState([]);
+  const [prices, setPrices] = useState([]);
+  const [bonuses, setBonuses] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [removePopup, setRemovePopup] = useState({
     show: false,
@@ -22,12 +24,29 @@ const Recipes = () => {
   });
   const [edit, setEdit] = useState(false);
   
+  const addPrice = (price, index) => {
+    setPrices(oldPrices => {
+      const newPrices = [...oldPrices];
+      newPrices[index] = Number(price);
+      return newPrices;
+    });
+  }
+
+  const addBonus = (bonus, index) => {
+    setBonuses(oldBonuses => {
+      const newBonuses = [...oldBonuses];
+      newBonuses[index] = Number(bonus);
+      return newBonuses;
+    });
+  }
 
   useEffect(() => {getRecipes()}, []);
   
   const getRecipes = () => {
     axios.get("/api/recipes")
       .then((response) => {
+        setPrices(new Array(response.data.length).fill(0));
+        setBonuses(new Array(response.data.length).fill(0));
         setRecipes([])
         setRecipes(response.data);
       });
@@ -71,15 +90,30 @@ const Recipes = () => {
     setShowModal(true);
   }
 
-  const recipeCards = recipes.map((val, key) => {
+  const getAveragePrice = () => {
+    return (prices.reduce((a,b) => a + b, 0) / prices.length).toFixed(2);
+  }
+
+  const getAverageBonus = () => {
+    return (bonuses.reduce((a,b) => a + b, 0) / bonuses.length).toFixed(2);
+  }
+
+  const getTotalBonus = () => {
+    return bonuses.reduce((a,b) => a + b, 0).toFixed(2);
+  }
+
+  const recipeCards = recipes.map((val, index) => {
     return (
         <RecipeCard 
           recipe={val} 
           getRecipes={getRecipes} 
-          key={key} 
+          key={index} 
+          index={index}
           secondButtonIcon={Pencil} 
           onRemove={handleRemove} 
           onSecondButtonClick={openEditRecipeModal} 
+          addPrice={addPrice}
+          addBonus={addBonus}
         />
     )
   });
@@ -91,14 +125,21 @@ const Recipes = () => {
               <Card className='info-item'>
                 <div className='card-body info-body'>
                   <span className='info-card-text'>Average cost:</span>
-                  <span className='info-card-amount'>€6.96</span> 
+                  <span className='info-card-amount'>€{getAveragePrice()}</span> 
                 </div>
               </Card>
 
               <Card className='info-item'>
                 <div className='card-body info-body'>
                   <span className='info-card-text'>Average bonus:</span>
-                  <span className='info-card-amount'>€1.21</span> 
+                  <span className='info-card-amount'>€{getAverageBonus()}</span> 
+                </div>
+              </Card>
+
+              <Card className='info-item'>
+                <div className='card-body info-body'>
+                  <span className='info-card-text'>Total bonus:</span>
+                  <span className='info-card-amount'>€{getTotalBonus()}</span> 
                 </div>
               </Card>
               <Button className='info-item' onClick={() => setShowModal(true)}><Plus size={24} /> Add</Button>

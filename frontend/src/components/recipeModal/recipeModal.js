@@ -1,14 +1,18 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
+import './recipeModal.css';
 import { Button, Modal, Form, FloatingLabel } from 'react-bootstrap'
 import IngredientsSearchBar from "../searchIngredients/searchIngredients";
 import ReactStars from "react-rating-stars-component";
 import IngredientsList from '../ingredientsList/ingredientsList';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const RecipeModal = (props) => {
   const [groups, setGroups] = useState([]);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
+  const [descriptionLength, setDescriptionLength] = useState(1e10);
   const [rating, setRating] = useState(0);
   const [coupleMode, setCoupleMode] = useState(false);
   const [coupleGroup, setCoupleGroup] = useState(null);
@@ -122,7 +126,7 @@ const RecipeModal = (props) => {
   const submit = () => {
     const recipe = {
       name: name,
-      description: description,
+      description: descriptionLength > 1 ? description : '',
       rating: rating
     };
 
@@ -156,6 +160,7 @@ const RecipeModal = (props) => {
         </Modal.Header>
         <Modal.Body>
           <ReactStars
+            value={props.rating}
             count={5}
             onChange={setRating}
             size={32}
@@ -171,14 +176,14 @@ const RecipeModal = (props) => {
               onChange={(e) => setName(e.target.value)}
              />
           </FloatingLabel>
-          <FloatingLabel controlId="floatingTextarea2" label="Description" className="mb-3">
-            <Form.Control
-              as="textarea"
-              style={{ height: '100px' }}
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
+            <ReactQuill 
+            className="description mb-3"
+              theme="snow" 
+              value={description} 
+              onChange={setDescription} 
+              onBlur={(previousRange, source, editor) => setDescriptionLength(editor.getLength())} 
+              placeholder={"Description"} 
             />
-          </FloatingLabel>
           <IngredientsSearchBar onClick={addIngredient} refVar={ingredientsSearchBar}/>
           <IngredientsList 
             groups={groups} 

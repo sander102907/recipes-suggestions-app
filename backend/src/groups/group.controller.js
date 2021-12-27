@@ -21,6 +21,7 @@ const getGroup = (req, res) => {
 
 const getGroupsOfRecipe = (req, res) => {
     const recipe_id = req.params.recipeId;
+    const is_suggesion = req.query.is_suggesion;
     const groupsResp = [];
 
     groupService.getGroupsOfRecipe(recipe_id)

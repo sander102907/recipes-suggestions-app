@@ -22,9 +22,8 @@ const Suggestions = () => {
 
     Promise.all(promises).then(responses => {
       responses.forEach(response => {
-        totPrice += parseFloat(response.data.current_price);
-        console.log(parseFloat(response.data.full_price), parseFloat(response.data.current_price))
-        bonusPrice += parseFloat(response.data.full_price) - parseFloat(response.data.current_price);
+        totPrice += parseFloat(response.data.bonus_price);
+        bonusPrice += parseFloat(response.data.min_price) - parseFloat(response.data.bonus_price);
       });
 
       setTotalPrice(totPrice.toFixed(2));
@@ -41,7 +40,7 @@ const Suggestions = () => {
   }, [suggestedRecipes]);
 
   const getSuggestions = () => {
-    axios.get("/api/recipes/bonus")
+    axios.get("/api/recipes/suggest")
       .then((response) => {
         setsuggestedRecipes(response.data);
       });

@@ -33,7 +33,7 @@ const addIngredient = (req, res) => {
     const image_large = req.query.image_large;
 
     ingredientService.addIngredient(name, ah_id, price, unit_size, category, bonus_price, is_bonus, bonus_mechanism, image_tiny, image_small, image_medium, image_large)
-        .then(() => res.send({ message: 'Ingredient created' }))
+        .then((result) => res.send({ id: result.insertId, message: 'Ingredient created' }))
         .catch(err => handleError(err, res));
 }
 
