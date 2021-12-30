@@ -133,8 +133,46 @@ const suggestRecipes = (req, res) => {
     recipeService.getBonusRecipes()
         .then(bonusRecipes => {
             if (bonusRecipes.length < 7) {
-                console.log(bonusRecipes);
-                recipeService.getRandomNonBonusRecipes(7 - bonusRecipes.length).then((rows) => res.send(bonusRecipes.concat(rows)));
+                recipeService.getRandomNonBonusRecipes(7 - bonusRecipes.length).then((rows) => {
+                    const suggestRecipes = bonusRecipes.concat(rows);
+                    let ingredients = [];
+                    const promises = [];
+                    let shareText = '';
+                    let lastCategory = '';
+
+                    suggestRecipes.forEach((recipe) => {
+                        promises.push(recipeService.getIngredientsOfRecipe(recipe.id));
+                    });
+
+                    Promise.all(promises).then((recipesIngredients) => {
+                        recipesIngredients.forEach((recipeIngredients) => {
+                            recipeIngredients.forEach((ingredient) => {
+                                ingredients.push(ingredient);
+                            });
+                        });
+                        ingredients = ingredients.sort((a, b) => {
+                            return a.category.localeCompare(b.category);
+                        });
+
+                        ingredients.forEach((ingredient, index) => {
+                            if (lastCategory !== ingredient.category) {
+                                if (shareText.length > 0) {
+                                    shareText += '\n';
+                                }
+
+                                shareText += `*${ingredient.category}:*\n\n`;
+                                lastCategory = ingredient.category;
+                            }
+
+                            shareText += `- ${ingredient.name} (${ingredient.unit_size})\n`
+                        });
+
+                        shareText += '\n';
+
+                        res.send({recipes: suggestRecipes, shareText: shareText });
+                    });
+                    
+                });
             }
         })
         .catch(err => handleError(err, res));

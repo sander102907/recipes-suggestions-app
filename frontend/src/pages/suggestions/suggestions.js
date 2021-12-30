@@ -4,11 +4,13 @@ import axios from 'axios';
 import { Container, Row, Card, Button } from 'react-bootstrap'
 import { Shuffle, Share } from 'react-bootstrap-icons';
 import RecipeCard from '../../components/recipeCard/recipeCard';
+import { WhatsappShareButton, WhatsappIcon } from "react-share";
 
 const Suggestions = () => {
   const [suggestedRecipes, setsuggestedRecipes] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const [bonus, setBonus] = useState(0);
+  const [shareText, setShareText] = useState('');
 
   const getPriceInfo = () => {
     let totPrice = 0;
@@ -42,7 +44,8 @@ const Suggestions = () => {
   const getSuggestions = () => {
     axios.get("/api/recipes/suggest")
       .then((response) => {
-        setsuggestedRecipes(response.data);
+        setsuggestedRecipes(response.data.recipes);
+        setShareText(response.data.shareText);
       });
   }
 
@@ -70,7 +73,14 @@ const Suggestions = () => {
                   <span className='info-card-amount'>€{bonus}</span> 
                 </div>
               </Card>
-              <Button className='info-item'><Share size={24} /> Ingredients</Button>
+              <WhatsappShareButton
+                url={'https://recipes.sdebruin.nl'}
+                title={shareText}
+                className='info-item'
+              >
+                <WhatsappIcon size={32} round />
+              </WhatsappShareButton>
+              {/* <Button className='info-item'><Share size={24} /> Ingredients</Button> */}
               <Button className='info-item'><Shuffle size={24} /> Re-suggest</Button>
           </Row> 
         </Container>

@@ -78,7 +78,7 @@ const setBonusProperties = async (ah_id, is_bonus, bonus_mechanism, bonus_price)
                    bonus_mechanism = ?, 
                    bonus_price = ? 
                    WHERE ah_id = ?;`
-    const [rows] = await db.query(updateQuery, [is_bonus, bonus_mechanism, bonus_price, ah_id]);
+    const [rows] = await db.query(query, [is_bonus, bonus_mechanism, bonus_price, ah_id]);
     return rows
 }
 

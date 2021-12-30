@@ -32,7 +32,6 @@ const RecipeCard = (props) => {
                 setBonusPrice(response.data.bonus_price);
                 setMinPrice(response.data.min_price);
                 setMaxPrice(response.data.max_price);
-                console.log(response.data.bonus_price, props.recipe.description);
         });
     }, [recipeId]);
 

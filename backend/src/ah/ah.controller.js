@@ -38,15 +38,15 @@ const filterBonusProductsOnCurrentWeek = (prod) => {
 
 const syncBonus = () => {
     return getAllBonusProducts().then((products) => {
-        products = products.filter(filterBonusProductsOnCurrentWeek);
-        const product_ids = products.map((i) => i.webshopId);
+        const bonus_products = products.filter(filterBonusProductsOnCurrentWeek);
+        const product_ids = bonus_products.map((i) => i.webshopId);
         return ahService.getProductsWithAhIds(product_ids)
             .then(products => {
                 return ahService.removeBonusProperties()
                     .then(() => {
                         let promises = [];
                         // Set bonus properties for ingredients
-                        products.forEach((ingredient, _) => {
+                        products.forEach((ingredient) => {
                             const product = bonus_products.filter(p => p.webshopId == ingredient.ah_id)[0];
                             promises.push(ahService.setBonusProperties(product.webshopId, product.isBonus, product.bonusMechanism, product.currentPrice));
                         });
