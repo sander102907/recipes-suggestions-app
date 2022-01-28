@@ -14,7 +14,7 @@ RUN npm ci
 # Bundle app source
 COPY ./ ./
 
-RUN npm run build
+RUN npm start
 
 # Bundle static assets with nginx
 FROM nginx:1.21.6-alpine as production
