@@ -1,5 +1,5 @@
 # recipes subdomain frontend
-FROM arm32v7/node:latest
+FROM arm32v7/node:latest as build
 
 # Create app directory
 WORKDIR /usr/src/recipes_app/frontend
@@ -10,11 +10,9 @@ WORKDIR /usr/src/recipes_app/frontend
 COPY ./package*.json ./
 COPY ./.env ./
 
-RUN npm install
+RUN npm ci
 
 # Bundle app source
 COPY ./ ./
 
-RUN npm i
-RUN export NODE_OPTIONS=--openssl-legacy-provider
-CMD ["npm", "run", "start"]
+RUN npm run build
