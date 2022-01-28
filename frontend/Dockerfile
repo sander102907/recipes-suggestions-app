@@ -11,9 +11,8 @@ COPY ./package.json ./
 COPY ./.env ./
 
 RUN yarn
-RUN export NODE_OPTIONS=--openssl-legacy-provider
 
 # Bundle app source
 COPY ./ ./
 
-RUN npm run build
+RUN npm run build -openssl-legacy-provider
