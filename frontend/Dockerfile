@@ -10,7 +10,7 @@ WORKDIR /frontend
 COPY ./package.json ./
 COPY ./.env ./
 
-RUN yarn install --production --network-timeout=30000
+RUN yarn install --production --network-timeout=1000000
 
 # Bundle app source
 COPY ./ ./
