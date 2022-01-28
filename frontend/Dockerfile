@@ -1,5 +1,5 @@
 # recipes subdomain frontend
-FROM arm32v7/node:latest
+FROM arm32v7/node:16-alpine
 
 # Create app directory
 WORKDIR /usr/src/recipes_app/frontend
@@ -15,4 +15,4 @@ RUN yarn
 # Bundle app source
 COPY ./ ./
 
-RUN npm run build -openssl-legacy-provider
+RUN npm run build
