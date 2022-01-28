@@ -11,13 +11,13 @@ COPY ./package.json ./
 COPY ./yarn.lock ./ 
 COPY ./.env ./
 
-RUN yarn
+RUN yarn install --production
 
 # Bundle app source
 COPY ./ ./
 
 # Build the app
-RUN npm run build
+RUN yarn build
 
 # Bundle static assets with nginx
 FROM nginx:1.21.6-alpine as production
