@@ -19,8 +19,7 @@ CMD ["npm", "run", "start"]
 # Bundle static assets with nginx
 FROM nginx:1.21.6-alpine as production
 ENV NODE_ENV production
-# Copy built assets from builder
-COPY --from=builder /backend/build /usr/share/nginx/html
+
 # Add your nginx.conf
 COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
 # Expose port
