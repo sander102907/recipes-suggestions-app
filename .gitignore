@@ -158,3 +158,4 @@ docker-compose.yml
 setup.sql
 .env
 *.sh
+yarn.lock
