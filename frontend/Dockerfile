@@ -11,6 +11,7 @@ COPY ./package*.json ./
 COPY ./.env ./
 
 RUN npm ci
+RUN export NODE_OPTIONS=--openssl-legacy-provider
 
 # Bundle app source
 COPY ./ ./
