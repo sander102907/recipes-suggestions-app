@@ -5,9 +5,54 @@ const recipeService = require('./recipe.service')
 const groupService = require('../groups/group.service');
 const sanitizeHtml = require('sanitize-html');
 
+const __getRecipePrice = (id) => {
+    let bonus_price = 0;
+    let min_price = 0;
+    let max_price = 0;
+
+    return groupService.getGroupsOfRecipe(id)
+        .then(groups => {
+            const promises = [];
+            groups.forEach(group => {
+                promises.push(groupService.getIngredientsOfGroup(group.id));
+            });
+
+            return Promise.all(promises).then((groupIngredients) => {
+                    groupIngredients.forEach((ingredients) => {
+                        const group_min = Math.min.apply(null, ingredients.map(x => x.price));
+                        const group_bonus = Math.min.apply(null, ingredients.map(x => x.bonus_price));
+
+                        bonus_price += group_bonus > 0 ? group_bonus : group_min;
+                        min_price += group_min;
+                        max_price += Math.max.apply(null, ingredients.map(x => x.price));
+                    });
+
+                return {
+                    bonus_price: bonus_price.toFixed(2),
+                    min_price: min_price.toFixed(2),
+                    max_price: max_price.toFixed(2)  
+                };
+            });
+        })
+}
+
 const getAllRecipes = (req, res) => {
     recipeService.getAllRecipes()
-        .then(recipes => res.send(recipes))
+        .then(recipes => {
+            console.log(recipes);
+            let recipesResp = [];
+            let promises = [];
+            recipes.forEach(recipe => {
+                promises.push(__getRecipePrice(recipe.id));
+            });
+
+            Promise.all(promises).then((prices) => {
+                recipes.forEach((recipe, index) => {
+                    recipesResp.push({...recipe, ...prices[index]});
+                });
+                res.send(recipesResp);
+            });
+        })
         .catch(err => handleError(err, res));
 }
 
@@ -15,7 +60,12 @@ const getRecipe = (req, res) => {
     const id = req.params.id;
 
     recipeService.getRecipe(id)
-        .then(recipe => res.send(recipe))
+        .then(recipe => {
+            console.log(recipe)
+            __getRecipePrice(id)
+            .then(price => res.send({...recipe, ...price}))
+            .catch(err => handleError(err, res));
+        })
         .catch(err => handleError(err, res));
 }
 
@@ -58,68 +108,7 @@ const getIngredientsOfRecipe = (req, res) => {
 
 const getRecipePrice = (req, res) => {
     const id = req.params.id;
-    let bonus_price = 0;
-    let min_price = 0;
-    let max_price = 0;
-
-    groupService.getGroupsOfRecipe(id)
-        .then(groups => {
-            const promises = [];
-            groups.forEach(group => {
-                promises.push(groupService.getIngredientsOfGroup(group.id));
-            });
-
-            Promise.all(promises).then((groupIngredients) => {
-                    // Calculate bonus price
-                    groupIngredients.forEach((ingredients) => {
-                        if (ingredients.length > 0) {
-
-                            let min_p = 10e20;
-                            ingredients.forEach(ingredient => {
-                                if (ingredient.bonus_price != null && ingredient.bonus_price < min_p) {
-                                    min_p = ingredient.bonus_price;
-                                } else if (ingredient.price < min_p) {
-                                    min_p = ingredient.price;
-                                }
-                            });
-                            bonus_price += min_p;
-                        }
-                    });
-
-                    // Calculate min/max price
-                    groupIngredients.forEach((ingredients) => {
-                        if (ingredients.length > 0) {
-                            let min_p = 10e20;
-                            let max_p = 0;
-                            ingredients.forEach(ingredient => {
-                                if (ingredient.price != null) {
-                                    min_p = Math.min(min_p, ingredient.price);
-                                    max_p = Math.max(max_p, ingredient.price);
-                                } else if (ingredient.bonus_price != null) {
-                                    if (ingredient.bonus_mechanism.includes('KORTING')) {
-                                        let percentage = ingredient.bonus_mechanism.match(/\d+/)[0];
-                                        let price = ingredient.bonus_price / (1-(percentage/100));
-
-                                        min_p = Math.min(min_p, price);
-                                        max_p = Math.max(max_p, price);                                
-                                    } else {
-                                        min_p = Math.min(min_p, ingredient.bonus_price);
-                                        max_p = Math.max(max_p, ingredient.bonus_price); 
-                                    }
-                                }
-                            });
-                            min_price += min_p;
-                            max_price += max_p;
-                        }
-                    });
-
-                res.send({
-                    bonus_price: bonus_price.toFixed(2),
-                    min_price: min_price.toFixed(2),
-                    max_price: max_price.toFixed(2)
-                });      
-            });
-        })
+    __getRecipePrice(id).then(price => res.send(price))
         .catch(err => handleError(err, res));
 }
 
@@ -169,7 +158,18 @@ const suggestRecipes = (req, res) => {
 
                         shareText += '\n';
 
-                        res.send({recipes: suggestRecipes, shareText: shareText });
+                        let recipesResp = [];
+                        let promises2 = [];
+                        suggestRecipes.forEach(recipe => {
+                            promises2.push(__getRecipePrice(recipe.id));
+                        });
+            
+                        Promise.all(promises2).then((prices) => {
+                            suggestRecipes.forEach((recipe, index) => {
+                                recipesResp.push({...recipe, ...prices[index]});
+                            });
+                            res.send({ recipes: recipesResp, shareText: shareText });
+                        });
                     });
                     
                 });

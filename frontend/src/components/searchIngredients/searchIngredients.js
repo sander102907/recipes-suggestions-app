@@ -53,19 +53,19 @@ const IngredientsSearchBar = (props) => {
                 key={index}
               >
                 <div>
-                  {suggestion.images.length > 1 ? <img src={suggestion.images[1].url} alt="" /> : null}
+                  {suggestion.images.length > 1 ? <img src={suggestion.images[0].url.replace("200x200", "80x80")} alt="" /> : null}
                 </div>
                 <div className="dropdownItemInfo">
                   <div className="dropdownItemText">
                     {suggestion.title} 
-                    {suggestion.isBonus ? <Badge className="dropdownItemBonusBadge" bg="info">{suggestion.bonusMechanism}</Badge> : null}
+                    {suggestion.discount != null ? <Badge className="dropdownItemBonusBadge" bg="info">{suggestion.shield.text}</Badge> : null}
                   </div>
                   <div className="dropdownItemDetails">
                     <div className="dropdownItemUnitSize">
-                      {suggestion.salesUnitSize}
+                      {suggestion.price.unitSize}
                     </div>
                     <div className="dropdownItemPrice">
-                      €{suggestion.priceBeforeBonus != null ? suggestion.priceBeforeBonus : suggestion.currentPrice}
+                      €{suggestion.price.now}
                     </div>
                   </div>
                 </div>

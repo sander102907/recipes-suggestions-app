@@ -47,17 +47,17 @@ const RecipeModal = (props) => {
   const addIngredient = (suggestion) => {
     const ingredient = {
       name: suggestion.title,
-      price: suggestion.priceBeforeBonus,
-      bonus_price: suggestion.currentPrice, 
-      is_bonus: suggestion.isBonus,
-      bonus_mechanism: suggestion.bonusMechanism,
-      unit_size: suggestion.salesUnitSize,
-      category: suggestion.mainCategory,
-      image_tiny: suggestion.images[0].url,
-      image_small: suggestion.images[1].url,
-      image_medium: suggestion.images[2].url,
-      image_large: suggestion.images[3].url,
-      ah_id: suggestion.webshopId
+      price: suggestion.price.was,
+      bonus_price: suggestion.price.now, 
+      is_bonus: suggestion.discount != null,
+      bonus_mechanism: suggestion.shield != null ? suggestion.shield.text: null,
+      unit_size: suggestion.price.unitSize,
+      category: suggestion.taxonomies[0].name,
+      image_tiny: suggestion.images[0].url.replace('200x200_JPG.JPG', '48x48_GIF.GIF'),
+      image_small: suggestion.images[0].url.replace('200x200', '80x80'),
+      image_medium: suggestion.images[0].url,
+      image_large: suggestion.images[1].url,
+      ah_id: suggestion.id
     };
     
     if (coupleMode) {

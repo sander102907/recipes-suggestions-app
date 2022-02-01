@@ -17,7 +17,7 @@ const getRecipe = async (id) => {
                     WHERE id = ?`;
 
     const [rows] = await db.query(query, id);
-    return rows
+    return rows[0];
 };
 
 // add a recipe

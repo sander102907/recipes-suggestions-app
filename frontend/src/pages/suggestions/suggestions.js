@@ -8,38 +8,19 @@ import { WhatsappShareButton, WhatsappIcon } from "react-share";
 
 const Suggestions = () => {
   const [suggestedRecipes, setsuggestedRecipes] = useState([]);
-  const [totalPrice, setTotalPrice] = useState(0);
-  const [bonus, setBonus] = useState(0);
   const [shareText, setShareText] = useState('');
 
-  const getPriceInfo = () => {
-    let totPrice = 0;
-    let bonusPrice = 0;
+  const getTotalCost = () => {
+    return (suggestedRecipes.map(recipe => Number(recipe.bonus_price)).reduce((a,b) => a + b, 0) / suggestedRecipes.length).toFixed(2);
+  }
 
-    let promises = [];
-
-    suggestedRecipes.forEach(recipe => {
-      promises.push(axios.get(`/api/recipes/${recipe.id}/price`));
-    });
-
-    Promise.all(promises).then(responses => {
-      responses.forEach(response => {
-        totPrice += parseFloat(response.data.bonus_price);
-        bonusPrice += parseFloat(response.data.min_price) - parseFloat(response.data.bonus_price);
-      });
-
-      setTotalPrice(totPrice.toFixed(2));
-      setBonus(bonusPrice.toFixed(2));
-    });
+  const getTotalBonus = () => {
+    return suggestedRecipes.map(recipe => Number(recipe.bonus_price)).reduce((a,b) => a + b, 0).toFixed(2);
   }
 
   useEffect(() => {
     getSuggestions();
   }, []);
-
-  useEffect(() => {
-    getPriceInfo();
-  }, [suggestedRecipes]);
 
   const getSuggestions = () => {
     axios.get("/api/recipes/suggest")
@@ -48,7 +29,6 @@ const Suggestions = () => {
         setShareText(response.data.shareText);
       });
   }
-
 
   const suggestedRecipeCards = suggestedRecipes.map((val, key) => {
     return (
@@ -63,14 +43,14 @@ const Suggestions = () => {
               <Card className='info-item'>
                 <div className='card-body info-body'>
                   <span className='info-card-text'>Total cost:</span>
-                  <span className='info-card-amount'>€{totalPrice}</span> 
+                  <span className='info-card-amount'>€{getTotalCost()}</span> 
                 </div>
               </Card>
 
               <Card className='info-item'>
                 <div className='card-body info-body'>
                   <span className='info-card-text'>Bonus:</span>
-                  <span className='info-card-amount'>€{bonus}</span> 
+                  <span className='info-card-amount'>€{getTotalBonus()}</span> 
                 </div>
               </Card>
               <WhatsappShareButton

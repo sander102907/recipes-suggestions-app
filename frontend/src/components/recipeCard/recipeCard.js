@@ -8,11 +8,11 @@ import ReactStars from "react-rating-stars-component";
 
 const RecipeCard = (props) => {
     const [groups, setGroups] = useState([]);
-    const [bonusPrice, setBonusPrice] = useState(0);
-    const [minPrice, setMinPrice] = useState(0);
-    const [maxPrice, setMaxPrice] = useState(0);
 
     const recipeId = props.recipe.id;
+    const minPrice = props.recipe.min_price;
+    const maxPrice = props.recipe.max_price;
+    const bonusPrice = props.recipe.bonus_price;
 
     const getGroups = useCallback(() => {
         axios.get(`/api/groups/recipe/${recipeId}`)
@@ -21,24 +21,10 @@ const RecipeCard = (props) => {
         });
     }, [recipeId]);
 
-    const getRecipePrice = useCallback(() => {
-        axios.get(`/api/recipes/${recipeId}/price`)
-            .then((response) => {
-                if (props.addPrice != null && props.addBonus != null) {
-                    props.addPrice(response.data.bonus_price, props.index);
-                    props.addBonus(Number(response.data.min_price)-Number(response.data.bonus_price), props.index);
-                }
-
-                setBonusPrice(response.data.bonus_price);
-                setMinPrice(response.data.min_price);
-                setMaxPrice(response.data.max_price);
-        });
-    }, [recipeId]);
 
     useEffect(() => {
         getGroups();
-        getRecipePrice();
-    }, [getGroups, getRecipePrice]);        
+    }, [getGroups]);        
 
   return (
     <React.Fragment>

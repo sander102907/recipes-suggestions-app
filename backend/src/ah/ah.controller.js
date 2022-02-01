@@ -7,19 +7,19 @@ var cron = require('node-cron');
 const searchProducts = (req, res) => {
     const query = req.query.query;
     ahService.searchProducts(query)
-        .then(products => res.send(products))
+        .then(response => res.send(response.cards.map(x => x.products[0])))
         .catch(err => handleError(err, res));
 }
 
 const getAllBonusProducts = (page=0, size=1000, allProducts=[]) => {
     return ahService.getBonusProducts(page).then((response) => {
-        allProducts.push(...response.products);
+        allProducts.push(...response.cards.map(x => x.products[0]));
             if (page == response.page.totalPages - 1 || page == 2) {
                 return allProducts;
             } else {
                 return getAllBonusProducts(page + 1, size, allProducts);
             }
-    });s
+    });
 }
 
 const getBonusProducts = (req, res) => {
@@ -30,8 +30,8 @@ const getBonusProducts = (req, res) => {
 
 const filterBonusProductsOnCurrentWeek = (prod) => {
     // get end date and correct it by adding 24 hours (e.g. end date is 12-12-2021 at 00:00, set it to 13-12-2021 at 00:00)
-    const endDate = new Date(prod.bonusEndDate).setHours(new Date(prod.bonusEndDate).getHours() + 24);
-    const startDate = new Date(prod.bonusStartDate);
+    const endDate = new Date(prod.discount.endDate).setHours(new Date(prod.discount.endDate).getHours() + 24);
+    const startDate = new Date(prod.discount.startDate);
 
     return endDate >= Date.now() && startDate <= Date.now();
 }
@@ -39,7 +39,7 @@ const filterBonusProductsOnCurrentWeek = (prod) => {
 const syncBonus = () => {
     return getAllBonusProducts().then((products) => {
         const bonus_products = products.filter(filterBonusProductsOnCurrentWeek);
-        const product_ids = bonus_products.map((i) => i.webshopId);
+        const product_ids = bonus_products.map((i) => i.id);
         return ahService.getProductsWithAhIds(product_ids)
             .then(products => {
                 return ahService.removeBonusProperties()
@@ -47,8 +47,8 @@ const syncBonus = () => {
                         let promises = [];
                         // Set bonus properties for ingredients
                         products.forEach((ingredient) => {
-                            const product = bonus_products.filter(p => p.webshopId == ingredient.ah_id)[0];
-                            promises.push(ahService.setBonusProperties(product.webshopId, product.isBonus, product.bonusMechanism, product.currentPrice));
+                            const product = bonus_products.filter(p => p.id == ingredient.ah_id)[0];
+                            promises.push(ahService.setBonusProperties(product.id, true, product.shield.text, product.price.now));
                         });
 
                         Promise.all(promises).then(() => {

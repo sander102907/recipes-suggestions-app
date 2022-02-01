@@ -8,8 +8,6 @@ import RecipeModal from '../../components/recipeModal/recipeModal';
 
 const Recipes = () => {
   const [recipes, setRecipes] = useState([]);
-  const [prices, setPrices] = useState([]);
-  const [bonuses, setBonuses] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [removePopup, setRemovePopup] = useState({
     show: false,
@@ -23,31 +21,12 @@ const Recipes = () => {
     groups: []
   });
   const [edit, setEdit] = useState(false);
-  
-  const addPrice = (price, index) => {
-    setPrices(oldPrices => {
-      const newPrices = [...oldPrices];
-      newPrices[index] = Number(price);
-      return newPrices;
-    });
-  }
-
-  const addBonus = (bonus, index) => {
-    setBonuses(oldBonuses => {
-      const newBonuses = [...oldBonuses];
-      newBonuses[index] = Number(bonus);
-      return newBonuses;
-    });
-  }
 
   useEffect(() => {getRecipes()}, []);
   
   const getRecipes = () => {
     axios.get("/api/recipes")
       .then((response) => {
-        setPrices(new Array(response.data.length).fill(0));
-        setBonuses(new Array(response.data.length).fill(0));
-        setRecipes([])
         setRecipes(response.data);
       });
   };
@@ -91,15 +70,15 @@ const Recipes = () => {
   }
 
   const getAveragePrice = () => {
-    return (prices.reduce((a,b) => a + b, 0) / prices.length).toFixed(2);
+    return (recipes.map(recipe => Number(recipe.bonus_price)).reduce((a,b) => a + b, 0) / recipes.length).toFixed(2);
   }
 
   const getAverageBonus = () => {
-    return (bonuses.reduce((a,b) => a + b, 0) / bonuses.length).toFixed(2);
+    return (recipes.map(recipe => Number(recipe.min_price)-Number(recipe.bonus_price)).reduce((a,b) => a + b, 0) / recipes.length).toFixed(2);
   }
 
   const getTotalBonus = () => {
-    return bonuses.reduce((a,b) => a + b, 0).toFixed(2);
+    return recipes.map(recipe => Number(recipe.bonus_price)).reduce((a,b) => a + b, 0).toFixed(2);
   }
 
   const recipeCards = recipes.map((val, index) => {
@@ -112,8 +91,6 @@ const Recipes = () => {
           secondButtonIcon={Pencil} 
           onRemove={handleRemove} 
           onSecondButtonClick={openEditRecipeModal} 
-          addPrice={addPrice}
-          addBonus={addBonus}
         />
     )
   });

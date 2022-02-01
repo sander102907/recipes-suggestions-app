@@ -3,55 +3,39 @@ let db = require('../database');
 
 db = db.promise();
 
-// get anonymous access token
-const getAccessToken = () => {
-    return axios.post('https://ms.ah.nl/create-anonymous-member-token')
-        .then(res => res.data.access_token);
-};
-
 // search products
-const searchProducts = (query) => {
-    return getAccessToken().then((access_token) => {
-        return axios.get(
-            'https://ms.ah.nl/mobile-services/product/search/v2?sortOn=RELEVANCE', { 
-                params: {
-                    "query": query, 
-                    "size": 8
-                },
-                headers: { Authorization: `Bearer ${access_token}` }
-        }).then(res => res.data.products)
-        .catch(err => err);
-    });
+const searchProducts = (query, size=8) => {
+    return axios.get(
+        'https://www.ah.nl/zoeken/api/products/search', { 
+            params: {
+                "query": query, 
+                "size": size
+            },
+    }).then(res => res.data)
+    .catch(err => err);
 }
 
 // get a page of bonus products
 const getBonusProducts = (page=0, size=1000) => {
-    return getAccessToken().then((access_token) => {
-        return axios.get('https://ms.ah.nl/mobile-services/product/search/v2', {
-            params: {
-                query: "", 
-                filters: "bonus=true", 
-                size: size, 
-                page: page, 
-                sortOn: "PRICELOWHIGH"
-            },
-            headers: { Authorization: `Bearer ${access_token}` }
-        }).then(res => res.data)
-        .catch(err => err);
-    });
+    return axios.get('https://www.ah.nl/zoeken/api/products/search', {
+        params: {
+            properties: "bonus", 
+            size: size, 
+            page: page, 
+            sortBy: "price"
+        },
+    }).then(res => res.data)
+    .catch(err => err);
 }
 
 // get a product by web shop ID
 const getProduct = (webshopId) => {
-    return getAccessToken().then((access_token) => {
-        return axios.get("https://www.ah.nl/zoeken/api/products/product", {
-            params: {
-                "webshopId": webshopId
-            },
-            headers: { Authorization: `Bearer ${access_token}` }
-        }).then(res => res.data)
-        .catch(err => err);
-    });
+    return axios.get("https://www.ah.nl/zoeken/api/products/product", {
+        params: {
+            "webshopId": webshopId
+        },
+    }).then(res => res.data)
+    .catch(err => err);
 }
 
 const getProductsWithAhIds = async (ah_ids) => {
