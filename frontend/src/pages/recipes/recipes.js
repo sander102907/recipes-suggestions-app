@@ -69,16 +69,20 @@ const Recipes = () => {
     setShowModal(true);
   }
 
-  const getAveragePrice = () => {
-    return (recipes.map(recipe => Number(recipe.bonus_price)).reduce((a,b) => a + b, 0) / recipes.length).toFixed(2);
+  const getTotalPrice = () => {
+    return recipes.map(recipe => Number(recipe.min_price)).reduce((a,b) => a + b, 0).toFixed(2);
   }
 
-  const getAverageBonus = () => {
-    return (recipes.map(recipe => Number(recipe.min_price)-Number(recipe.bonus_price)).reduce((a,b) => a + b, 0) / recipes.length).toFixed(2);
+  const getAveragePrice = () => {
+    return (getTotalPrice() / recipes.length).toFixed(2);
   }
 
   const getTotalBonus = () => {
-    return recipes.map(recipe => Number(recipe.bonus_price)).reduce((a,b) => a + b, 0).toFixed(2);
+    return (recipes.map(recipe => Number(recipe.bonus_price) - Number(recipe.min_price)).reduce((a,b) => a + b, 0)).toFixed(2);
+  }
+
+  const getAverageBonus = () => {
+    return (getTotalBonus() / recipes.length).toFixed(2);
   }
 
   const recipeCards = recipes.map((val, index) => {
