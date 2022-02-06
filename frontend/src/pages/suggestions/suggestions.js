@@ -15,7 +15,7 @@ const Suggestions = () => {
   }
 
   const getTotalBonus = () => {
-    return suggestedRecipes.map(recipe => Number(recipe.bonus_price) - Number(recipe.min_price)).reduce((a,b) => a + b, 0).toFixed(2);
+    return suggestedRecipes.map(recipe => Number(recipe.min_price) - Number(recipe.bonus_price)).reduce((a,b) => a + b, 0).toFixed(2);
   }
 
   useEffect(() => {

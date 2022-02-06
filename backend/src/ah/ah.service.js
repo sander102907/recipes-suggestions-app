@@ -66,11 +66,23 @@ const setBonusProperties = async (ah_id, is_bonus, bonus_mechanism, bonus_price)
     return rows
 }
 
+const updateProduct = async (ah_id, price, is_bonus, bonus_mechanism, bonus_price) => {
+    const query = `UPDATE ingredient
+                   SET price = ?,
+                   is_bonus = ?, 
+                   bonus_mechanism = ?, 
+                   bonus_price = ? 
+                   WHERE ah_id = ?;`
+    const [rows] = await db.query(query, [price, is_bonus, bonus_mechanism, bonus_price, ah_id]);
+    return rows
+}
+
 module.exports = {
     searchProducts,
     getBonusProducts,
     getProduct,
     getProductsWithAhIds,
     removeBonusProperties,
-    setBonusProperties
+    setBonusProperties,
+    updateProduct
 }

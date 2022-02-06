@@ -78,7 +78,7 @@ const Recipes = () => {
   }
 
   const getTotalBonus = () => {
-    return (recipes.map(recipe => Number(recipe.bonus_price) - Number(recipe.min_price)).reduce((a,b) => a + b, 0)).toFixed(2);
+    return (recipes.map(recipe => Number(recipe.min_price) - Number(recipe.bonus_price)).reduce((a,b) => a + b, 0)).toFixed(2);
   }
 
   const getAverageBonus = () => {
