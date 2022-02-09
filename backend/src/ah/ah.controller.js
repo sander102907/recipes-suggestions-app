@@ -6,6 +6,7 @@ const ahService = require('./ah.service')
 var cron = require('node-cron');
 
 const ah = new AH();
+let syncLoading = false;
 
 const searchProducts = (req, res) => {
     const query = req.query.query;
@@ -16,7 +17,6 @@ const searchProducts = (req, res) => {
 }
 
 const getAllProductsOfCategory = (categoryId, page=0, allProducts=[]) => {
-    console.log(categoryId);
     return ah.getProductsByName(query=null, categoryId=categoryId, size=1000, page=page)
         .then((response) => {
             allProducts.push(...response.cards.map(x => x.products[0]));
@@ -43,22 +43,22 @@ const isCurrentlyInBonus = (prod) => {
 }
 
 const syncAllProducts = async () => {
+    syncLoading = true;
     return ah.getCategories()
         .then(resp => {
-            let promises = [];
-            resp.reduce(function(promise, cat) {
+            return resp.reduce(function(promise, cat) {
                 return promise.then(function(result) {
                   return Promise.all([delay(10000), getAllProductsOfCategory(cat.id)
                     .then(products => {
                       products.forEach(product => {
-                        promises.push(ahService.updateProduct(
+                        ahService.updateProduct(
                             product.id, 
                             product.price.was != null ? product.price.was : product.price.now, 
                             isCurrentlyInBonus(product), 
                             isCurrentlyInBonus(product) ? product.shield.text: null, 
                             isCurrentlyInBonus(product) ? product.price.now: null
-                            ));
-                        });
+                        );
+                       });
                     })]);
                 });
             }, Promise.resolve());

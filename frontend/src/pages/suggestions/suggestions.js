@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './suggestions.css';
 import axios from 'axios';
 import { Container, Row, Card, Button } from 'react-bootstrap'
-import { Shuffle, Share } from 'react-bootstrap-icons';
+import { Shuffle } from 'react-bootstrap-icons';
 import RecipeCard from '../../components/recipeCard/recipeCard';
 import { WhatsappShareButton, WhatsappIcon } from "react-share";
 
@@ -32,7 +32,11 @@ const Suggestions = () => {
 
   const suggestedRecipeCards = suggestedRecipes.map((val, key) => {
     return (
-        <RecipeCard recipe={val} key={key} secondButtonIcon={Shuffle} />
+        <RecipeCard 
+          recipe={val} 
+          key={key} 
+          secondButtonIcon={Shuffle} 
+        />
     )
   });
   
@@ -61,7 +65,10 @@ const Suggestions = () => {
                 <WhatsappIcon size={32} round />
               </WhatsappShareButton>
               {/* <Button className='info-item'><Share size={24} /> Ingredients</Button> */}
-              <Button className='info-item'><Shuffle size={24} /> Re-suggest</Button>
+              <Button className='info-item'>
+                {/* <Shuffle size={24} />  */}
+                 Re-suggest
+              </Button>
           </Row> 
         </Container>
         <Container className='suggestion-cards' fluid>

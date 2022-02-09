@@ -69,7 +69,9 @@ const IngredientsSearchBar = (props) => {
                     </div>
                   </div>
                 </div>
-                <Button className="dropdownItemButton" variant="success" onClick={() => handleClick(suggestion)}><Plus size={24} /></Button>
+                <Button className="dropdownItemButton" variant="success" onClick={() => handleClick(suggestion)}>
+                  <Plus size={24} />
+                </Button>
               </div>
             );
           })}
@@ -79,7 +81,7 @@ const IngredientsSearchBar = (props) => {
 
   return (
     <div className="autocomplete" tabIndex="0" onFocus={expand} onBlur={close}>
-      <Search size={16} color="darkgrey" class="searchIcon" />
+      <Search size={16} color="darkgrey" className="searchIcon" />
       <input
         className="searchBar"
         type="text"

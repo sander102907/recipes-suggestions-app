@@ -123,7 +123,10 @@ const Recipes = () => {
                   <span className='info-card-amount'>€{getTotalBonus()}</span> 
                 </div>
               </Card>
-              <Button className='info-item' onClick={() => setShowModal(true)}><Plus size={24} /> Add</Button>
+              <Button className='info-item' onClick={() => setShowModal(true)}>
+                <Plus size={24} /> 
+                 Add
+                </Button>
           </Row> 
         </Container>
         <Container>

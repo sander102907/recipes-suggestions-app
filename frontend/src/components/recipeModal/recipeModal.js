@@ -116,7 +116,7 @@ const RecipeModal = (props) => {
             });
 
             Promise.all(promises).then(() => {
-              props.getRecipes(props.id);
+              props.getRecipes();
               props.onHide();
             });
           });

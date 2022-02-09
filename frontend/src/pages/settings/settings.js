@@ -4,12 +4,12 @@ import axios from 'axios';
 import LoadButton from "../../components/loadButton/loadButton";
 
 const Settings = () => {
-  const [syncBonusLoading, setSyncBonusLoading] = useState(false);
+  const [syncLoading, setSyncLoading] = useState(false);
   
   const syncBonus = () => {
-    setSyncBonusLoading(true);
-    axios.get("/api/ah/syncbonus")
-      .then((response) => setSyncBonusLoading(false));
+    setSyncLoading(true);
+    axios.get("/api/ah/syncproducts")
+      .then((response) => setSyncLoading(false));
   };
   
   return (
@@ -18,9 +18,9 @@ const Settings = () => {
       <LoadButton 
         variant="primary" 
         onClick={syncBonus} 
-        text="Sync bonus deals" 
-        loading={syncBonusLoading} 
-        loadText="Getting the best deals for you.." 
+        text="Synchronize products" 
+        loading={syncLoading} 
+        loadText="Updating the database.." 
       />
     </div>
   );

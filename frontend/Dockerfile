@@ -5,6 +5,7 @@ WORKDIR /frontend
 
 # Install app dependencies
 COPY ./package.json ./
+COPY ./yarn.lock ./
 COPY ./.env ./
 
 RUN yarn install --production --network-timeout=1000000

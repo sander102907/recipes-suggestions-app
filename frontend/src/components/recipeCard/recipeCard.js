@@ -42,7 +42,9 @@ const RecipeCard = (props) => {
                     <IngredientsList groups={groups}/>
                     <div className='card-bottom'>
                         <div className='card-buttons'>
-                            <Button className='card-button-delete' onClick={() => props.onRemove(props.recipe.id)}><XLg size={20} /></Button>
+                            <Button className='card-button-delete' onClick={() => props.onRemove(props.recipe.id)}>
+                                <XLg size={20} />
+                            </Button>
                             <Button className='card-button-second' onClick={() => props.onSecondButtonClick(props.recipe, groups)}><props.secondButtonIcon size={20} /></Button>
                         </div>
                         <div className='card-price'>

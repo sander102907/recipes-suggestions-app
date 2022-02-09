@@ -14,8 +14,8 @@ const IngredientsList = (props) => {
                     return (group.ingredients.length > 0 && <div className="ingredient-group" key={group_index}>
                         {group.ingredients.map((ingredient, ingredient_index) => {
                         return (
-                            <div className='ingredient-item-container'>
-                                <div className="ingredient-item" key={ingredient_index}>
+                            <div className='ingredient-item-container' key={ingredient_index}>
+                                <div className="ingredient-item">
                                     <div className="ingredient-item-image">
                                         <img src={ingredient.image_small} alt="" />
                                     </div>
@@ -45,7 +45,10 @@ const IngredientsList = (props) => {
                                         </div>
                                     </div>
                                 </div>         
-                                {ingredient_index < group.ingredients.length - 1 && <div className='ingredient-or-divider'><ArrowDownUp size={18}/> OR</div>} 
+                                {ingredient_index < group.ingredients.length - 1 && <div className='ingredient-or-divider'>
+                                    <ArrowDownUp size={18}/>
+                                     OR
+                                </div>} 
                             </div>                  
                         );
                     })}
