@@ -3,5 +3,5 @@ import App from "./App";
 
 test("renders recipes text", () => {
   render(<App />);
-  expect(screen.getAllByText('Recipesxxxx')[0]).toBeInTheDocument();
+  expect(screen.getAllByText('Recipes')[0]).toBeInTheDocument();
 });

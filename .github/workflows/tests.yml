@@ -1,4 +1,4 @@
-name: Pull request - Test application
+name: Run Tests
 
 on:
   pull_request:
@@ -10,21 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-#     - uses: actions/setup-node@v1
-#       with:
-#         node-version: "17.x"
-#     - name: Frontend - Install dependencies
-#       working-directory: ./frontend
-#       run: yarn install
-#     - name: Frontend - Run tests
-#       working-directory: ./frontend
-#       run: yarn test
     - name: Frontend - Run tests & generate coverage report
       uses: artiomtr/jest-coverage-report-action@v2.0.3
       with:
         working-directory: ./frontend
         package-manager: yarn
         test-script: yarn test --silent --coverage --coverageReporters="text" --coverageReporters="text-summary"
-        #github-token: ${{ secrets.PACKAGES_ACCESS_TOKEN }}
         #threshold: 80
         
