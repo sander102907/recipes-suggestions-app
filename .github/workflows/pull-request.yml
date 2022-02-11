@@ -24,7 +24,7 @@ jobs:
       with:
         working-directory: ./frontend
         package-manager: yarn
-#         test-script: yarn test --silent --coverage --testLocationInResults --json --outputFile="report.json"
+        test-script: yarn test --silent --coverage --coverageReporters="text" --coverageReporters="text-summary"
         #github-token: ${{ secrets.PACKAGES_ACCESS_TOKEN }}
         #threshold: 80
         
