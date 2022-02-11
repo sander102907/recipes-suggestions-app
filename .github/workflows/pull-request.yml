@@ -1,0 +1,18 @@
+name: Pull request - Test application
+
+on:
+  pull_request:
+    branches: master
+    types: [opened, reopened, synchronize]
+
+jobs:
+  pull-request:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+    - run: yarn ci
+    - run: yarn test
+    - uses: artiomtr/jest-coverage-report-action@v2.0-rc.5
+        with:
+          github-token: ${{ secrets.PACKAGES_ACCESS_TOKEN }}
