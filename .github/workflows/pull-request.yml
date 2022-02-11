@@ -2,7 +2,7 @@ name: Pull request - Test application
 
 on:
   pull_request:
-    branches: master
+    branches: main
     types: [opened, reopened, synchronize]
 
 jobs:
