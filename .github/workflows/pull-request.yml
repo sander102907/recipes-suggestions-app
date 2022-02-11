@@ -19,6 +19,9 @@ jobs:
     - name: Frontend - Run tests
       working-directory: ./frontend
       run: yarn test
-    - uses: artiomtr/jest-coverage-report-action@v2.0-rc.5
+    - name: Frontend - Coverage report
+      uses: artiomtr/jest-coverage-report-action@v2.0-rc.5
       with:
+        working-directory: ./frontend
+        test-script: yarn jest --silent --coverage --testLocationInResults --json --outputFile="report.json"
         github-token: ${{ secrets.PACKAGES_ACCESS_TOKEN }}
