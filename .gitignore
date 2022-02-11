@@ -84,6 +84,9 @@ typings/
 # Optional npm cache directory
 .npm
 
+# config files
+.config
+
 # Optional eslint cache
 .eslintcache
 
@@ -110,6 +113,8 @@ typings/
 
 # Next.js build output
 .next
+
+
 
 # Nuxt.js build / generate output
 .nuxt
@@ -159,3 +164,4 @@ setup.sql
 .env
 *.sh
 ssl/
+build

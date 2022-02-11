@@ -1,29 +1,28 @@
-import React, { useState } from 'react';
-import './settings.css';
-import axios from 'axios';
+import React, { useState } from "react";
+import "./settings.css";
+import axios from "axios";
 import LoadButton from "../../components/loadButton/loadButton";
 
 const Settings = () => {
   const [syncLoading, setSyncLoading] = useState(false);
-  
+
   const syncBonus = () => {
     setSyncLoading(true);
-    axios.get("/api/ah/syncproducts")
-      .then((response) => setSyncLoading(false));
+    axios.get("/api/ah/syncproducts").then((response) => setSyncLoading(false));
   };
-  
+
   return (
-    <div className='Settings'>
+    <div className="Settings">
       <h1>Settings</h1>
-      <LoadButton 
-        variant="primary" 
-        onClick={syncBonus} 
-        text="Synchronize products" 
-        loading={syncLoading} 
-        loadText="Updating the database.." 
+      <LoadButton
+        variant="primary"
+        onClick={syncBonus}
+        text="Synchronize products"
+        loading={syncLoading}
+        loadText="Updating the database.."
       />
     </div>
   );
-}
+};
 
 export default Settings;

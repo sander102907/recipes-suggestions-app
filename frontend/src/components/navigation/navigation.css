@@ -1,8 +1,8 @@
 .navbar {
-  border-bottom: solid 2px #EBEBEB;
+  border-bottom: solid 2px #ebebeb;
 }
 .bottom-tab-nav {
-  border-top: solid 1px #EBEBEB;
+  border-top: solid 1px #ebebeb;
   background: white;
 }
 .nav-link,
@@ -36,7 +36,6 @@ nav.fixed-bottom {
   text-align: right;
   display: inline-block;
   margin-right: 5px;
-
 }
 
 .nav-item-top {
@@ -51,7 +50,6 @@ nav.fixed-bottom {
 .nav-item .top {
   margin-right: 50px;
   color: black;
-
 }
 
 .nav-item .last {

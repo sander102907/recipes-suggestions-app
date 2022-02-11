@@ -1,16 +1,16 @@
 @media only screen and (min-width: 992px) {
-    .App {
-        width: 70%;
-        margin: auto;
-    }
+  .App {
+    width: 70%;
+    margin: auto;
+  }
 }
 
 @media only screen and (max-width: 992px) {
-    .App {
-        padding-bottom: 60px;
-    }
+  .App {
+    padding-bottom: 60px;
+  }
 }
 
 #root {
-    background-color: rgb(251, 251, 251);
+  background-color: rgb(251, 251, 251);
 }
