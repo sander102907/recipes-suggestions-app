@@ -45,12 +45,13 @@ const RecipeModal = (props) => {
   }
 
   const addIngredient = (suggestion) => {
+    const isBonus = suggestion.discount != null;
     const ingredient = {
       name: suggestion.title,
-      price: suggestion.price.was,
-      bonus_price: suggestion.price.now, 
-      is_bonus: suggestion.discount != null,
-      bonus_mechanism: suggestion.shield != null ? suggestion.shield.text: null,
+      price: isBonus ? suggestion.price.was : suggestion.price.now,
+      bonus_price: isBonus ? suggestion.price.now : null, 
+      is_bonus: isBonus,
+      bonus_mechanism: isBonus ? suggestion.shield.text: null,
       unit_size: suggestion.price.unitSize,
       category: suggestion.taxonomies[0].name,
       image_tiny: suggestion.images[0].url.replace('200x200_JPG.JPG', '48x48_GIF.GIF'),
