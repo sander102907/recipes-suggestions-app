@@ -110,6 +110,21 @@ const getRandomNonBonusRecipes = async (amount) => {
     return rows;
 }
 
+const searchRecipes = async (searchQuery) => {
+    // const query = `SELECT name, MATCH (name) AGAINST ('bio*' IN BOOLEAN MODE) AS score
+    //                FROM recipe
+    //                HAVING score > 0
+    //                ORDER BY score DESC 
+    //                LIMIT 10;`
+
+    const query = `SELECT *
+                   FROM recipe
+                   WHERE name LIKE CONCAT('%', ?,  '%') OR description LIKE CONCAT('%', ?,  '%');`
+
+    const [rows] = await db.query(query, [searchQuery, searchQuery]);
+    return rows;
+}
+
 module.exports = {
     getAllRecipes,
     getRecipe,
@@ -118,5 +133,6 @@ module.exports = {
     updateRecipe,
     getIngredientsOfRecipe,
     getBonusRecipes,
-    getRandomNonBonusRecipes
+    getRandomNonBonusRecipes,
+    searchRecipes
 }
