@@ -23,5 +23,6 @@ jobs:
       uses: artiomtr/jest-coverage-report-action@v2.0-rc.5
       with:
         working-directory: ./frontend
+        package-manager: yarn
         test-script: yarn test --silent --coverage --testLocationInResults --json --outputFile="report.json"
         github-token: ${{ secrets.PACKAGES_ACCESS_TOKEN }}
