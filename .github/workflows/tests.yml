@@ -1,0 +1,20 @@
+name: Run Tests
+
+on:
+  pull_request:
+    branches: main
+    types: [opened, reopened, synchronize]
+
+jobs:
+  pull-request:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Frontend - Run tests & generate coverage report
+      uses: artiomtr/jest-coverage-report-action@v2.0.3
+      with:
+        working-directory: ./frontend
+        package-manager: yarn
+        test-script: yarn test --silent --coverage --coverageReporters="text" --coverageReporters="text-summary"
+        #threshold: 80
+        
