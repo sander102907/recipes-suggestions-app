@@ -115,7 +115,7 @@ describe("SearchBar", () => {
         // Get the search bar and the button
         const searchBar = screen.getByPlaceholderText(placeholderText);
 
-        // Press the button and verify that the onSearch function has been called with the value
+        // Press the button and verify that the onSearch function has not been called
         fireEvent.keyDown(searchBar, { key: key });
         expect(mockedOnSearch).not.toBeCalled();
     })
