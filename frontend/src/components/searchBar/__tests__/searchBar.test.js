@@ -5,26 +5,22 @@ const mockedOnSearch = jest.fn();
 const placeholderText = "placeholder text";
 
 describe("SearchBar", () => {
-    it("should render search bar with the correct placeholder text", () => {
+    beforeEach(() => {
         render(
             <SearchBar
                 placeholderText={placeholderText}
                 onSearch={mockedOnSearch}
             />
         );
+    });
+
+    it("should render search bar with the correct placeholder text", () => {
         const searchBar = screen.getByPlaceholderText(placeholderText);
         expect(searchBar).toBeInTheDocument();
     });
 
     it("should be able to type into the search bar and call the onSearch function when pressing the button", () => {
         const searchString = "test value";
-
-        render(
-            <SearchBar
-                placeholderText={placeholderText}
-                onSearch={mockedOnSearch}
-            />
-        );
 
         // Get the search bar and the button
         const searchBar = screen.getByPlaceholderText(placeholderText);
@@ -48,13 +44,6 @@ describe("SearchBar", () => {
     it("should be able to type into the search bar and call the onSearch function when pressing the enter key on the keyboard", () => {
         const searchString = "test value";
 
-        render(
-            <SearchBar
-                placeholderText={placeholderText}
-                onSearch={mockedOnSearch}
-            />
-        );
-
         // Get the search bar and the button
         const searchBar = screen.getByPlaceholderText(placeholderText);
 
@@ -75,13 +64,6 @@ describe("SearchBar", () => {
 
     it("should only show the reset input button when there is any input", () => {
         const searchString = "test value";
-
-        render(
-            <SearchBar
-                placeholderText={placeholderText}
-                onSearch={mockedOnSearch}
-            />
-        );
 
         // Get the search bar and the button
         const searchBar = screen.getByPlaceholderText(placeholderText);
@@ -104,13 +86,6 @@ describe("SearchBar", () => {
     it("should clear the input and call onsearch with empty string when pressing reset input button", () => {
         const searchString = "test value";
 
-        render(
-            <SearchBar
-                placeholderText={placeholderText}
-                onSearch={mockedOnSearch}
-            />
-        );
-
         // Get the search bar and the button
         const searchBar = screen.getByPlaceholderText(placeholderText);
 
@@ -128,4 +103,20 @@ describe("SearchBar", () => {
         // Expect the search string to be cleared
         expect(searchBar.value).toBe("");
     });
+
+    it.each([
+        ["a"],
+        ["Escape"],
+        ["8"],
+        ["("],
+        ["Return"],
+        ["Delete"]
+    ])("should not trigger onsearch with key press '%s'", (key) => {
+        // Get the search bar and the button
+        const searchBar = screen.getByPlaceholderText(placeholderText);
+
+        // Press the button and verify that the onSearch function has been called with the value
+        fireEvent.keyDown(searchBar, { key: key });
+        expect(mockedOnSearch).not.toBeCalled();
+    })
 })
