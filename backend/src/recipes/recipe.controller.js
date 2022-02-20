@@ -39,7 +39,6 @@ const __getRecipePrice = (id) => {
 const getAllRecipes = (req, res) => {
     recipeService.getAllRecipes()
         .then(recipes => {
-            console.log(recipes);
             let recipesResp = [];
             let promises = [];
             recipes.forEach(recipe => {
@@ -61,7 +60,6 @@ const getRecipe = (req, res) => {
 
     recipeService.getRecipe(id)
         .then(recipe => {
-            console.log(recipe)
             __getRecipePrice(id)
             .then(price => res.send({...recipe, ...price}))
             .catch(err => handleError(err, res));
@@ -178,6 +176,27 @@ const suggestRecipes = (req, res) => {
         .catch(err => handleError(err, res));
 }
 
+const searchRecipes = (req, res) => {
+    const searchQuery = req.query.query;
+
+    recipeService.searchRecipes(searchQuery)
+        .then(recipes => {
+            let recipesResp = [];
+            let promises = [];
+            recipes.forEach(recipe => {
+                promises.push(__getRecipePrice(recipe.id));
+            });
+
+            Promise.all(promises).then((prices) => {
+                recipes.forEach((recipe, index) => {
+                    recipesResp.push({...recipe, ...prices[index]});
+                });
+                res.send(recipesResp);
+            });
+        })
+        .catch(err => handleError(err, res));
+}
+
 const handleError = (err, res) => {
     res.status(HttpStatusCodes.BAD_REQUEST).send({ message: err.message })
 }
@@ -192,5 +211,6 @@ router.get('/:id/ingredients', getIngredientsOfRecipe);
 router.get('/:id/price', getRecipePrice);
 router.get('/bonus', getBonusRecipes);
 router.get('/suggest', suggestRecipes);
+router.get('/search', searchRecipes);
 
 module.exports = router;

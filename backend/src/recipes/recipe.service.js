@@ -12,7 +12,7 @@ const getAllRecipes = async () => {
 
 //get a recipe by ID
 const getRecipe = async (id) => {
-    const query =  `SELECT * 
+    const query = `SELECT * 
                     FROM recipe 
                     WHERE id = ?`;
 
@@ -86,7 +86,7 @@ const getBonusRecipes = async () => {
                    JOIN recipe_ingredients_group g on (recipe.id=g.recipe_id) 
                    JOIN ingredients_in_group ig on (ig.group_id=g.id) 
                    JOIN ingredient i on (i.id=ig.ingredient_id) 
-                   WHERE i.is_bonus = 1;`; 
+                   WHERE i.is_bonus = 1;`;
     const [rows] = await db.query(query);
     return rows;
 }
@@ -105,8 +105,24 @@ const getRandomNonBonusRecipes = async (amount) => {
                    HAVING SUM(i.is_bonus)=0 OR SUM(i.is_bonus) IS NULL
                    ORDER BY RAND()
                    LIMIT ?;`
-    
+
     const [rows] = await db.query(query, [amount]);
+    return rows;
+}
+
+const searchRecipes = async (searchQuery) => {
+    const query = `SELECT DISTINCT
+                   r.id AS id, 
+                   r.name AS name, 
+                   r.description AS description, 
+                   r.rating AS rating 
+                   FROM recipe r
+                   JOIN recipe_ingredients_group g on (r.id=g.recipe_id) 
+                   JOIN ingredients_in_group ig on (ig.group_id=g.id) 
+                   JOIN ingredient i on (i.id=ig.ingredient_id)
+                   WHERE r.name LIKE CONCAT('%', ?,  '%') OR r.description LIKE CONCAT('%', ?,  '%') OR i.name LIKE CONCAT('%', ?,  '%');`
+
+    const [rows] = await db.query(query, [searchQuery, searchQuery, searchQuery]);
     return rows;
 }
 
@@ -118,5 +134,6 @@ module.exports = {
     updateRecipe,
     getIngredientsOfRecipe,
     getBonusRecipes,
-    getRandomNonBonusRecipes
+    getRandomNonBonusRecipes,
+    searchRecipes
 }

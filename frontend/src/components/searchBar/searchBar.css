@@ -1,0 +1,38 @@
+.searchbar-container {
+    background-color: white;
+    margin-top: 2rem;
+    border-radius: 0.25rem;
+    padding: 1rem;
+    box-shadow: 0.1rem 0.1rem 1rem rgba(0, 0, 0, 0.329);
+    display: flex;
+    justify-content: space-between;
+    max-width: 90%;
+}
+
+.search-button {
+    border: none;
+    padding: 0.3rem 2rem;
+    border-radius: 0.2rem;
+    background-color: rgb(165, 1, 1);
+    color: white;
+    font-weight: 600;
+}
+
+.searchbar {
+    border: none;
+    width: 90%
+}
+
+.searchbar:focus {
+    outline: none;
+}
+
+.reset-input-icon {
+    margin: auto;
+}
+
+.reset-input-button {
+    margin-right: 12px;
+    background-color: transparent;
+    border: none;
+}

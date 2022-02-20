@@ -5,6 +5,7 @@ import { Button, Container, Row, Card, Modal } from "react-bootstrap";
 import RecipeCard from "../../components/recipeCard/recipeCard";
 import { Plus, Pencil } from "react-bootstrap-icons";
 import RecipeModal from "../../components/recipeModal/recipeModal";
+import SearchBar from "../../components/searchBar/searchBar";
 
 const Recipes = () => {
   const [recipes, setRecipes] = useState([]);
@@ -31,6 +32,12 @@ const Recipes = () => {
       setRecipes(response.data);
     });
   };
+
+  const searchRecipes = (query) => {
+    axios.get(`/api/recipes/search?query=${query}`).then((response) => {
+      setRecipes(response.data);
+    });
+  }
 
   const handleRemove = (recipe_id) => {
     setRemovePopup({
@@ -109,6 +116,12 @@ const Recipes = () => {
   return (
     <div className="Recipes">
       <Container className="info" fluid>
+        <Row>
+          <SearchBar
+            placeholderText={"Search recipes.."}
+            onSearch={(query) => searchRecipes(query)}
+          />
+        </Row>
         <Row>
           <Card className="info-item">
             <div className="card-body info-body">
