@@ -117,6 +117,12 @@ const Recipes = () => {
     <div className="Recipes">
       <Container className="info" fluid>
         <Row>
+          <SearchBar
+            placeholderText={"Search recipes.."}
+            onSearch={(query) => searchRecipes(query)}
+          />
+        </Row>
+        <Row>
           <Card className="info-item">
             <div className="card-body info-body">
               <span className="info-card-text">Average cost:</span>
@@ -141,10 +147,6 @@ const Recipes = () => {
             <Plus size={24} />
             Add
           </Button>
-          <SearchBar
-            placeholderText={"Search recipe"}
-            onSearch={(query) => searchRecipes(query)}
-          />
         </Row>
       </Container>
       <Container>
