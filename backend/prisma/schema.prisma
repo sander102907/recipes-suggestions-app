@@ -1,0 +1,63 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "windows", "linux-musl"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Ingredient {
+  id                 Int                  @id @default(autoincrement())
+  ahId               Int?                 @map("ah_id")
+  name               String               @db.VarChar(50)
+  unitSize           String?              @map("unit_size") @db.VarChar(50)
+  price              Float?               @db.Float
+  category           String?              @db.VarChar(50)
+  isBonus            Boolean?             @map("is_bonus")
+  bonusMechanism     String?              @map("bonus_mechanism") @db.VarChar(50)
+  bonusPrice         Float?               @map("bonus_price") @db.Float
+  imageTiny          String?              @map("image_tiny") @db.VarChar(200)
+  imageSmall         String?              @map("image_small") @db.VarChar(200)
+  imageMedium        String?              @map("image_medium") @db.VarChar(200)
+  imageLarge         String?              @map("image_large") @db.VarChar(200)
+  ingredientsInGroup IngredientsInGroup[]
+
+  @@map("ingredient")
+}
+
+model IngredientsInGroup {
+  groupId                Int                    @map("group_id")
+  ingredientId           Int                    @map("ingredient_id")
+  amount                 Int                    @default(1)
+  recipeIngredientsGroup RecipeIngredientsGroup @relation(fields: [groupId], references: [id], onDelete: Cascade, map: "ingredients_in_group_ibfk_1")
+  ingredient             Ingredient             @relation(fields: [ingredientId], references: [id], onDelete: Cascade, map: "ingredients_in_group_ibfk_2")
+
+  @@id([groupId, ingredientId])
+  @@index([ingredientId], map: "ingredient_id")
+  @@map("ingredients_in_group")
+}
+
+model Recipe {
+  id                      Int                      @id @default(autoincrement())
+  name                    String                   @db.VarChar(50)
+  description             String?                  @db.MediumText
+  isSuggested             Boolean?                 @map("is_suggested")
+  excludeFromSuggestions  Boolean?                 @map("exclude_from_suggestions")
+  suggestionEndDate       DateTime?                @map("suggestion_end_date") @db.Date
+  rating                  Int?
+  recipeIngredientsGroups RecipeIngredientsGroup[]
+
+  @@map("recipe")
+}
+
+model RecipeIngredientsGroup {
+  id                 Int                  @id @default(autoincrement())
+  recipeId           Int                  @map("recipe_id")
+  recipe             Recipe               @relation(fields: [recipeId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "tb_fk")
+  ingredientsInGroup IngredientsInGroup[]
+
+  @@index([recipeId], map: "tb_fk")
+  @@map("recipe_ingredients_group")
+}
