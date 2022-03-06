@@ -59,7 +59,7 @@ const getIngredientsOfRecipe = async (id) => {
                     i.bonus_price AS bonus_price, 
                     i.price AS price, 
                     i.bonus_mechanism AS bonus_mechanism, 
-                    i.category AS category, 
+                    si.category AS category, 
                     i.image_tiny AS image_tiny, 
                     i.image_small AS image_small, 
                     i.image_medium AS image_medium, 
