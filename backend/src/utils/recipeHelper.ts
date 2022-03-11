@@ -3,15 +3,6 @@ import { RecipeWithIngredients } from "../types/recipeWithIngredients";
 
 export class RecipeHelper {
     static computePrices(recipe: RecipeWithIngredients): WithPrices<RecipeWithIngredients> {
-        if (!recipe.recipeIngredientsGroups) {
-            return {
-                ...recipe,
-                bonusPrice: "0.00",
-                minPrice: "0.00",
-                maxPrice: "0.00"
-            }
-        }
-
         let bonusPrice = 0;
         let minPrice = 0;
         let maxPrice = 0;
@@ -28,7 +19,7 @@ export class RecipeHelper {
                 const bonusPrices: number[] = group.ingredientsInGroup.map(x => x.ingredient.bonusPrice).filter(notEmpty);
                 const group_bonus = Math.min(...bonusPrices);
 
-                bonusPrice += group_bonus > 0 && group_bonus < Infinity ? group_bonus : group_min;
+                bonusPrice += group_bonus > 0 && group_bonus < Infinity ? group_bonus : Infinity;
                 minPrice += group_min;
                 maxPrice += Math.max(...prices);
             }
