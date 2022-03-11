@@ -30,12 +30,13 @@ jobs:
     - uses: actions/setup-node@v1
     - name: Install dependencies
       working-directory: ./backend
-      run: npm install
+      run: npm ci
+      run: npm run build --if-present
     - name: Run tests
       working-directory: ./backend
       run: npm run test
     - uses: artiomtr/jest-coverage-report-action@v2.0-rc.5
-    - name: Generate coverage report
+      name: Generate coverage report
       with:
         github-token: ${{ secrets.PACKAGES_ACCESS_TOKEN }}
     
