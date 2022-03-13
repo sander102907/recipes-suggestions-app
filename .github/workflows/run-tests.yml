@@ -19,7 +19,6 @@ jobs:
       working-directory: ./frontend
       run: yarn test
     - uses: artiomtr/jest-coverage-report-action@v2.0-rc.5
-      name: Generate coverage report
       with:
         github-token: ${{ secrets.PACKAGES_ACCESS_TOKEN }}
   test-backend:
@@ -36,7 +35,6 @@ jobs:
       working-directory: ./backend
       run: npm run test
     - uses: artiomtr/jest-coverage-report-action@v2.0-rc.5
-      name: Generate coverage report
       with:
         github-token: ${{ secrets.PACKAGES_ACCESS_TOKEN }}
     
