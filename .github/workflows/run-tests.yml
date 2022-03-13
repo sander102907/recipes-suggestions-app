@@ -9,13 +9,16 @@ jobs:
   test-frontend:
     name: Test frontend
     runs-on: ubuntu-latest
-    working-directory: ./frontend
+    env:
+      working-directory: ./frontend
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v1
     - name: Install dependencies
+      working-directory: ${{env.working-directory}}
       run: yarn ci
     - name: Run tests
+      working-directory: ${{env.working-directory}}
       run: yarn test
     - uses: artiomtr/jest-coverage-report-action@v2.0-rc.5
       with:
@@ -28,10 +31,13 @@ jobs:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v1
     - name: Install dependencies
+      working-directory: ${{env.working-directory}}
       run: npm ci
     - name: Build
+      working-directory: ${{env.working-directory}}
       run: npm build --if-present
     - name: Run tests
+      working-directory: ${{env.working-directory}}
       run: npm test
     - uses: artiomtr/jest-coverage-report-action@v2.0-rc.5
       with:
