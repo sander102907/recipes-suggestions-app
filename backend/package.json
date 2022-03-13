@@ -7,7 +7,7 @@
     "start:dev": "ts-node ./src/server.ts",
     "start": "npm run build && node ./dist/src/server.js",
     "build": "npx tsc",
-    "test": "jest --watch",
+    "test": "jest",
     "lint": "eslint . --ext .ts"
   },
   "keywords": [],

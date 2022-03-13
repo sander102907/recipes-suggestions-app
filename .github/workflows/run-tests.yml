@@ -11,7 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: artiomtr/jest-coverage-report-action@v2.0-rc.5
+    - name: Run tests & generate coverage report
+      uses: artiomtr/jest-coverage-report-action@v2.0-rc.5
       with:
         working-directory: ./frontend
         package-manager: yarn
@@ -20,11 +21,10 @@ jobs:
   test-backend:
     name: Test backend
     runs-on: ubuntu-latest
-    env:
-      working-directory: ./backend
     steps:
     - uses: actions/checkout@v2
-    - uses: artiomtr/jest-coverage-report-action@v2.0-rc.5
+    - name: Run tests & generate coverage report
+      uses: artiomtr/jest-coverage-report-action@v2.0-rc.5
       with:
         working-directory: ./backend
         package-manager: npm
