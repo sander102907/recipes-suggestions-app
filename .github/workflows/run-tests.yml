@@ -33,7 +33,7 @@ jobs:
       run: npm build --if-present
     - name: Run tests
       working-directory: ./backend
-      run: npm run test
+      run: npm test
     - uses: artiomtr/jest-coverage-report-action@v2.0-rc.5
       with:
         github-token: ${{ secrets.PACKAGES_ACCESS_TOKEN }}
