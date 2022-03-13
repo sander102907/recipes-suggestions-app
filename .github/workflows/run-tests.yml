@@ -1,4 +1,4 @@
-name: Test Application on Pull Request
+name: Test Application
 
 on:
   pull_request:
@@ -9,14 +9,13 @@ jobs:
   test-frontend:
     name: Test frontend
     runs-on: ubuntu-latest
+    working-directory: ./frontend
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v1
     - name: Install dependencies
-      working-directory: ./frontend
       run: yarn ci
     - name: Run tests
-      working-directory: ./frontend
       run: yarn test
     - uses: artiomtr/jest-coverage-report-action@v2.0-rc.5
       with:
@@ -24,15 +23,15 @@ jobs:
   test-backend:
     name: Test backend
     runs-on: ubuntu-latest
+    working-directory: ./backend
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v1
     - name: Install dependencies
-      working-directory: ./backend
       run: npm ci
+    - name: Build
       run: npm build --if-present
     - name: Run tests
-      working-directory: ./backend
       run: npm test
     - uses: artiomtr/jest-coverage-report-action@v2.0-rc.5
       with:
