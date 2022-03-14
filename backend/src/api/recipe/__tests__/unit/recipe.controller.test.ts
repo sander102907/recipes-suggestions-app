@@ -1,4 +1,4 @@
-import { prismaMock } from '../../../../singleton'
+import { prismaMock } from '../../../../jest/clientMock'
 import { RecipeController } from '../../recipe.controller'
 import { RecipeService } from '../../recipe.service'
 import { StatusCodes } from 'http-status-codes';

@@ -45,7 +45,7 @@ router.get("/:id(\\d+)",
 */
 router.post("/",
     validate([
-        body('name', "A name is required when creating a new Recipe").exists().isString(),
+        body('name', "A name is required when creating a new Recipe").isString().isLength({ min: 1 }),
         body('description', 'description should be a string').optional().isString(),
         body('rating', "Rating should be an integer from 1-5").optional().isInt({ min: 1, max: 5 })
     ]),

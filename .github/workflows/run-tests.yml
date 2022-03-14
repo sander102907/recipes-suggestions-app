@@ -29,5 +29,5 @@ jobs:
         working-directory: ./backend
         package-manager: npm
         test-script: npm test --silent --coverage --coverageReporters="text" --coverageReporters="text-summary"
-        #threshold: 80
+        threshold: 90
     
