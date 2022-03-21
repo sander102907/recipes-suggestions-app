@@ -23,8 +23,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: install dotenv-cli
-      run: npm install dotenv-cli
     - name: Run tests & generate coverage report
       uses: artiomtr/jest-coverage-report-action@v2.0.3
       with:
