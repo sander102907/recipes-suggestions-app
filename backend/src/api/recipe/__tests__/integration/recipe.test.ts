@@ -1,10 +1,10 @@
 import prisma from '../../../../client'
 import { agent as request } from "supertest";
-import app from "../../../../server";
+import server from "../../../../server";
 import { StatusCodes } from "http-status-codes";
 import { seedDatabaseWithData, clearDatabase } from '../../../../jest/helpers';
 
-const agent = request(app);
+const agent = request(server);
 
 beforeAll(async () => {
     await seedDatabaseWithData()
@@ -13,6 +13,7 @@ beforeAll(async () => {
 afterAll(async () => {
     await clearDatabase();
     await prisma.$disconnect()
+    server.close()
 })
 
 describe('get all recipes', () => {

@@ -9,7 +9,7 @@
     "build": "npx tsc",
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
-    "test:local": "yarn docker:up && dotenv -e .env.test yarn prisma migrate deploy && dotenv -e .env.test jest -i",
+    "test:local": "yarn docker:up && dotenv -e .env.test yarn prisma migrate deploy && dotenv -e .env.test jest",
     "test": "npx prisma migrate deploy && jest -i",
     "lint": "eslint . --ext .ts"
   },

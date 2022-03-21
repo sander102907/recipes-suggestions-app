@@ -19,6 +19,6 @@ app.use('/recipes', recipesRouter);
 // set port, listen for requests
 const PORT = process.env.NODE_DOCKER_PORT || 3001;
 
-app.listen(PORT, () => { });
+let server = app.listen(PORT, () => { });
 
-export default app;
+export default server;
