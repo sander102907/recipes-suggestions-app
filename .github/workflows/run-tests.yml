@@ -23,11 +23,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - name: install dotenv-cli
+      run: npm install -g dotenv-cli
     - name: Run tests & generate coverage report
       uses: artiomtr/jest-coverage-report-action@v2.0.3
       with:
         working-directory: ./backend
         package-manager: npm
-        test-script: npm i dotenv-cli && npm test --silent --coverage --coverageReporters="text" --coverageReporters="text-summary"
+        test-script: npm test --silent --coverage --coverageReporters="text" --coverageReporters="text-summary"
         threshold: 90
     
