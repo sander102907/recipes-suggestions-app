@@ -33,10 +33,6 @@ jobs:
       DATABASE_URL: mysql://root:prisma@localhost:3306/tests
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/setup-node@v1
-    - run: npm ci
-    - run: npm run build
-    - run: npx prisma migrate deploy
     - name: Run tests & generate coverage report
       uses: artiomtr/jest-coverage-report-action@v2.0.3
       with:
