@@ -21,8 +21,18 @@ jobs:
   test-backend:
     name: Test backend
     runs-on: ubuntu-latest
+    services:
+      image: mysql
+      env:
+        MYSQL_ROOT_PASSWORD=prisma
+        MYSQL_DATABASE=tests
+      ports:
+        - 3306:3306
+    env:
+      DATABASE_URL: mysql://root:prisma@localhost:3306/tests
     steps:
     - uses: actions/checkout@v2
+    - run: npx prisma migrate deploy
     - name: Run tests & generate coverage report
       uses: artiomtr/jest-coverage-report-action@v2.0.3
       with:
