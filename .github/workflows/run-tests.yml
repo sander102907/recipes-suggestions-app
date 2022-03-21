@@ -28,6 +28,6 @@ jobs:
       with:
         working-directory: ./backend
         package-manager: npm
-        test-script: npm test --silent --coverage --coverageReporters="text" --coverageReporters="text-summary"
+        test-script: npm i dotenv-cli && npm test --silent --coverage --coverageReporters="text" --coverageReporters="text-summary"
         threshold: 90
     
