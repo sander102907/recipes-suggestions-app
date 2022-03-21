@@ -159,7 +159,7 @@ Loading complete
 
 /nginx/
 Dockerfile.dev
-docker-compose.yml
+/docker-compose.yml
 setup.sql
 .env
 *.sh
