@@ -22,12 +22,13 @@ jobs:
     name: Test backend
     runs-on: ubuntu-latest
     services:
-      image: mysql
-      env:
-        MYSQL_ROOT_PASSWORD=prisma
-        MYSQL_DATABASE=tests
-      ports:
-        - 3306:3306
+      mysql:
+        image: mysql
+        env:
+          MYSQL_ROOT_PASSWORD=prisma
+          MYSQL_DATABASE=tests
+        ports:
+          - 3306:3306
     env:
       DATABASE_URL: mysql://root:prisma@localhost:3306/tests
     steps:
