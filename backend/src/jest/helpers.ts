@@ -10,7 +10,7 @@ export async function seedDatabaseWithData() {
                 isSuggested: null,
                 excludeFromSuggestions: null,
                 suggestionEndDate: null,
-                rating: Math.floor(Math.random() * 5) + 1, // Random number between 1 and 5
+                rating: Math.floor(Math.random() * 4) + 1, // Random number between 1 and 4 (so we can test if update works with 5)
             }
         })
     })

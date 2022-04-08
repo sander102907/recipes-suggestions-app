@@ -135,6 +135,7 @@ describe('Update recipe', () => {
     it('should update a recipe and send back the updated recipe', async () => {
         // Arrange
         prismaMock.recipe.update.mockResolvedValue(recipes[0]);
+        prismaMock.recipe.findUnique.mockResolvedValue(recipes[0]);
 
         jest.spyOn(RecipeService, 'updateRecipe');
 
@@ -155,12 +156,36 @@ describe('Update recipe', () => {
         expect(RecipeService.updateRecipe).toBeCalledWith(mockReq.params.id, mockReq.body.name, mockReq.body.description, mockReq.body.rating);
         expect(mockRes.send).toBeCalledWith(recipes[0]);
     })
+
+    it('should send status NOT FOUND if no recipe with ID is found', async () => {
+        // Arrange
+        prismaMock.recipe.findUnique.mockResolvedValue(null);
+
+        const mockReq = {
+            params: { id: recipes[0].id },
+            body: {
+                name: recipes[0].name,
+                description: recipes[0].description,
+                rating: recipes[0].rating
+            }
+        } as any;
+        const mockRes = { status: jest.fn().mockReturnThis(), send: jest.fn() } as any;
+
+        // Act
+        await RecipeController.updateRecipe(mockReq, mockRes);
+
+        // Assert
+        expect(RecipeService.getRecipe).toBeCalledWith(Number(mockReq.params.id));
+        expect(mockRes.status).toBeCalledWith(StatusCodes.NOT_FOUND);
+        expect(mockRes.send).toBeCalledWith({ errors: [{ msg: `No recipe with ID ${mockReq.params.id} exists in the database` }] });
+    })
 })
 
-describe('Update recipe', () => {
-    it('should update a recipe and send back the updated recipe', async () => {
+describe('Delete recipe', () => {
+    it('should delete a recipe and send back nothing', async () => {
         // Arrange
         prismaMock.recipe.delete.mockResolvedValue(recipes[0]);
+        prismaMock.recipe.findUnique.mockResolvedValue(recipes[0]);
 
         jest.spyOn(RecipeService, 'deleteRecipe');
 
@@ -174,7 +199,25 @@ describe('Update recipe', () => {
 
         // Assert
         expect(RecipeService.deleteRecipe).toBeCalledWith(mockReq.params.id);
-        expect(mockRes.send).toBeCalledWith(recipes[0]);
+        expect(mockRes.send).toBeCalledWith();
+    })
+
+    it('should send status NOT FOUND if no recipe with ID is found', async () => {
+        // Arrange
+        prismaMock.recipe.findUnique.mockResolvedValue(null);
+
+        const mockReq = {
+            params: { id: recipes[0].id },
+        } as any;
+        const mockRes = { status: jest.fn().mockReturnThis(), send: jest.fn() } as any;
+
+        // Act
+        await RecipeController.deleteRecipe(mockReq, mockRes);
+
+        // Assert
+        expect(RecipeService.getRecipe).toBeCalledWith(Number(mockReq.params.id));
+        expect(mockRes.status).toBeCalledWith(StatusCodes.NOT_FOUND);
+        expect(mockRes.send).toBeCalledWith({ errors: [{ msg: `No recipe with ID ${mockReq.params.id} exists in the database` }] });
     })
 })
 

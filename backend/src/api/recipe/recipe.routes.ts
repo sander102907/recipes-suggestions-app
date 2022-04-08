@@ -66,8 +66,8 @@ router.post("/",
 router.put("/:id",
     validate([
         param('id').isInt().toInt(),
-        body('name', "A name is required when creating a new Recipe").exists(),
-        body('description', 'search query should be a string').optional(),
+        body('name', "name should be a string of at least 1 character").isString().isLength({ min: 1 }),
+        body('description', 'sdescription should be a string').optional().isString(),
         body('rating', "Rating should be an integer from 1-5").optional().isInt({ min: 1, max: 5 })
     ]),
     RecipeController.updateRecipe
@@ -82,9 +82,7 @@ router.put("/:id",
 * @apiSuccess (200) {Object} `Recipes` object
 */
 router.delete("/:id",
-    validate([
-        param('id').isInt().toInt(),
-    ]),
+    validate([param('id').isInt().toInt()]),
     RecipeController.deleteRecipe
 );
 
@@ -94,7 +92,8 @@ router.delete("/:id",
 *
 * @apiSuccess (200) {Object[]} `Recipes` object list
 */
-router.get("/suggest", RecipeController.suggestRecipes);
+router.get("/suggest",
+    RecipeController.suggestRecipes);
 
 
 /**

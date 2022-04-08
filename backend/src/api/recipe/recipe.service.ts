@@ -75,7 +75,7 @@ export class RecipeService {
             data: {
                 name,
                 description,
-                rating
+                ...(rating && { rating })
             }
         });
     }
@@ -88,7 +88,7 @@ export class RecipeService {
             data: {
                 name,
                 description,
-                rating
+                ...(rating && { rating })
             }
         });
     }

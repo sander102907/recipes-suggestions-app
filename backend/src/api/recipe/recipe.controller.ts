@@ -49,17 +49,29 @@ export class RecipeController {
     static async updateRecipe(req: Request, res: Response) {
         const { id } = req.params;
         const { name, description, rating } = req.body;
-        const result = await RecipeService.updateRecipe(Number(id), name, description, Number(rating));
 
-        res.send(result);
+        const recipe = await RecipeService.getRecipe(Number(id));
+
+        if (recipe) {
+            const result = await RecipeService.updateRecipe(Number(id), name, description, Number(rating));
+            res.send(result);
+        } else {
+            res.status(StatusCodes.NOT_FOUND).send({ errors: [{ msg: `No recipe with ID ${id} exists in the database` }] });
+        }
     }
 
-    // Update a recipe
+    // Delete a recipe
     static async deleteRecipe(req: Request, res: Response) {
         const { id } = req.params;
-        const result = await RecipeService.deleteRecipe(Number(id));
 
-        res.send(result);
+        const recipe = await RecipeService.getRecipe(Number(id));
+
+        if (recipe) {
+            await RecipeService.deleteRecipe(Number(id));
+            res.send();
+        } else {
+            res.status(StatusCodes.NOT_FOUND).send({ errors: [{ msg: `No recipe with ID ${id} exists in the database` }] });
+        }
     }
 
     // Suggest weekly recipes
@@ -77,7 +89,8 @@ export class RecipeController {
     // Search recipes
     static async searchRecipes(req: Request, res: Response) {
         const { query } = req.query;
-        const recipes = await RecipeService.searchRecipes(String(query));
+
+        const recipes = await RecipeService.searchRecipes(String(query).trim());
 
         res.send(recipes);
     }
