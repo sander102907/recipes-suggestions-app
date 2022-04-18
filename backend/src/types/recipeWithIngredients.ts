@@ -1,9 +1,10 @@
-import { Ingredient, IngredientsInGroup, Recipe, RecipeIngredientsGroup } from '@prisma/client';
+import { Ingredient, IngredientsInGroup, Recipe, RecipeIngredientsGroup, File } from '@prisma/client';
 
-export type RecipeWithIngredients = (Recipe & {
+export type RecipeWithIngredientsAndImage = (Recipe & {
     recipeIngredientsGroups: (RecipeIngredientsGroup & {
         ingredientsInGroup: (IngredientsInGroup & {
             ingredient: Ingredient;
         })[];
     })[];
+    image: File | null;
 });

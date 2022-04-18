@@ -10,8 +10,8 @@ datasource db {
 
 model Ingredient {
   id                 Int                  @id @default(autoincrement())
-  ahId               Int?                 @map("ah_id")
-  name               String               @db.VarChar(50)
+  ahId               Int?                 @unique @map("ah_id")
+  name               String               @db.VarChar(100)
   unitSize           String?              @map("unit_size") @db.VarChar(50)
   price              Float?               @db.Float
   category           String?              @db.VarChar(50)
@@ -24,6 +24,7 @@ model Ingredient {
   imageLarge         String?              @map("image_large") @db.VarChar(200)
   ingredientsInGroup IngredientsInGroup[]
 
+  IngredientPriceHistory IngredientPriceHistory[]
   @@map("ingredient")
 }
 
@@ -41,7 +42,8 @@ model IngredientsInGroup {
 
 model Recipe {
   id                      Int                      @id @default(autoincrement())
-  name                    String                   @db.VarChar(50)
+  name                    String                   @db.VarChar(100)
+  image                   File?                    @relation(fields: [imageId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   description             String?                  @db.MediumText
   isSuggested             Boolean?                 @map("is_suggested")
   excludeFromSuggestions  Boolean?                 @map("exclude_from_suggestions")
@@ -49,6 +51,7 @@ model Recipe {
   rating                  Int?
   recipeIngredientsGroups RecipeIngredientsGroup[]
 
+  imageId Int?
   @@map("recipe")
 }
 
@@ -60,4 +63,24 @@ model RecipeIngredientsGroup {
 
   @@index([recipeId], map: "tb_fk")
   @@map("recipe_ingredients_group")
+}
+
+model File {
+  id        Int      @id @default(autoincrement())
+  path      String   @unique @db.VarChar(200)
+  mimetype  String
+  createdAt DateTime
+  size      Int
+  Recipe    Recipe[]
+}
+
+model IngredientPriceHistory {
+  id         Int        @id @default(autoincrement())
+  price      Float
+  isBonus    Boolean
+  from       DateTime
+  until      DateTime?
+  ingredient Ingredient @relation(fields: [ingredientId], references: [id])
+
+  ingredientId Int
 }

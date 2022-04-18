@@ -1,5 +1,5 @@
 import { WithPrices } from "../types/withPrices";
-import { RecipeWithIngredients } from "../types/recipeWithIngredients";
+import { RecipeWithIngredientsAndImage } from "../types/recipeWithIngredients";
 
 export class RecipeHelper {
     // Filter out any empty values of a list of any type
@@ -14,7 +14,7 @@ export class RecipeHelper {
 
     // Adds prices (min, max and bonus) to a Recipe Object
     // Pay attention: Bonus price is always at most the minimum price
-    static computePrices(recipe: RecipeWithIngredients): WithPrices<RecipeWithIngredients> {
+    static computePrices(recipe: RecipeWithIngredientsAndImage): WithPrices<RecipeWithIngredientsAndImage> {
         let bonusPrice = 0;
         let minPrice = 0;
         let maxPrice = 0;
