@@ -1,7 +1,6 @@
 import prisma from '../../client'
 import app from "../../app";
 import { StatusCodes } from "http-status-codes";
-import { seedDatabaseWithData, clearDatabase } from './helpers';
 import { agent as request } from "supertest";
 
 export const agent = request(app);
@@ -33,16 +32,10 @@ const validRecipeArgs = [
     { name: 'test name 3', rating: 1 },
     { name: 'test name 4', description: 'test description 4', rating: 5 },
     { name: 'test name 5', description: 'test description 5', rating: 3 },
+    { name: 'test name 5', description: 'test description 5', rating: 3 },
+    { name: 'test image', description: 'test description 5', rating: 3 },
+
 ];
-
-beforeAll(async () => {
-    await seedDatabaseWithData()
-})
-
-afterAll(async () => {
-    await clearDatabase();
-    await prisma.$disconnect()
-})
 
 describe('get all recipes', () => {
     describe('should return unprocessable entity on invalid arguments', () => {
@@ -125,13 +118,33 @@ describe('create a recipe', () => {
             })
     })
 
+    it('should send status NOT FOUND if an image ID is provided but it does not exist in de DB', async () => {
+        var response = await agent
+            .post('/recipes/')
+            .send({ ...validRecipeArgs[0], imageId: -1 })
+            .expect(StatusCodes.NOT_FOUND)
+
+        expect(response.body).toStrictEqual({ reason: `No file with ID -1 exists in the database` })
+    })
+
     describe('should create a recipe and return the recipe with an OK response status on valid arguments', () => {
         it.each<any | jest.DoneCallback>(validRecipeArgs)
             ('create recipe with params name: $name, description: $description, rating: $rating', async (validRecipeArgs) => {
-                const response = await agent
-                    .post('/recipes/')
-                    .send(validRecipeArgs)
-                    .expect(StatusCodes.CREATED)
+                let response;
+
+                if (validRecipeArgs.name == "test image") {
+                    const image = await prisma.file.findFirst();
+
+                    response = await agent
+                        .post('/recipes/')
+                        .send({ ...validRecipeArgs, imageId: image?.id })
+                        .expect(StatusCodes.CREATED)
+                } else {
+                    response = await agent
+                        .post('/recipes/')
+                        .send(validRecipeArgs)
+                        .expect(StatusCodes.CREATED)
+                }
 
                 expect(response.body.name).toBe(validRecipeArgs.name)
                 expect(response.body.description == validRecipeArgs.description).toBeTruthy()
@@ -166,16 +179,38 @@ describe('update a recipe', () => {
         expect(response.body).toStrictEqual({ reason: `No recipe with ID -1 exists in the database` })
     })
 
+    it('should send status NOT FOUND if an image ID is provided but it does not exist in de DB', async () => {
+        const recipe = await prisma.recipe.findFirst();
+
+        var response = await agent
+            .patch(`/recipes/${recipe?.id}`)
+            .send({ ...validRecipeArgs[0], imageId: -1 })
+            .expect(StatusCodes.NOT_FOUND)
+
+        expect(response.body).toStrictEqual({ reason: `No file with ID -1 exists in the database` })
+    })
+
     describe('should update a recipe and return the recipe with an OK response status on valid arguments', () => {
         it.each<any | jest.DoneCallback>(validRecipeArgs)
             ('update recipe with params name: $name, description: $description, rating: $rating', async (validRecipeArgs) => {
                 const recipe = await prisma.recipe.findFirst({ where: { name: validRecipeArgs.name } });
-                validRecipeArgs.name += 'updated';
+                validRecipeArgs.name += ' updated';
 
-                const response = await agent
-                    .patch(`/recipes/${recipe?.id}`)
-                    .send(validRecipeArgs)
-                    .expect(StatusCodes.OK)
+                let response;
+
+                if (validRecipeArgs.name == "test image updated") {
+                    const image = await prisma.file.findFirst();
+
+                    response = await agent
+                        .patch(`/recipes/${recipe?.id}`)
+                        .send({ ...validRecipeArgs, imageId: image?.id })
+                        .expect(StatusCodes.OK)
+                } else {
+                    response = await agent
+                        .patch(`/recipes/${recipe?.id}`)
+                        .send(validRecipeArgs)
+                        .expect(StatusCodes.OK)
+                }
 
                 expect(response.body.id).toBe(recipe?.id)
                 expect(response.body.name).toBe(validRecipeArgs.name)
@@ -227,6 +262,14 @@ describe('suggest recipes', () => {
 })
 
 describe('search recipes', () => {
+    it.each<any | jest.DoneCallback>(["a", "b"])
+        ('should return unprocessable entity on invalid arguments with one character', async (query) => {
+            await agent
+                .get('/recipes/search')
+                .query({ query: query })
+                .expect(StatusCodes.UNPROCESSABLE_ENTITY);
+        });
+
     it('should send recipe(s) with name that matches the search term and return with an OK response status', async () => {
         const recipe = await prisma.recipe.findFirst({ where: { name: 'test recipe 0' } });
 
@@ -257,11 +300,11 @@ describe('search recipes', () => {
     })
 
     it('should send recipe(s) with ingredient that matches the search term and return with an OK response status', async () => {
-        const recipe = await prisma.recipe.findFirst({ where: { name: 'test recipe 0' } });
+        const recipe = await prisma.recipe.findFirst({ where: { name: 'test recipe 2' } });
 
         const recipeResponse = await agent
             .get(`/recipes/${recipe?.id}`)
-            .expect(StatusCodes.OK)
+            .expect(StatusCodes.OK);
 
         const ingredient = recipeResponse.body.recipeIngredientsGroups[0].ingredientsInGroup[0].ingredient;
 
@@ -278,7 +321,7 @@ describe('search recipes', () => {
     })
 
     it('should send recipe(s) with ingredient name that partially matches the search term and return with an OK response status', async () => {
-        const recipe = await prisma.recipe.findFirst({ where: { name: 'test recipe 0' } });
+        const recipe = await prisma.recipe.findFirst({ where: { name: 'test recipe 2' } });
 
         const recipeResponse = await agent
             .get(`/recipes/${recipe?.id}`)
@@ -292,5 +335,42 @@ describe('search recipes', () => {
             .expect(StatusCodes.OK)
 
         expect(response.body.length).toBe(3);
+    })
+})
+
+describe('search Albert Heijn recipes', () => {
+    it.each<any | jest.DoneCallback>(["a", "b"])
+        ('should return unprocessable entity on invalid arguments with one character', async (query) => {
+            await agent
+                .get('/recipes/ah/search')
+                .query({ query: query })
+                .expect(StatusCodes.UNPROCESSABLE_ENTITY);
+        });
+
+    it('should return with an OK response status', async () => {
+        await agent
+            .get('/recipes/ah/search')
+            .query({ query: "anything" })
+            .expect(StatusCodes.OK);
+    })
+})
+
+describe('get Albert Heijn recipe by ID', () => {
+    it.each<any | jest.DoneCallback>(["a", 1.5, false])
+        ('should return unprocessable entity on invalid arguments', async (id) => {
+            await agent
+                .get(`/recipes/ah/${id}`)
+                .expect(StatusCodes.UNPROCESSABLE_ENTITY);
+        });
+
+    it('should return with an OK response status', async () => {
+        var recipes = await agent
+            .get('/recipes/ah/search')
+            .query({ query: "te" })
+            .expect(StatusCodes.OK);
+
+        await agent
+            .get(`/recipes/ah/${recipes.body[0].id}`)
+            .expect(StatusCodes.OK);
     })
 })

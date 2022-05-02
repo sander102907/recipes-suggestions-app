@@ -21,10 +21,20 @@ import {
 import { WithPrices } from '../types/withPrices';
 import { Recipe } from '@prisma/client';
 import { FileService } from '../services/file.service';
+import { AH } from '../apis/ah';
+import { AhError } from '../errors/AhError';
+import { AxiosError } from 'axios';
 
 @Route("recipes")
 @Tags("Recipe")
 export class RecipeController extends Controller {
+    private readonly ahClient: AH;
+
+    constructor() {
+        super();
+        this.ahClient = new AH();
+    }
+
     /**
      * Get a list of recipes. Can get all recipes, only recipes with bonus ingredients or only recipes without bonus ingredients.
      * @summary Get a list of recipes
@@ -71,16 +81,69 @@ export class RecipeController extends Controller {
      * Search recipes on recipe name or ingredient name
      * @summary Search recipes
      * @param query The search query
-     * @minLength 2 query the search query should exist of at least 2 characters
+     * @minLength query 2 the search query should exist of at least 2 characters
      */
     @Get("/search")
     public async searchRecipes(
         @Query() query: string
     ): Promise<WithPrices<RecipeWithIngredientsAndImage>[]> {
-        const recipes = await RecipeService.searchRecipes(String(query).trim());
+        const recipes = await RecipeService.searchRecipes(query.trim());
         const recipesWithPrices = recipes.map(RecipeHelper.computePrices)
 
         return recipesWithPrices;
+    }
+
+    /**
+     * Search Albert Heijn recipes on recipe name
+     * @summary Search Albert Heijn recipes
+     * @param query The search query
+     * @minLength query 2 the search query should exist of at least 2 characters
+     */
+    @Get("/ah/search")
+    public async searchAhRecipes(
+        @Query() query: string,
+        @Res() externalErrorResponse: TsoaResponse<StatusCodes.EXPECTATION_FAILED, { reason: string }>
+    ) {
+        const response = await this.ahClient.searchRecipes(query.trim())
+            .catch((err: Error | AxiosError) => { throw new AhError(`Could not get Albert Heijn recipes. ${err.message}`) });
+
+        if (response.status != StatusCodes.OK) {
+            return externalErrorResponse(StatusCodes.EXPECTATION_FAILED, { reason: `The Albert Heijn API returned an error. StatusCode: ${response.status}. ${response.data}` })
+        }
+
+        return response.data.content;
+    }
+
+    /**
+     * Get a Albert Heijn recipe by ID
+     * @summary Get a Albert Heijn recipe
+     * @param id The recipe's identifier
+     * @isInt id id should be an integer value
+     */
+    @Get("/ah/{id}")
+    public async getAhRecipe(
+        @Path() id: number,
+    ) {
+        const recipeResponse = await this.ahClient.getRecipeById(id)
+            .catch((err: Error | AxiosError) => { throw new AhError(`Could not get Albert Heijn recipe. ${err.message}`) });
+
+        const ingredientsResponse = await this.ahClient.getRecipeIngredients({
+            ingredients:
+                recipeResponse.data.ingredients.map(ingredient => {
+                    return {
+                        id: ingredient.id,
+                        name: {
+                            singular: "null"
+                        }
+                    }
+                }),
+            recipe: {
+                id: id,
+                servings: 2
+            }
+        }).catch((err: Error | AxiosError) => { throw new AhError(`Could not get Albert Heijn recipe ingredients. Statuscode: ${err.message}`) });
+
+        return { ...recipeResponse.data, ...ingredientsResponse.data };
     }
 
     /**
@@ -113,8 +176,8 @@ export class RecipeController extends Controller {
         @Body() recipeParams: RecipeParams,
         @Res() notFoundResponse: TsoaResponse<StatusCodes.NOT_FOUND, { reason: string }>
     ): Promise<Recipe> {
-        if (recipeParams.imageId) {
-            const image = FileService.getFile(recipeParams.imageId);
+        if (recipeParams.imageId != undefined) {
+            const image = await FileService.getFile(recipeParams.imageId);
 
             if (!image) {
                 return notFoundResponse(StatusCodes.NOT_FOUND, { reason: `No file with ID ${recipeParams.imageId} exists in the database` });

@@ -5,6 +5,7 @@ import {
 } from "express";
 import { StatusCodes } from "http-status-codes";
 import { ValidateError } from "tsoa";
+import { AhError } from "../errors/AhError";
 
 export default function errorHandler(
     err: unknown,
@@ -16,6 +17,12 @@ export default function errorHandler(
         return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({
             message: "Validation Failed",
             details: err.fields,
+        });
+    }
+    if (err instanceof AhError) {
+        return res.status(StatusCodes.EXPECTATION_FAILED).json({
+            message: "External API returned an error",
+            details: err.message,
         });
     }
     if (err instanceof Error) {

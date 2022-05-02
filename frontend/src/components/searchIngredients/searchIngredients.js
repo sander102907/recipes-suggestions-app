@@ -15,7 +15,7 @@ const IngredientsSearchBar = (props) => {
     setValue(query);
     if (query.length > 1) {
       axios
-        .get("/api/ah/search", { params: { query: query } })
+        .get("/api/ingredients/ah/search", { params: { query: query } })
         .then((response) => {
           setSuggestions(response.data);
           setSuggestionsActive(true);

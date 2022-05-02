@@ -1,7 +1,11 @@
 {
     "compilerOptions": {
+        "forceConsistentCasingInFileNames": true,
+        "newLine": "LF",
         "module": "commonjs",
         "esModuleInterop": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
         "target": "es6",
         "noImplicitAny": true,
         "moduleResolution": "node",
@@ -10,8 +14,15 @@
         "strictNullChecks": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
+        "outDir": "./build",
+        "noEmit": false,
     },
     "include": [
         "src/**/*"
+    ],
+    "exclude": [
+        "node_modules",
+        "build",
+        "coverage"
     ]
 }

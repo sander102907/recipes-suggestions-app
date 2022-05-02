@@ -19,7 +19,6 @@ export default class FileHelper {
         try {
             fs.writeFileSync(writePath, buffer, { flag: "wx" })
         } catch (err) {
-            console.log(`file ${writePath} already exists, testing next..`);
             return FileHelper.writeFile(filePath, buffer, attempt + 1)
         }
 

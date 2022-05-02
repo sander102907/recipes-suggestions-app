@@ -1,5 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
-import axios from "axios";
+import React from "react";
 import "./recipeCard.css";
 import { XLg } from "react-bootstrap-icons";
 import { Button, Card } from "react-bootstrap";
@@ -7,22 +6,10 @@ import IngredientsList from "../ingredientsList/ingredientsList";
 import ReactStars from "react-rating-stars-component";
 
 const RecipeCard = (props) => {
-  const [groups, setGroups] = useState([]);
 
-  const recipeId = props.recipe.id;
-  const minPrice = props.recipe.min_price;
-  const maxPrice = props.recipe.max_price;
-  const bonusPrice = props.recipe.bonus_price;
-
-  const getGroups = useCallback(() => {
-    axios.get(`/api/groups/recipe/${recipeId}`).then((response) => {
-      setGroups(response.data);
-    });
-  }, [recipeId]);
-
-  useEffect(() => {
-    getGroups();
-  }, [getGroups]);
+  const minPrice = props.recipe.minPrice;
+  const maxPrice = props.recipe.maxPrice;
+  const bonusPrice = props.recipe.bonusPrice;
 
   return (
     <React.Fragment>
@@ -40,7 +27,7 @@ const RecipeCard = (props) => {
             dangerouslySetInnerHTML={{ __html: props.recipe.description }}
           ></div>
           <div className="card-data">
-            <IngredientsList groups={groups} />
+            <IngredientsList groups={props.recipe.recipeIngredientsGroups} />
             <div className="card-bottom">
               <div className="card-buttons">
                 <Button
@@ -52,7 +39,7 @@ const RecipeCard = (props) => {
                 <Button
                   className="card-button-second"
                   onClick={() =>
-                    props.onSecondButtonClick(props.recipe, groups)
+                    props.onSecondButtonClick(props.recipe)
                   }
                 >
                   <props.secondButtonIcon size={20} />

@@ -19,9 +19,11 @@ import {
 } from "tsoa";
 import { Ingredient, IngredientPriceHistory } from "@prisma/client";
 import { IngredientService } from "../services/ingredient.service";
-import { AH } from "../apis/ah.api";
+import { AH } from "../apis/ah";
 import { IngredientHelper } from "../utils/ingredientHelper";
 import { IngredientPriceHistoryService } from "../services/ingredientPriceHistory.service";
+import { AhError } from "../errors/AhError";
+import { AxiosError } from "axios";
 
 @Route("ingredients")
 @Tags("Ingredient")
@@ -45,18 +47,21 @@ export class IngredientController extends Controller {
     /**
      * Get a list of ingredients.
      * @summary Get a list of ingredients
-     * @param ahIds filter ingredients on Albert Heijn product ID's
+     * @param take the number of ingredients to return
+     * @isInt take limit should be an integer value
+     * @minimum take 1 must retrieve at least one item, set limit to > 0
+     * @maximum take 1000 can only retrieve a maximum of 1000 items, set limit to <= 1000
      * 
+     * @param page the page of ingredients to retrieve
+     * @isInt page page should be an integer value
+     * @minimum page 0 page may not be a negative value
      */
     @Get("/")
     public async getIngredients(
-        @Query() ahIds?: number[]
+        @Query("limit") take = 20,
+        @Query() page = 0,
     ): Promise<Ingredient[]> {
-        if (ahIds) {
-            return await IngredientService.getIngredientsFromAhIds(ahIds);
-        }
-
-        return await IngredientService.getAllIngredients();
+        return await IngredientService.getAllIngredients(take, page);
     }
 
     /**
@@ -109,13 +114,9 @@ export class IngredientController extends Controller {
     @Get("/ah/search")
     public async SearchIngredients(
         @Query() query: string,
-        @Res() externalErrorResponse: TsoaResponse<StatusCodes.EXPECTATION_FAILED, { reason: string }>
     ) {
-        const response = await this.ahClient.SearchProducts(query);
-
-        if (response.status != StatusCodes.OK) {
-            return externalErrorResponse(StatusCodes.EXPECTATION_FAILED, { reason: `The Albert Heijn API returned an error. StatusCode: ${response.status}. ${response.data}` })
-        }
+        const response = await this.ahClient.searchProducts(query)
+            .catch((err: Error | AxiosError) => { throw new AhError(`Could not get Albert Heijn ingredients. ${err.message}`) });
 
         return response.data.cards.map(card => card.products[0]);
     }
@@ -148,7 +149,16 @@ export class IngredientController extends Controller {
     @SuccessResponse(StatusCodes.CREATED, "Created")
     public async createIngredient(
         @Body() ingredientParams: IngredientParams,
+        @Res() conflictResponse: TsoaResponse<StatusCodes.CONFLICT, { reason: string }>
     ): Promise<Ingredient> {
+        if (ingredientParams.ahId != undefined) {
+            const ingredient = await IngredientService.getIngredientFromAhId(ingredientParams.ahId);
+
+            if (ingredient) {
+                return conflictResponse(StatusCodes.CONFLICT, { reason: `A ingredient with ahId ${ingredientParams.ahId} already exists in the database` });
+            }
+        }
+
         this.setStatus(StatusCodes.CREATED);
         return await IngredientService.createIngredient(ingredientParams);
     }

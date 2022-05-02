@@ -1,6 +1,6 @@
 import prisma from '../../client'
 
-export async function seedDatabaseWithData() {
+export default async function seedDatabaseWithData() {
     // create recipes
     await prisma.recipe.createMany({
         data: Array.from(new Array(3), (_, index) => {
@@ -39,7 +39,8 @@ export async function seedDatabaseWithData() {
                 name: `test ingredient ${index}`,
                 price: 1,
                 bonusPrice: isBonus[index] ? 0.5 : null,
-                isBonus: isBonus[index]
+                isBonus: isBonus[index],
+                ahId: index
             }
         })
     })
@@ -56,18 +57,21 @@ export async function seedDatabaseWithData() {
             }
         })
     })
-}
 
-export async function clearDatabase() {
-    const deleteRecipes = prisma.recipe.deleteMany()
-    const deleteIngredients = prisma.ingredient.deleteMany()
-    const deleteGroups = prisma.recipeIngredientsGroup.deleteMany()
-    const deleteIngredientsInGroups = prisma.ingredientsInGroup.deleteMany()
+    await prisma.file.create({
+        data: {
+            path: "test path",
+            mimetype: "test mime type",
+            createdAt: new Date("01-01-2020"),
+            size: 42
+        }
+    })
 
-    await prisma.$transaction([
-        deleteRecipes,
-        deleteIngredients,
-        deleteGroups,
-        deleteIngredientsInGroups
-    ])
+    await prisma.ingredient.createMany({
+        data: Array.from(new Array(1001), (_, index) => {
+            return {
+                name: `ingredients integration test ${index}`,
+            }
+        })
+    });
 }

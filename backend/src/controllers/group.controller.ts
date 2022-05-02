@@ -135,7 +135,7 @@ export class GroupController extends Controller {
         const ingredient = await IngredientService.getIngredient(ingredientsInGroupParams.ingredientId);
 
         if (!ingredient) {
-            return notFoundResponse(StatusCodes.NOT_FOUND, { reason: `No ingredient with ID ${ingredientsInGroupParams.groupId} exists in the database` });
+            return notFoundResponse(StatusCodes.NOT_FOUND, { reason: `No ingredient with ID ${ingredientsInGroupParams.ingredientId} exists in the database` });
         }
 
         await GroupService.subtractIngredientFromGroup(ingredientsInGroupParams);

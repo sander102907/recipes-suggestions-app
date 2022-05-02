@@ -17,6 +17,13 @@ export default interface IngredientPriceHistoryParams {
     isBonus: boolean;
 
     /**
+     * If the ingredient is in bonus, what is the bonus mechanism
+     * @example 25% korting
+     * @example 1 + 1 gratis
+     */
+    bonusMechanism?: string;
+
+    /**
      * The date from which the price is valid
      */
     from: Date;

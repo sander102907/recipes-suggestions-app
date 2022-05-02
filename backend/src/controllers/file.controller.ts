@@ -1,7 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 import path from "path";
 import fs from "fs";
-import { Request as ExprRequest } from "express";
 import {
     Controller,
     Get,
@@ -37,7 +36,7 @@ export class FileController extends Controller {
         if (image) {
             const stream = fs.createReadStream(image.path);
             stream.pipe(request.res);
-            await new Promise((resolve, reject) => {
+            await new Promise((resolve, _) => {
                 stream.on("end", () => {
                     request.res.end();
                     resolve(null);
@@ -64,7 +63,6 @@ export class FileController extends Controller {
 
         if (mimetype && extname) {
             const filePath = FileHelper.writeFile(path.join("uploads", "images", file.originalname), file.buffer);
-            console.log(filePath);
             return await FileService.createFile({
                 path: filePath,
                 mimetype: file.mimetype,

@@ -120,6 +120,7 @@ interface PropertyIcon {
 }
 
 interface Shield {
+    title?: string;
     text: string;
 }
 

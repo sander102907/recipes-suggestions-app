@@ -1,5 +1,5 @@
 import prisma from '../client';
-import IngredientPriceHistoryParams from '../interfaces/ingredientPriceHistoryParams';
+import IngredientPriceHistoryParams from '../interfaces/IngredientPriceHistoryParams';
 
 export class IngredientPriceHistoryService {
     static readonly withIngredients = {
@@ -23,10 +23,10 @@ export class IngredientPriceHistoryService {
         });
     }
 
-    static addIngredientPrice(data: IngredientPriceHistoryParams) {
-        return prisma.ingredientPriceHistory.create({
+    static addIngredientPrices(data: IngredientPriceHistoryParams[]) {
+        return prisma.ingredientPriceHistory.createMany({
             data: data
-        })
+        });
     }
 
     static addUntilDateToIngredientPrice(id: number, until: Date) {

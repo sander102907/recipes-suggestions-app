@@ -56,26 +56,8 @@ export default interface IngredientParams {
     bonusPrice?: number;
 
     /**
-     * A URL to a tiny sized image of the ingredient
-     * @pattern https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*) imageTiny should be a URL
+     * A URL to a image of the ingredient
+     * @pattern https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*) image should be a URL
      */
-    imageTiny?: string;
-
-    /**
-     * A URL to a small sized image of the ingredient
-     * @pattern https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*) imageTiny should be a URL
-     */
-    imageSmall?: string;
-
-    /**
-     * A URL to a medium sized image of the ingredient
-     * @pattern https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*) imageTiny should be a URL
-     */
-    imageMedium?: string;
-
-    /**
-     * A URL to a large sized image of the ingredient
-     * @pattern https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*) imageTiny should be a URL
-     */
-    imageLarge?: string;
+    image?: string;
 }

@@ -11,9 +11,10 @@ const IngredientsList = (props) => {
       {props.groups.length === 0 ? "No ingredients yet, try adding some" : ""}
       {props.groups.map((group, group_index) => {
         return (
-          group.ingredients.length > 0 && (
+          group.ingredientsInGroup.length > 0 && (
             <div className="ingredient-group" key={group_index}>
-              {group.ingredients.map((ingredient, ingredient_index) => {
+              {group.ingredientsInGroup.map((ingredientGroup, ingredient_index) => {
+                const ingredient = ingredientGroup.ingredient;
                 return (
                   <div
                     className="ingredient-item-container"
@@ -21,24 +22,24 @@ const IngredientsList = (props) => {
                   >
                     <div className="ingredient-item">
                       <div className="ingredient-item-image">
-                        <img src={ingredient.image_small} alt="" />
+                        <img src={ingredient.image} alt="" />
                       </div>
                       <div className="ingredient-item-info-container">
                         <div className="ingredient-item-info">
                           <div className="ingredient-item-info-left">
                             <div>
                               {ingredient.name}{" "}
-                              {ingredient.is_bonus ? (
+                              {ingredient.isBonus ? (
                                 <Badge
                                   className="ingredient-bonus-badge"
                                   bg="info"
                                 >
-                                  {ingredient.bonus_mechanism}
+                                  {ingredient.bonusMechanism}
                                 </Badge>
                               ) : null}
                             </div>
                             <div className="ingredient-unit-size">
-                              {ingredient.unit_size}
+                              {ingredient.unitSize}
                             </div>
                           </div>
                           <div className="ingredient-item-info-right">
@@ -67,15 +68,15 @@ const IngredientsList = (props) => {
                             </div>
                             <div className="ingredient-price">
                               €
-                              {ingredient.bonus_price != null
-                                ? ingredient.bonus_price
+                              {ingredient.bonusPrice != null
+                                ? ingredient.bonusPrice
                                 : ingredient.price}
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                    {ingredient_index < group.ingredients.length - 1 && (
+                    {ingredient_index < group.ingredientsInGroup.length - 1 && (
                       <div className="ingredient-or-divider">
                         <ArrowDownUp size={18} />
                         OR

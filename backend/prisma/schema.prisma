@@ -18,10 +18,7 @@ model Ingredient {
   isBonus            Boolean?             @map("is_bonus")
   bonusMechanism     String?              @map("bonus_mechanism") @db.VarChar(50)
   bonusPrice         Float?               @map("bonus_price") @db.Float
-  imageTiny          String?              @map("image_tiny") @db.VarChar(200)
-  imageSmall         String?              @map("image_small") @db.VarChar(200)
-  imageMedium        String?              @map("image_medium") @db.VarChar(200)
-  imageLarge         String?              @map("image_large") @db.VarChar(200)
+  image              String?              @db.VarChar(200)
   ingredientsInGroup IngredientsInGroup[]
 
   IngredientPriceHistory IngredientPriceHistory[]
@@ -75,12 +72,13 @@ model File {
 }
 
 model IngredientPriceHistory {
-  id         Int        @id @default(autoincrement())
-  price      Float
-  isBonus    Boolean
-  from       DateTime
-  until      DateTime?
-  ingredient Ingredient @relation(fields: [ingredientId], references: [id])
+  id             Int        @id @default(autoincrement())
+  price          Float
+  isBonus        Boolean
+  bonusMechanism String?
+  from           DateTime
+  until          DateTime?
+  ingredient     Ingredient @relation(fields: [ingredientId], references: [id])
 
   ingredientId Int
 }
