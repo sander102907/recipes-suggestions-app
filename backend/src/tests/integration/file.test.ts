@@ -3,7 +3,7 @@ import app from "../../app";
 import { StatusCodes } from "http-status-codes";
 import { agent as request } from "supertest";
 import path from 'path';
-import fs from "fs";
+// import fs from "fs";
 
 export const agent = request(app);
 
@@ -83,7 +83,7 @@ describe('upload a image', () => {
                 expect(images.length).toBe(1);
                 expect(response.body.mimetype).toContain("image");
 
-                fs.unlinkSync(response.body.path);
+                // fs.unlinkSync(response.body.path);
             })
     })
 })
