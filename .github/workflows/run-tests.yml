@@ -48,10 +48,10 @@ jobs:
       #   # this is just an example, this could be any command that will trigger jest
       #   test-command: "npm test"
       #   working-directory: "./backend"
-      # uses: artiomtr/jest-coverage-report-action@v2.0.6
-      # with:
-      #   working-directory: ./backend
-      #   package-manager: npm
-      #   test-script: npm test --silent --coverage
-      #   threshold: 80
+      uses: artiomtr/jest-coverage-report-action@v2.0.6
+      with:
+        working-directory: ./backend
+        package-manager: npm
+        test-script: npm test --silent --coverage
+        threshold: 80
     
