@@ -14,7 +14,7 @@ import {
     UploadedFile
 } from "tsoa";
 import { FileService } from "../services/file.service";
-import FileHelper from "../utils/fileHelper";
+// import FileHelper from "../utils/fileHelper";
 import { File } from "@prisma/client";
 
 @Route("files")
