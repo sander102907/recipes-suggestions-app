@@ -10,7 +10,7 @@
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
     "test:local": "yarn docker:up && dotenv -e .env.test yarn prisma migrate deploy && tsoa spec-and-routes && dotenv -e .env.test jest",
-    "test": "npx prisma migrate deploy && tsoa spec-and-routes && jest -i",
+    "test": "npx prisma migrate deploy && tsoa spec-and-routes && jest",
     "migrate": "dotenv -e .env.development npx prisma migrate dev",
     "lint": "eslint . --ext .ts"
   },
