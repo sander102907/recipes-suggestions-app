@@ -12,7 +12,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Run tests & generate coverage report
-      uses: artiomtr/jest-coverage-report-action@v2.0.3
+      uses: artiomtr/jest-coverage-report-action@v2.0.6
       with:
         working-directory: ./frontend
         package-manager: yarn
@@ -38,6 +38,6 @@ jobs:
       with:
         working-directory: ./backend
         package-manager: npm
-        test-script: npm test --silent --coverage --coverageReporters="text" --coverageReporters="text-summary"
+        test-script: npm test --silent --coverage
         threshold: 80
     
