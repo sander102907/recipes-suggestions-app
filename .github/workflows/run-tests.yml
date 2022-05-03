@@ -32,17 +32,16 @@ jobs:
     env:
       DATABASE_URL: mysql://root:prisma@localhost:3306/tests
     steps:
+    - name: User Node.js 14
+      uses: actions/setup-node@v1
+      with:
+        node-version: 14.x
     - uses: actions/checkout@v2
     - name: Run tests & generate coverage report
-      uses: raulanatol/jest-coverage-comment-action@main
+      uses: artiomtr/jest-coverage-report-action@v2.0.6
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        # jest-command: 'npm run test'
-        working-directory: './backend'
-      # uses: artiomtr/jest-coverage-report-action@v2.0.6
-      # with:
-      #   working-directory: ./backend
-      #   package-manager: yarn
-      #   test-script: yarn test --silent --coverage
-      #   threshold: 80
+        working-directory: ./backend
+        package-manager: npm
+        test-script: npm test --silent --coverage
+        threshold: 80
     
