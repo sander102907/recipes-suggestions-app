@@ -35,10 +35,10 @@ jobs:
     - uses: actions/checkout@v2
     - name: Run tests & generate coverage report
       uses: raulanatol/jest-coverage-comment-action@main
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          jest-command: 'npm run test'
-          working-directory: './backend'
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        jest-command: 'npm run test'
+        working-directory: './backend'
       # uses: artiomtr/jest-coverage-report-action@v2.0.6
       # with:
       #   working-directory: ./backend
