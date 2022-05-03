@@ -37,10 +37,11 @@ jobs:
     #   with:
     #     node-version: 17.x
     - uses: actions/checkout@v2
-    - name: Install modules
-      run: npm install
     - name: Run tests
+      run: npm install
       run: npm test
+      with:
+        working-directory: ./backend
     # - name: Run tests & generate coverage report
       # uses: mattallty/jest-github-action@v1
       # env:
