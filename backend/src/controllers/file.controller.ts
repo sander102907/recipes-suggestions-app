@@ -14,7 +14,7 @@ import {
     UploadedFile
 } from "tsoa";
 import { FileService } from "../services/file.service";
-// import FileHelper from "../utils/fileHelper";
+import FileHelper from "../utils/fileHelper";
 import { File } from "@prisma/client";
 
 @Route("files")
@@ -62,9 +62,9 @@ export class FileController extends Controller {
         var extname = filetypes.test(path.extname(file.originalname).toLowerCase());
 
         if (mimetype && extname) {
-            // const filePath = FileHelper.writeFile(path.join("uploads", "images", file.originalname), file.buffer);
+            const filePath = FileHelper.writeFile(path.join("uploads", "images", file.originalname), file.buffer);
             return await FileService.createFile({
-                path: "filePath",
+                path: filePath,
                 mimetype: file.mimetype,
                 createdAt: new Date(),
                 size: file.size

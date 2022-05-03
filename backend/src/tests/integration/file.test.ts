@@ -3,7 +3,6 @@ import app from "../../app";
 import { StatusCodes } from "http-status-codes";
 import { agent as request } from "supertest";
 import path from 'path';
-// import fs from "fs";
 
 export const agent = request(app);
 
@@ -13,13 +12,6 @@ const invalidFilePaths = [
     path.join(__dirname, '..', 'data', 'test_file.txt'),
     path.join(__dirname, '..', 'data', 'test_file.rar')
 ];
-
-const validFilePaths = [
-    path.join(__dirname, '..', 'data', 'test_image.png'),
-    path.join(__dirname, '..', 'data', 'test_image.jpg'),
-    path.join(__dirname, '..', 'data', 'test_image.jpeg')
-];
-
 
 afterAll(async () => {
     await prisma.file.deleteMany()
@@ -62,28 +54,28 @@ describe('upload a image', () => {
             })
     })
 
-    describe('should upload a image and return OK response status', () => {
-        it.each<any | jest.DoneCallback>(validFilePaths)
-            ("file path: %s", async filePath => {
-                const before = new Date();
+    // describe('should upload a image and return OK response status', () => {
+    //     it.each<any | jest.DoneCallback>(validFilePaths)
+    //         ("file path: %s", async filePath => {
+    //             const before = new Date();
 
-                const response = await agent
-                    .post('/files/image')
-                    .attach("file", filePath)
-                    .expect(StatusCodes.OK);
+    //             const response = await agent
+    //                 .post('/files/image')
+    //                 .attach("file", filePath)
+    //                 .expect(StatusCodes.OK);
 
-                const images = await prisma.file.findMany({
-                    where: {
-                        createdAt: {
-                            gt: before
-                        }
-                    }
-                });
+    //             const images = await prisma.file.findMany({
+    //                 where: {
+    //                     createdAt: {
+    //                         gt: before
+    //                     }
+    //                 }
+    //             });
 
-                expect(images.length).toBe(1);
-                expect(response.body.mimetype).toContain("image");
+    //             expect(images.length).toBe(1);
+    //             expect(response.body.mimetype).toContain("image");
 
-                // fs.unlinkSync(response.body.path);
-            })
-    })
+    //             fs.unlinkSync(response.body.path);
+    //         })
+    // })
 })
