@@ -37,8 +37,10 @@ jobs:
     #   with:
     #     node-version: 17.x
     - uses: actions/checkout@v2
-      run: npm install
-      run: npm test
+    - run: npm install
+      with:
+        working-directory: ./backend
+    - run: npm test
       with:
         working-directory: ./backend
     # - name: Run tests & generate coverage report
