@@ -450,6 +450,7 @@ describe('remove all groups from a recipe', () => {
 
         const updatedRecipe = await prisma.recipe.findUnique({ where: { id: recipe.id }, include: { recipeIngredientsGroups: true } });
         expect(updatedRecipe?.recipeIngredientsGroups.length).toBe(0);
+        await prisma.recipe.delete({ where: { id: recipe.id } });
     })
 })
 
