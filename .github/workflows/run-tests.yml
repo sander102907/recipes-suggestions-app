@@ -34,10 +34,15 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Run tests & generate coverage report
-      uses: artiomtr/jest-coverage-report-action@v2.0.6
-      with:
-        working-directory: ./backend
-        package-manager: yarn
-        test-script: yarn test --silent --coverage
-        threshold: 80
+      uses: raulanatol/jest-coverage-comment-action@main
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          jest-command: 'npm run test'
+          working-directory: './backend'
+      # uses: artiomtr/jest-coverage-report-action@v2.0.6
+      # with:
+      #   working-directory: ./backend
+      #   package-manager: yarn
+      #   test-script: yarn test --silent --coverage
+      #   threshold: 80
     
