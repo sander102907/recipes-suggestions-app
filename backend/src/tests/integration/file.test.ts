@@ -83,7 +83,7 @@ describe('upload a image', () => {
                 expect(images.length).toBe(1);
                 expect(response.body.mimetype).toContain("image");
 
-                fs.unlinkSync(response.body.path);
+                // fs.unlinkSync(response.body.path);
             })
     })
 })

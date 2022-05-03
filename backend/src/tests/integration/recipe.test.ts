@@ -150,9 +150,10 @@ describe('create a recipe', () => {
                 expect(response.body.description == validRecipeArgs.description).toBeTruthy()
                 expect(response.body.rating == validRecipeArgs.rating).toBeTruthy()
 
-                const newRecipe = prisma.recipe.findFirst({ where: { name: validRecipeArgs.name } });
+                const newRecipe = await prisma.recipe.findFirst({ where: { name: validRecipeArgs.name } });
                 expect(newRecipe).not.toBeNull();
 
+                await prisma.recipe.delete({ where: { id: newRecipe?.id } });
             })
     })
 })
@@ -193,7 +194,7 @@ describe('update a recipe', () => {
     describe('should update a recipe and return the recipe with an OK response status on valid arguments', () => {
         it.each<any | jest.DoneCallback>(validRecipeArgs)
             ('update recipe with params name: $name, description: $description, rating: $rating', async (validRecipeArgs) => {
-                const recipe = await prisma.recipe.findFirst({ where: { name: validRecipeArgs.name } });
+                const recipe = await prisma.recipe.create({ data: validRecipeArgs });
                 validRecipeArgs.name += ' updated';
 
                 let response;
@@ -217,15 +218,17 @@ describe('update a recipe', () => {
                 expect(validRecipeArgs.description != undefined ? response.body.description == validRecipeArgs.description : response.body.description == recipe?.description).toBeTruthy()
                 expect(validRecipeArgs.rating != undefined ? response.body.rating == validRecipeArgs.rating : response.body.rating == recipe?.rating).toBeTruthy()
 
-                const updatedRecipe = prisma.recipe.findFirst({ where: { name: validRecipeArgs.name } });
+                const updatedRecipe = await prisma.recipe.findFirst({ where: { name: validRecipeArgs.name } });
                 expect(updatedRecipe).not.toBeNull();
+
+                await prisma.recipe.delete({ where: { id: updatedRecipe?.id } });
             })
     })
 })
 
 describe('delete a recipe', () => {
     it('should delete a recipe and return with an OK response status', async () => {
-        const recipe = await prisma.recipe.findFirst({ where: { name: { contains: validRecipeArgs[0].name } } });
+        const recipe = await prisma.recipe.create({ data: validRecipeArgs[0] });
 
         await agent
             .delete(`/recipes/${recipe?.id}`)
@@ -237,8 +240,8 @@ describe('delete a recipe', () => {
             }
         })
 
-        expect(deletedRecipe).toBeNull()
-    })
+        expect(deletedRecipe).toBeNull();
+    });
 
     it('should send status NOT FOUND if no recipe with ID is found', async () => {
         var response = await agent
