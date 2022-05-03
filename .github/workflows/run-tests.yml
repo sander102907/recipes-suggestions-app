@@ -37,12 +37,9 @@ jobs:
     #   with:
     #     node-version: 17.x
     - uses: actions/checkout@v2
-    - run: npm install
-      with:
-        working-directory: ./backend
-    - run: npm test
-      with:
-        working-directory: ./backend
+    - name: Run tests
+      working-directory: ./backend
+      run: npm install && npm test
     # - name: Run tests & generate coverage report
       # uses: mattallty/jest-github-action@v1
       # env:
