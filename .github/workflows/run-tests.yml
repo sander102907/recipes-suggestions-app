@@ -34,7 +34,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Run tests & generate coverage report
-      uses: artiomtr/jest-coverage-report-action@v2
+      uses: artiomtr/jest-coverage-report-action@v2.0.6
       with:
         working-directory: ./backend
         package-manager: npm
