@@ -38,6 +38,6 @@ jobs:
       with:
         working-directory: ./backend
         package-manager: npm
-        test-script: npm test --silent --coverage --coverageReporters="text" --coverageReporters="text-summary" --testTimeout=30000
+        test-script: npm test --silent --coverage --coverageReporters="text" --coverageReporters="text-summary"
         threshold: 80
     
