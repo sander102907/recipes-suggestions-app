@@ -37,14 +37,18 @@ jobs:
     #   with:
     #     node-version: 17.x
     - uses: actions/checkout@v2
-    - name: Run tests & generate coverage report
-      uses: mattallty/jest-github-action@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        # this is just an example, this could be any command that will trigger jest
-        test-command: "npm test"
-        working-directory: "./backend"
+    - name: Install modules
+      run: npm install
+    - name: Run tests
+      run: npm test
+    # - name: Run tests & generate coverage report
+      # uses: mattallty/jest-github-action@v1
+      # env:
+      #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # with:
+      #   # this is just an example, this could be any command that will trigger jest
+      #   test-command: "npm test"
+      #   working-directory: "./backend"
       # uses: artiomtr/jest-coverage-report-action@v2.0.6
       # with:
       #   working-directory: ./backend
