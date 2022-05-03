@@ -32,10 +32,10 @@ jobs:
     env:
       DATABASE_URL: mysql://root:prisma@localhost:3306/tests
     steps:
-    - name: User Node.js 14
+    - name: Use Node.js
       uses: actions/setup-node@v1
       with:
-        node-version: 14.x
+        node-version: 17.x
     - uses: actions/checkout@v2
     - name: Run tests & generate coverage report
       uses: artiomtr/jest-coverage-report-action@v2.0.6
