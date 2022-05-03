@@ -37,7 +37,7 @@ jobs:
       uses: artiomtr/jest-coverage-report-action@v2.0.6
       with:
         working-directory: ./backend
-        package-manager: npm
-        test-script: npm test --silent --coverage
+        package-manager: yarn
+        test-script: yarn test --silent --coverage
         threshold: 80
     
