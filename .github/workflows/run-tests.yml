@@ -40,7 +40,7 @@ jobs:
     # - name: Run tests
       # working-directory: ./backend
       # run: npm install && npm test
-    # - name: Run tests & generate coverage report
+    - name: Run tests & generate coverage report
       # uses: mattallty/jest-github-action@v1
       # env:
       #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
