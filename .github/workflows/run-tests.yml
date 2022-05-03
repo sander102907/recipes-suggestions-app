@@ -37,7 +37,6 @@ jobs:
     #   with:
     #     node-version: 17.x
     - uses: actions/checkout@v2
-    - name: Run tests
       run: npm install
       run: npm test
       with:
