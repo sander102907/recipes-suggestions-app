@@ -14,6 +14,7 @@ RUN npm ci --only=prod
 # Bundle app source
 COPY ./ ./
 
+RUN npm install -g tsoa
 RUN npm run build 
 
 CMD ["npm", "run", "start:migrate"]
