@@ -9,10 +9,11 @@ WORKDIR /backend
 # where available (npm@5+)
 COPY ./package*.json ./
 
-RUN npm ci
+RUN npm ci --only=prod
 
 # Bundle app source
 COPY ./ ./
 
-CMD ["npm", "run", "start"]
+RUN npm run build 
 
+CMD ["npm", "run", "start:migrate"]

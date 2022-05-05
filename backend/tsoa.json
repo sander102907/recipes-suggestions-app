@@ -1,0 +1,22 @@
+{
+    "entryFile": "src/server.ts",
+    "noImplicitAdditionalProperties": "throw-on-extras",
+    "controllerPathGlobs": [
+        "src/**/*controller.ts"
+    ],
+    "spec": {
+        "outputDirectory": "build",
+        "specVersion": 3,
+        "basePath": "/api/",
+        "name": "Recipe app REST API",
+        "description": "The REST API for the app https://recipes.sdebruin.nl",
+        "contact": {
+            "email": "s.d.bruin@hotmail.com",
+            "name": "Sander de Bruin",
+            "url": "https://sdebruin.nl"
+        }
+    },
+    "routes": {
+        "routesDir": "build"
+    }
+}

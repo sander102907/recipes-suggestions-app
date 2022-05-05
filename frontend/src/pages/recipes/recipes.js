@@ -65,13 +65,13 @@ const Recipes = () => {
     });
   };
 
-  const openEditRecipeModal = (recipe, groups) => {
+  const openEditRecipeModal = (recipe) => {
     setEditRecipe({
       id: recipe.id,
       name: recipe.name,
       description: recipe.description == null ? "" : recipe.description,
       rating: recipe.rating,
-      groups: groups,
+      groups: recipe.recipeIngredientsGroups,
     });
     setEdit(true);
     setShowModal(true);
@@ -79,7 +79,7 @@ const Recipes = () => {
 
   const getTotalPrice = () => {
     return recipes
-      .map((recipe) => Number(recipe.min_price))
+      .map((recipe) => Number(recipe.minPrice))
       .reduce((a, b) => a + b, 0)
       .toFixed(2);
   };
@@ -90,7 +90,7 @@ const Recipes = () => {
 
   const getTotalBonus = () => {
     return recipes
-      .map((recipe) => Number(recipe.min_price) - Number(recipe.bonus_price))
+      .map((recipe) => Number(recipe.minPrice) - Number(recipe.bonusPrice))
       .reduce((a, b) => a + b, 0)
       .toFixed(2);
   };

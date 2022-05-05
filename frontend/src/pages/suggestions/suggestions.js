@@ -12,14 +12,14 @@ const Suggestions = () => {
 
   const getTotalCost = () => {
     return suggestedRecipes
-      .map((recipe) => Number(recipe.min_price))
+      .map((recipe) => Number(recipe.minPrice))
       .reduce((a, b) => a + b, 0)
       .toFixed(2);
   };
 
   const getTotalBonus = () => {
     return suggestedRecipes
-      .map((recipe) => Number(recipe.min_price) - Number(recipe.bonus_price))
+      .map((recipe) => Number(recipe.minPrice) - Number(recipe.bonusPrice))
       .reduce((a, b) => a + b, 0)
       .toFixed(2);
   };
@@ -30,7 +30,7 @@ const Suggestions = () => {
 
   const getSuggestions = () => {
     axios.get("/api/recipes/suggest").then((response) => {
-      setsuggestedRecipes(response.data.recipes);
+      setsuggestedRecipes(response.data);
       setShareText(response.data.shareText);
     });
   };

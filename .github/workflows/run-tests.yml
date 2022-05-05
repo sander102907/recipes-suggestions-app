@@ -1,0 +1,39 @@
+name: Test Application
+
+on:
+  pull_request:
+    branches: [main, master]
+    types: [opened, reopened, synchronize]
+
+jobs:
+  test-frontend:
+    name: Test frontend
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run tests & generate coverage report
+      uses: artiomtr/jest-coverage-report-action@v2.0.6
+      with:
+        working-directory: ./frontend
+        package-manager: yarn
+        test-script: yarn test --silent --coverage --coverageReporters="text" --coverageReporters="text-summary"
+        #threshold: 80
+  test-backend:
+    name: Test backend
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql
+        env:
+          MYSQL_ROOT_PASSWORD: prisma
+          MYSQL_DATABASE: tests
+        ports:
+          - 3306:3306
+    env:
+      DATABASE_URL: mysql://root:prisma@localhost:3306/tests
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run tests
+      working-directory: ./backend
+      run: npm install && npm test
+    
