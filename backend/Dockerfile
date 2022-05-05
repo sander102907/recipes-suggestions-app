@@ -16,7 +16,7 @@ COPY ./ ./
 
 RUN npm install -g tsoa
 RUN npm install -g prisma
-RUN npx prisma generate
+RUN prisma generate
 RUN npm run build 
 
 CMD ["npm", "run", "start:migrate"]
