@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon",
-    "start": "npm run build && node ./build/src/server.js",
+    "start": "node ./build/src/server.js",
+    "start:migrate": "prisma migrate deploy && npm run start",
     "build": "tsoa spec-and-routes && tsc",
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
