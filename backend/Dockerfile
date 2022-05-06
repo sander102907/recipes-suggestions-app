@@ -49,4 +49,6 @@ RUN npm install --production
 
 COPY --from=builder /backend/build .
 
+RUN npm install prisma@3.2.1 -g
+
 CMD ["npm", "run", "start:migrate"]
