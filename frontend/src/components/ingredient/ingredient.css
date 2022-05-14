@@ -1,0 +1,59 @@
+img {
+  width: 100px;
+}
+
+.ingredient-item {
+  padding: 10px 0px;
+  text-align: center;
+  max-width: 150px;
+  min-width: 100px;
+  display: inline-block;
+  vertical-align: top;
+  margin: 15px;
+  white-space: normal;
+}
+
+.image-container {
+  margin: auto;
+  border-radius: 50%;
+  border: 1px solid rgb(238, 238, 238);
+  width: 100px;
+  position: relative;
+}
+
+.image {
+  padding: 16px;
+}
+
+.image-container .bonus-badge {
+  position: absolute;
+  right: -20px;
+  top: 10px;
+  background-color: orangered !important;
+}
+
+.image-container .amount-badge {
+  position: absolute;
+  left: 7px;
+  bottom: 0px;
+  border-radius: 50%;
+  background-color: rgb(81, 156, 255) !important;
+}
+
+.price-integer {
+  font-size: 24px;
+}
+
+.price-decimal {
+  font-size: 13px;
+  right: -1px;
+  top: -7px;
+  position: relative;
+}
+
+.unit-size {
+  font-size: 11px;
+  position: relative;
+  color: rgb(109, 109, 109);
+  right: -3px;
+}

@@ -1,0 +1,5 @@
+.row .column {
+    width: 25rem;
+    max-width: 92%;
+    margin: 10px auto;
+}
