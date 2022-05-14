@@ -1,6 +1,5 @@
 import IngredientParams from "../interfaces/IngredientParams";
 import { StatusCodes } from 'http-status-codes';
-import { CronJob } from 'cron';
 import {
     Body,
     Controller,
