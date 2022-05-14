@@ -1,6 +1,5 @@
 import IngredientParams from "../interfaces/IngredientParams";
 import { StatusCodes } from 'http-status-codes';
-import { CronJob } from 'cron';
 import {
     Body,
     Controller,
@@ -35,13 +34,6 @@ export class IngredientController extends Controller {
         super();
         this.ahClient = new AH();
         this.ingredientHelper = new IngredientHelper(this.ahClient);
-
-        // Synchronize all ingredients every night at 02:00
-        new CronJob('* 2 * * *', () => {
-            console.log("running daily cron schedule to update ingredients");
-
-            this.ingredientHelper.syncAllIngredients();
-        });
     }
 
     /**
