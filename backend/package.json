@@ -7,7 +7,7 @@
     "dev": "nodemon",
     "start": "node ./build/src/server.js",
     "start:migrate": "prisma migrate deploy && npm run start",
-    "build": "tsoa spec-and-routes && tsc && cp ./src/swaggerDarkTheme.css ./build/src/swaggerDarkTheme.css",
+    "build": "tsoa spec-and-routes && tsc",
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
     "test:local": "yarn docker:up && dotenv -e .env.test yarn prisma migrate deploy && tsoa spec-and-routes && dotenv -e .env.test jest",
