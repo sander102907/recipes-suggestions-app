@@ -5,7 +5,7 @@ import { Icon } from "react-bootstrap-icons";
 import { Container, Row, Col } from "react-bootstrap";
 import { Recipe } from "../../interfaces/Recipe";
 import RecipeCard from "../recipeCard/recipeCard";
-import RecipeDetailCard from "../recipeDetailCard/recipeDetailCard";
+import RecipeDetailModal from "../recipeDetailModal/recipeDetailModal";
 
 type Props = {
   getRecipesUrl: string
@@ -17,6 +17,8 @@ type Props = {
 const RecipeList = ({ getRecipesUrl, SecondButtonIcon, onRemove, onSecondButtonClick }: Props) => {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe>();
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [expandedIndex, setExpandedIndex] = useState<number>();
 
   useEffect(() => {
     getRecipes();
@@ -28,15 +30,24 @@ const RecipeList = ({ getRecipesUrl, SecondButtonIcon, onRemove, onSecondButtonC
     });
   };
 
+  const onClickRecipeCard = (recipe: Recipe) => {
+    setSelectedRecipe(recipe);
+    setShowModal(true);
+  }
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  }
+
   const recipeCards = recipes.map((recipe, index) =>
-    <div className="column">
+    <div className={`${index == expandedIndex && 'expanded'} column`}>
       <RecipeCard
         recipe={recipe}
         SecondButtonIcon={SecondButtonIcon}
         onRemove={onRemove}
         onSecondButtonClick={onSecondButtonClick}
         key={index}
-        onClick={(recipe) => setSelectedRecipe(recipe)}
+        onClick={() => onClickRecipeCard(recipe)}
       />
     </div>
   );
@@ -44,7 +55,7 @@ const RecipeList = ({ getRecipesUrl, SecondButtonIcon, onRemove, onSecondButtonC
   return (
     <Container className="recipe-cards" fluid>
       <Row>{recipeCards}</Row>
-      <Row>{selectedRecipe && <RecipeDetailCard recipe={selectedRecipe} />}</Row>
+      <Row>{selectedRecipe && <RecipeDetailModal recipe={selectedRecipe} show={showModal} handleClose={handleCloseModal} />}</Row>
     </Container>
   );
 };

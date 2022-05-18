@@ -8,4 +8,9 @@
 .ingredient-list {
   white-space: nowrap;
   overflow-x: hidden;
+  display: flex;
+}
+
+.ingredients-title {
+  text-align: center;
 }
