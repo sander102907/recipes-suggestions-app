@@ -1,0 +1,10 @@
+.row .column {
+    width: 25rem;
+    max-width: 92%;
+    margin: 10px auto;
+    transition: all 300ms ease-in-out;
+}
+
+.column.expanded {
+    width: 100%;
+}
