@@ -39,6 +39,9 @@ RUN npm install -g tsoa
 RUN npx prisma generate
 RUN npm run build 
 
+# Copy the swagger css file to the build folder
+COPY ./src/swaggerDarkTheme.css ./build/src/swaggerDarkTheme.css
+
 # production environment
 FROM arm32v7/node:18-alpine
 WORKDIR /backend
