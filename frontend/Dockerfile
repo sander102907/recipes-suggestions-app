@@ -1,11 +1,12 @@
 # recipes subdomain frontend
-FROM arm32v7/node:18-alpine as builder
+FROM arm32v7/node:16-alpine as builder
 # Create app directory
 WORKDIR /frontend
 
 # Install app dependencies
 COPY ./package.json ./
 COPY ./yarn.lock ./
+COPY ./.env ./
 
 RUN yarn install --production --network-timeout=1000000
 

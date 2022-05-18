@@ -1,13 +1,11 @@
-# recipes subdomain backend
-# build the backend first
-FROM arm32v7/node:18-slim as builder
+# recipes subdomain frontend
+FROM arm32v7/node:18-slim
 # Create app directory
 WORKDIR /backend
 
 RUN apt-get update
 RUN apt-get -y install openssl wget
 
-# prisma is not build for arm32, so download the binaries and setup a custom engine
 RUN wget --quiet https://github.com/pantharshit00/prisma-rpi-builds/releases/download/3.2.1/query-engine
 RUN wget --quiet https://github.com/pantharshit00/prisma-rpi-builds/releases/download/3.2.1/libquery_engine.so
 RUN wget --quiet https://github.com/pantharshit00/prisma-rpi-builds/releases/download/3.2.1/introspection-engine
@@ -29,7 +27,10 @@ ENV PRISMA_CLI_QUERY_ENGINE_TYPE binary
 ENV PRISMA_QUERY_ENGINE_TYPE binary
 
 # Install app dependencies
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+# where available (npm@5+)
 COPY ./package*.json ./
+
 RUN npm install
 
 # Bundle app source
@@ -38,20 +39,5 @@ COPY ./ ./
 RUN npm install -g tsoa
 RUN npx prisma generate
 RUN npm run build 
-
-# Copy the swagger css file to the build folder
-COPY ./src/swaggerDarkTheme.css ./build/src/swaggerDarkTheme.css
-
-# production environment
-FROM arm32v7/node:18-alpine
-WORKDIR /backend
-
-COPY ./package*.json ./
-
-RUN npm install --production
-
-COPY --from=builder /backend/build .
-
-RUN npm install prisma@3.2.1 -g
 
 CMD ["npm", "run", "start:migrate"]
