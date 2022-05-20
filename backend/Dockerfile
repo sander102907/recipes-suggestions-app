@@ -45,12 +45,6 @@ COPY ./src/swaggerDarkTheme.css ./build/src/swaggerDarkTheme.css
 FROM arm32v7/node:18-slim
 WORKDIR /backend/build
 
-COPY ./package*.json ./
-
-RUN npm install --omit=dev
-
-COPY --from=builder /backend/build .
-
 RUN apt-get update
 RUN apt-get -y install openssl wget
 
@@ -74,6 +68,12 @@ ENV PRISMA_MIGRATION_ENGINE_BINARY /backend/migration-engine
 ENV PRISMA_FMT_BINARY /backend/prisma-fmt
 ENV PRISMA_CLI_QUERY_ENGINE_TYPE binary
 ENV PRISMA_QUERY_ENGINE_TYPE binary
+
+COPY ./package*.json ./
+
+RUN npm install --omit=dev
+
+COPY --from=builder /backend/build .
 
 RUN npm install prisma@3.2.1 -g
 
