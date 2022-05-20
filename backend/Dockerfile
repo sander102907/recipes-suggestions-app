@@ -1,8 +1,31 @@
 # recipes subdomain backend
 # build the backend first
-FROM arm32v7/node:18-slim as builder
+FROM arm32v7/node:18-alpine as builder
 # Create app directory
 WORKDIR /backend
+
+# Install app dependencies
+COPY ./package*.json ./
+RUN npm install
+
+# Bundle app source
+COPY ./ ./
+
+RUN npm install -g tsoa
+RUN npx prisma generate
+RUN npm run build 
+
+COPY ./src/swaggerDarkTheme.css ./build/src/swaggerDarkTheme.css
+
+# production environment
+FROM arm32v7/node:18-slim
+WORKDIR /backend/build
+
+COPY ./package*.json ./
+
+RUN npm install --production
+
+COPY --from=builder /backend/build .
 
 RUN apt-get update
 RUN apt-get -y install openssl wget
@@ -27,29 +50,6 @@ ENV PRISMA_MIGRATION_ENGINE_BINARY /backend/migration-engine
 ENV PRISMA_FMT_BINARY /backend/prisma-fmt
 ENV PRISMA_CLI_QUERY_ENGINE_TYPE binary
 ENV PRISMA_QUERY_ENGINE_TYPE binary
-
-# Install app dependencies
-COPY ./package*.json ./
-RUN npm install
-
-# Bundle app source
-COPY ./ ./
-
-RUN npm install -g tsoa
-RUN npx prisma generate
-RUN npm run build 
-
-COPY ./src/swaggerDarkTheme.css ./build/src/swaggerDarkTheme.css
-
-# production environment
-FROM arm32v7/node:18-alpine
-WORKDIR /backend/build
-
-COPY ./package*.json ./
-
-RUN npm install --production
-
-COPY --from=builder /backend/build .
 
 RUN npm install prisma@3.2.1 -g
 
