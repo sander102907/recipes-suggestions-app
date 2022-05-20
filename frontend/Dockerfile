@@ -7,7 +7,7 @@ WORKDIR /frontend
 COPY ./package.json ./
 COPY ./yarn.lock ./
 
-RUN yarn install --production --network-timeout=1000000
+RUN yarn install --network-timeout=1000000
 
 # Bundle app source
 COPY ./ ./
