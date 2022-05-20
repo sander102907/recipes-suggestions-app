@@ -1,31 +1,8 @@
 # recipes subdomain backend
 # build the backend first
-FROM arm32v7/node:18-alpine as builder
+FROM arm32v7/node:18-slim as builder
 # Create app directory
 WORKDIR /backend
-
-# Install app dependencies
-COPY ./package*.json ./
-RUN npm install
-
-# Bundle app source
-COPY ./ ./
-
-RUN npm install -g tsoa
-RUN npx prisma generate
-RUN npm run build 
-
-COPY ./src/swaggerDarkTheme.css ./build/src/swaggerDarkTheme.css
-
-# production environment
-FROM arm32v7/node:18-slim
-WORKDIR /backend/build
-
-COPY ./package*.json ./
-
-RUN npm install --production
-
-COPY --from=builder /backend/build .
 
 RUN apt-get update
 RUN apt-get -y install openssl wget
