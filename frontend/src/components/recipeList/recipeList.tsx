@@ -1,34 +1,24 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./recipeList.css";
-import { Icon } from "react-bootstrap-icons";
-import { Container, Row, Col } from "react-bootstrap";
+import { Icon, Plus, PlusCircle } from "react-bootstrap-icons";
+import { Container, Row, Col, Card } from "react-bootstrap";
 import { Recipe } from "../../interfaces/Recipe";
 import RecipeCard from "../recipeCard/recipeCard";
 import RecipeDetailModal from "../recipeDetailModal/recipeDetailModal";
+import { motion } from "framer-motion";
 
 type Props = {
-  getRecipesUrl: string
+  recipes: Recipe[]
   SecondButtonIcon: Icon,
   onRemove: (recipeId: number) => void,
-  onSecondButtonClick: (recipe: Recipe) => void
+  onSecondButtonClick: (recipe: Recipe) => void,
+  onNewRecipeButtonClick?: () => void
 }
 
-const RecipeList = ({ getRecipesUrl, SecondButtonIcon, onRemove, onSecondButtonClick }: Props) => {
-  const [recipes, setRecipes] = useState<Recipe[]>([]);
+const RecipeList = ({ recipes, SecondButtonIcon, onRemove, onSecondButtonClick, onNewRecipeButtonClick }: Props) => {
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe>();
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [expandedIndex, setExpandedIndex] = useState<number>();
-
-  useEffect(() => {
-    getRecipes();
-  }, []);
-
-  const getRecipes = () => {
-    axios.get(getRecipesUrl).then((response) => {
-      setRecipes(response.data);
-    });
-  };
 
   const onClickRecipeCard = (recipe: Recipe) => {
     setSelectedRecipe(recipe);
@@ -39,12 +29,39 @@ const RecipeList = ({ getRecipesUrl, SecondButtonIcon, onRemove, onSecondButtonC
     setShowModal(false);
   }
 
+  const newRecipeCard = () =>
+    <div className="recipe-card-container">
+      <motion.div
+        whileHover={{
+          scale: 1.05,
+          transition: { duration: 0.2 },
+        }}
+        style={{ display: 'flex' }}>
+        <Card
+          className="recipeCard"
+          onClick={onNewRecipeButtonClick}
+          style={{
+            minHeight: '10rem',
+            alignItems: 'center',
+            backgroundColor: 'darkred',
+            color: 'white',
+            justifyContent: 'space-around'
+          }}>
+          <PlusCircle size={60} />
+          <span style={{ fontSize: '20px', fontWeight: '500', position: 'absolute', bottom: '10%' }}>
+
+            Nieuw Recept
+          </span>
+        </Card>
+      </motion.div>
+    </div >
+
   const recipeCards = recipes.map((recipe, index) =>
-    <div className={`${index == expandedIndex && 'expanded'} column`}>
+    <div className="recipe-card-container">
       <RecipeCard
         recipe={recipe}
         SecondButtonIcon={SecondButtonIcon}
-        onRemove={onRemove}
+        onRemove={() => onRemove(recipe.id)}
         onSecondButtonClick={onSecondButtonClick}
         key={index}
         onClick={() => onClickRecipeCard(recipe)}
@@ -52,11 +69,17 @@ const RecipeList = ({ getRecipesUrl, SecondButtonIcon, onRemove, onSecondButtonC
     </div>
   );
 
+  if (onNewRecipeButtonClick) {
+    recipeCards.splice(0, 0, newRecipeCard());
+  }
+
   return (
-    <Container className="recipe-cards" fluid>
-      <Row>{recipeCards}</Row>
-      <Row>{selectedRecipe && <RecipeDetailModal recipe={selectedRecipe} show={showModal} handleClose={handleCloseModal} />}</Row>
-    </Container>
+    <>
+      <div className="recipe-cards">
+        {recipeCards}
+      </div>
+      {selectedRecipe && <RecipeDetailModal recipe={selectedRecipe} show={showModal} handleClose={handleCloseModal} />}
+    </>
   );
 };
 

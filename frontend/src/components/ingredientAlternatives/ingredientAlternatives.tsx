@@ -5,20 +5,23 @@ import Ingredient from "../ingredient/ingredient";
 
 type Props = {
   ingredientInGroups: IngredientsInGroup[],
+  showAmount?: boolean,
 }
 
-const IngredientAlternatives = ({ ingredientInGroups }: Props) => {
+const IngredientAlternatives = ({ ingredientInGroups, showAmount = true }: Props) => {
   return (
-    <div className={"container"}>
+    <div className={"alternatives-container"}>
       <h5>Alternatief</h5>
-      {ingredientInGroups.map((ingr, index) => {
-        return (
-          <>
-            <Ingredient ingredientInGroup={ingr} />
-            {index < ingredientInGroups.length - 1 && <hr />}
-          </>
-        )
-      })}
+      <div className={"alternatives-list"}>
+        {ingredientInGroups.map((ingr, index) => {
+          return (
+            <>
+              <Ingredient ingredientInGroup={ingr} showAmount={showAmount} />
+              {index < ingredientInGroups.length - 1 && <hr />}
+            </>
+          )
+        })}
+      </div>
     </div>
   );
 };

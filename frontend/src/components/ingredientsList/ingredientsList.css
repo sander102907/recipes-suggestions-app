@@ -5,6 +5,10 @@
   overflow-x: hidden;
 }
 
+.ingredient-list-container {
+  display: flex;
+}
+
 .ingredient-list {
   white-space: nowrap;
   overflow-x: hidden;
@@ -13,4 +17,35 @@
 
 .ingredients-title {
   text-align: center;
+}
+
+.ingredient-list-arrow-button {
+  background-color: white;
+  padding: 5px 3px 3px 5px;
+  cursor: pointer;
+  height: fit-content;
+  margin: auto 5px;
+}
+
+@media screen and (max-width: 768px) {
+  .ingredient-list-arrow-button {
+    display: none;
+  }
+
+  .ingredient-list {
+    overflow-x: auto;
+    padding: 0 20px;
+  }
+
+  .suggestion-card-body.modal-body {
+    padding: 0;
+  }
+
+  .current-price {
+    margin-right: 20px;
+  }
+
+  .ingredients {
+    padding: 0;
+  }
 }

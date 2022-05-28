@@ -1,20 +1,28 @@
-import React, { useState } from "react";
 import { Badge, OverlayTrigger, Popover } from "react-bootstrap";
 import "./ingredient.css";
 import { IngredientsInGroup } from "../../interfaces/IngredientsInGroup";
-import { Shuffle } from "react-bootstrap-icons";
+import { Icon, Shuffle } from "react-bootstrap-icons";
 import IngredientAlternatives from "../ingredientAlternatives/ingredientAlternatives";
 type Props = {
   ingredientInGroup: IngredientsInGroup,
-  alternativeIngredientInGroups?: IngredientsInGroup[]
+  alternativeIngredientInGroups?: IngredientsInGroup[],
+  showAmount?: boolean,
+  ButtonIcon?: Icon,
+  onButtonClick?: () => void
 }
 
-const Ingredient = ({ ingredientInGroup, alternativeIngredientInGroups }: Props) => {
+const Ingredient = ({
+  ingredientInGroup,
+  alternativeIngredientInGroups,
+  showAmount = true,
+  ButtonIcon,
+  onButtonClick
+}: Props) => {
   const ingredient = ingredientInGroup.ingredient;
 
   const alternativesPopover = (alternativeIngredientInGroups ? <Popover id="popover-basic">
     <Popover.Body>
-      <IngredientAlternatives ingredientInGroups={alternativeIngredientInGroups} />
+      <IngredientAlternatives ingredientInGroups={alternativeIngredientInGroups} showAmount={showAmount} />
     </Popover.Body>
   </Popover> : undefined);
 
@@ -29,15 +37,18 @@ const Ingredient = ({ ingredientInGroup, alternativeIngredientInGroups }: Props)
             {ingredient.bonusMechanism}
           </Badge>
         )}
-        <Badge
+        {showAmount && <Badge
           className="amount-badge"
         >
           {ingredientInGroup.amount}
-        </Badge>
+        </Badge>}
         {alternativesPopover &&
-          <OverlayTrigger trigger="click" placement="top" overlay={alternativesPopover}>
+          <OverlayTrigger trigger="click" rootClose overlay={alternativesPopover} placement={'auto'}>
             <Shuffle className="alternatives-button" size={26} />
           </OverlayTrigger>
+        }
+        {ButtonIcon &&
+          <ButtonIcon className="param-button" size={26} onClick={onButtonClick} />
         }
       </div>
       <div className="info">

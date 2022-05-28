@@ -1,10 +1,12 @@
 .card.recipeCard {
-  margin: 0 3px;
   padding: 0;
   border-radius: 1.5rem;
   cursor: pointer;
   -webkit-box-shadow: 0px 1px 1px 0px rgba(150, 150, 150, 0.9);
   box-shadow: 0px 1px 1px 0px rgba(150, 150, 150, 0.9);
+  width: 20rem;
+  max-width: 98%;
+  margin: 0 auto 0 auto;
 }
 
 .card.recipeCard:hover {
@@ -53,6 +55,7 @@ svg {
 
 .rating {
   font-size: medium;
+  min-width: 28px;
 }
 
 .itemDetails {
@@ -101,6 +104,7 @@ svg {
 .suggestion-card-body {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
 }
 
 .ingredients {

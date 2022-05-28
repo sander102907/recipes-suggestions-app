@@ -2,7 +2,7 @@ import { IngredientsInGroup } from "./IngredientsInGroup";
 
 
 export interface RecipeIngredientsGroup {
-    id: number;
+    id?: number;
     recipeId: number;
     ingredientsInGroup: IngredientsInGroup[];
 }

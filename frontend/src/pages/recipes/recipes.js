@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import "./recipes.css";
 import axios from "axios";
-import { Button, Container, Row, Card, Modal } from "react-bootstrap";
-import RecipeCard from "../../components/recipeCard/recipeCard";
-import { Plus, Pencil } from "react-bootstrap-icons";
+import { Button, Modal } from "react-bootstrap";
+import { Pencil } from "react-bootstrap-icons";
 import RecipeModal from "../../components/recipeModal/recipeModal";
 import SearchBar from "../../components/searchBar/searchBar";
+import RecipeList from "../../components/recipeList/recipeList";
+
 
 const Recipes = () => {
   const [recipes, setRecipes] = useState([]);
@@ -14,30 +15,27 @@ const Recipes = () => {
     show: false,
     recipe_id: null,
   });
-  const [editRecipe, setEditRecipe] = useState({
-    id: null,
-    name: "",
-    description: "",
-    rating: 0,
-    groups: [],
-  });
-  const [edit, setEdit] = useState(false);
+  const [editRecipe, setEditRecipe] = useState(null);
+
+  const [recipesUrl, setRecipesUrl] = useState("/api/recipes");
+
+  const searchRecipes = (query) => {
+    if (query.length < 2) {
+      setRecipesUrl(`/api/recipes`);
+    } else {
+      setRecipesUrl(`/api/recipes/search?query=${query}`);
+    }
+  }
 
   useEffect(() => {
     getRecipes();
-  }, []);
+  }, [recipesUrl]);
 
   const getRecipes = () => {
-    axios.get("/api/recipes").then((response) => {
+    axios.get(recipesUrl).then((response) => {
       setRecipes(response.data);
     });
   };
-
-  const searchRecipes = (query) => {
-    axios.get(`/api/recipes/search?query=${query}`).then((response) => {
-      setRecipes(response.data);
-    });
-  }
 
   const handleRemove = (recipe_id) => {
     setRemovePopup({
@@ -46,15 +44,15 @@ const Recipes = () => {
     });
   };
 
-  const handleRemoveConfirm = () => {
+  const handleRemoveConfirm = async () => {
     if (removePopup.show && removePopup.recipe_id) {
-      axios.delete(`/api/recipes/${removePopup.recipe_id}`).then(() => {
-        setRemovePopup({
-          show: false,
-          recipe_id: null,
-        });
-        getRecipes();
+      await axios.delete(`/api/recipes/${removePopup.recipe_id}`);
+      setRemovePopup({
+        show: false,
+        recipe_id: null,
       });
+
+      getRecipes();
     }
   };
 
@@ -65,15 +63,13 @@ const Recipes = () => {
     });
   };
 
+  const openNewRecipeModal = () => {
+    setEditRecipe(null);
+    setShowModal(true);
+  }
+
   const openEditRecipeModal = (recipe) => {
-    setEditRecipe({
-      id: recipe.id,
-      name: recipe.name,
-      description: recipe.description == null ? "" : recipe.description,
-      rating: recipe.rating,
-      groups: recipe.recipeIngredientsGroups,
-    });
-    setEdit(true);
+    setEditRecipe(recipe);
     setShowModal(true);
   };
 
@@ -99,85 +95,40 @@ const Recipes = () => {
     return (getTotalBonus() / recipes.length).toFixed(2);
   };
 
-  const recipeCards = recipes.map((val, index) => {
-    return (
-      <RecipeCard
-        recipe={val}
-        getRecipes={getRecipes}
-        key={index}
-        index={index}
-        secondButtonIcon={Pencil}
-        onRemove={handleRemove}
-        onSecondButtonClick={openEditRecipeModal}
-      />
-    );
-  });
-
   return (
     <div className="Recipes">
-      <Container className="info" fluid>
-        <Row>
-          <SearchBar
-            placeholderText={"Search recipes.."}
-            onSearch={(query) => searchRecipes(query)}
-          />
-        </Row>
-        <Row>
-          <Card className="info-item">
-            <div className="card-body info-body">
-              <span className="info-card-text">Average cost:</span>
-              <span className="info-card-amount">€{getAveragePrice()}</span>
-            </div>
-          </Card>
-
-          <Card className="info-item">
-            <div className="card-body info-body">
-              <span className="info-card-text">Average bonus:</span>
-              <span className="info-card-amount">€{getAverageBonus()}</span>
-            </div>
-          </Card>
-
-          <Card className="info-item">
-            <div className="card-body info-body">
-              <span className="info-card-text">Total bonus:</span>
-              <span className="info-card-amount">€{getTotalBonus()}</span>
-            </div>
-          </Card>
-          <Button className="info-item" onClick={() => setShowModal(true)}>
-            <Plus size={24} />
-            Add
-          </Button>
-        </Row>
-      </Container>
-      <Container>
-        <Row>{recipeCards}</Row>
-      </Container>
+      <SearchBar
+        placeholderText={"Zoeken naar recepten.."}
+        onSearch={(query) => searchRecipes(query)}
+      />
+      <RecipeList
+        recipes={recipes}
+        SecondButtonIcon={Pencil}
+        onRemove={handleRemove}
+        onSecondButtonClick={openEditRecipeModal}
+        onNewRecipeButtonClick={openNewRecipeModal}
+      />
       <RecipeModal
+        recipe={editRecipe}
         show={showModal}
         onHide={() => {
           setShowModal(false);
-          setEdit(false);
+          setEditRecipe(null);
+          getRecipes();
         }}
-        getRecipes={getRecipes}
-        edit={edit}
-        id={editRecipe.id}
-        name={editRecipe.name}
-        description={editRecipe.description}
-        rating={editRecipe.rating}
-        groups={editRecipe.groups}
       />
       <Modal show={removePopup.show}>
         <Modal.Header closeButton>
-          <Modal.Title>Delete Recipe</Modal.Title>
+          <Modal.Title style={{ padding: "12px" }}>Delete Recipe</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           Are you sure that you want to delete this recipe?
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleRemoveCancel}>
+          <Button variant="secondary" style={{ border: '0' }} onClick={handleRemoveCancel}>
             cancel
           </Button>
-          <Button variant="primary" onClick={handleRemoveConfirm}>
+          <Button variant="primary" style={{ backgroundColor: 'darkred', border: '0' }} onClick={handleRemoveConfirm}>
             Delete
           </Button>
         </Modal.Footer>

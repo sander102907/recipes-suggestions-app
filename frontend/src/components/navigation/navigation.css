@@ -1,17 +1,25 @@
 .navbar {
   border-bottom: solid 2px #ebebeb;
 }
+
+.sticky-top {
+  margin-bottom: 2rem;
+}
+
 .bottom-tab-nav {
   border-top: solid 1px #ebebeb;
   background: white;
 }
+
 .nav-link,
 a.bottom-nav-link {
   color: #55575b;
 }
+
 .bottom-nav-link.active {
   color: #6a00bb;
 }
+
 .bottom-tab-label {
   font-size: 12px;
 }

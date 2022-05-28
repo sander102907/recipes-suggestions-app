@@ -1,6 +1,6 @@
 
 export interface Ingredient {
-    id: number;
+    id?: number;
     ahId: number;
     name: string;
     unitSize: string;

@@ -3,6 +3,7 @@ import "./recipeCard.css";
 import { XLg, StarFill, Icon } from "react-bootstrap-icons";
 import { Button, Card, Badge } from "react-bootstrap";
 import { Recipe } from "../../interfaces/Recipe";
+import { motion } from "framer-motion";
 
 type Props = {
   recipe: Recipe,
@@ -33,53 +34,71 @@ function isBonusRecipe(recipe: Recipe): boolean {
 }
 
 const RecipeCard = ({ recipe, SecondButtonIcon, onRemove, onSecondButtonClick, onClick }: Props) => {
+  function handleRemove(event: React.SyntheticEvent, recipeId: number) {
+    event.stopPropagation();
+    onRemove(recipeId);
+  }
+
+  function handleSecondButtonClick(event: React.SyntheticEvent, recipe: Recipe) {
+    event.stopPropagation();
+    onSecondButtonClick(recipe);
+  }
+
   return (
     <React.Fragment>
-      <Card className="recipeCard" onClick={() => { onClick(recipe) }}>
-        <div className="recipe-image-container">
-          <img className="recipe-image" src={`/api/files/${recipe.image?.id}`} alt="" />
-          {isBonusRecipe(recipe) && <Badge className="bonus">BONUS</Badge>}
-        </div>
-        <Card.Body className="suggestion-card-body">
-
-          <Card.Title>
-            {recipe.name}
-            <span className="rating">
-              {recipe.rating && recipe.rating > 0 ?
-                <>{recipe.rating} <StarFill size={14} /></>
-                : ''
-              }
-            </span>
-          </Card.Title>
-          <div className="ingredients">
-            Met {getIngredientsText(recipe)}
+      <motion.div
+        whileHover={{
+          scale: 1.05,
+          transition: { duration: 0.2 },
+        }}
+        style={{ display: 'flex' }}>
+        <Card className="recipeCard" onClick={() => { onClick(recipe) }}>
+          <div className="recipe-image-container">
+            <img className="recipe-image" src={`/api/files/${recipe.image?.id}`} alt="" />
+            {isBonusRecipe(recipe) && <Badge className="bonus">BONUS</Badge>}
           </div>
-          <div className="card-bottom">
-            <div className="card-buttons">
-              <Button
-                className="card-button"
-                onClick={() => onRemove(recipe.id)}
-              >
-                <XLg size={14} />
-              </Button>
-              <Button
-                className="card-button"
-                onClick={() =>
-                  onSecondButtonClick(recipe)
+          <Card.Body className="suggestion-card-body">
+            <div className="card-top">
+              <Card.Title>
+                <span>{recipe.name}</span>
+                <span className="rating">
+                  {recipe.rating && recipe.rating > 0 ?
+                    <>{recipe.rating} <StarFill size={14} /></>
+                    : ''
+                  }
+                </span>
+              </Card.Title>
+              <div className="ingredients">
+                {getIngredientsText(recipe)}
+              </div>
+            </div>
+            <div className="card-bottom">
+              <div className="card-buttons">
+                <Button
+                  className="card-button"
+                  onClick={(event) => handleRemove(event, recipe.id)}
+                >
+                  <XLg size={14} />
+                </Button>
+                <Button
+                  className="card-button"
+                  onClick={(event) =>
+                    handleSecondButtonClick(event, recipe)
+                  }
+                >
+                  <SecondButtonIcon size={14} />
+                </Button>
+              </div>
+              <div className="card-price">
+                {parseFloat(recipe.bonusPrice) < parseFloat(recipe.minPrice) &&
+                  <span className="full-price">€{recipe.minPrice}</span>
                 }
-              >
-                <SecondButtonIcon size={14} />
-              </Button>
+                <span className="current-price">€{recipe.bonusPrice}</span>
+              </div>
             </div>
-            <div className="card-price">
-              {parseFloat(recipe.bonusPrice) < parseFloat(recipe.minPrice) &&
-                <span className="full-price">€{recipe.minPrice}</span>
-              }
-              <span className="current-price">€{recipe.bonusPrice}</span>
-            </div>
-          </div>
-        </Card.Body>
-      </Card>
+          </Card.Body>
+        </Card>
+      </motion.div>
     </React.Fragment >
   );
 };

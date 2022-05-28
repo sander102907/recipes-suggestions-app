@@ -4,8 +4,11 @@
   width: 100%;
 }
 
-.dropdown {
+form .dropdown {
   position: absolute;
+}
+
+.dropdown {
   background-color: #f9f9f9;
   min-width: 160px;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
@@ -15,45 +18,13 @@
   border-radius: 0 0 20px 20px;
   text-align: left;
   max-height: 300px;
-  overflow: scroll;
+  overflow-y: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
-.dropdownItem {
-  min-height: 30px;
-  display: flex;
-  padding: 12px 16px;
-  align-items: center;
-}
-
-.dropdownItemInfo {
-  padding: 0 10px;
-  display: flex;
-  flex-direction: column;
-}
-
-.dropdownItemBonusBadge {
-  margin-left: 8px;
-}
-
-.dropdownItemDetails {
-  display: flex;
-  justify-content: space-between;
-}
-
-.dropdownItemPrice {
-  color: rgb(94, 94, 94);
-}
-
-.dropdownItemUnitSize {
-  color: rgb(94, 94, 94);
-}
-
-.dropdownItem:hover {
-  background-color: #e7e7e7;
-}
-
-.dropdownItemButton {
-  margin-left: auto;
+.dropdown::-webkit-scrollbar {
+  display: none;
 }
 
 .searchBar {
