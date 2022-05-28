@@ -8,6 +8,7 @@ import errorHandler from './middleware/error-handler';
 import notFoundHandler from './middleware/notfound-handler';
 import fs from 'fs';
 import path from 'path';
+import { IngredientCronjobs } from './cronjobs/ingredient.cronjobs';
 
 const app = express();
 app.use(express.json())
@@ -33,5 +34,8 @@ RegisterRoutes(app);
 app.use(notFoundHandler);
 
 app.use(errorHandler);
+
+const ingredientCronjobs = new IngredientCronjobs();
+ingredientCronjobs.syncIngredients();
 
 export default app;

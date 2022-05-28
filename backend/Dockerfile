@@ -39,16 +39,6 @@ RUN npm install -g tsoa
 RUN npx prisma generate
 RUN npm run build 
 
-# production environment
-FROM arm32v7/node:18-alpine
-WORKDIR /backend
-
-COPY ./package*.json ./
-
-RUN npm install --production
-
-COPY --from=builder /backend/build .
-
-RUN npm install prisma@3.2.1 -g
+COPY ./src/swaggerDarkTheme.css ./build/src/swaggerDarkTheme.css
 
 CMD ["npm", "run", "start:migrate"]
