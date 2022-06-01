@@ -1,6 +1,6 @@
 import { Field, FieldArray, FieldArrayRenderProps, Formik } from "formik";
 import { useEffect, useRef, useState } from "react";
-import { Button, Form } from "react-bootstrap";
+import { Button, Form, Spinner } from "react-bootstrap";
 import { Check2, Dash, Plus } from "react-bootstrap-icons";
 import { Rating } from "react-simple-star-rating";
 import * as yup from 'yup';
@@ -14,6 +14,7 @@ import IngredientListItem from "../ingredientListItem/ingredientListItem";
 import IngredientComponent from "../ingredient/ingredient";
 import { RecipeIngredientsGroup } from "../../interfaces/RecipeIngredientsGroup";
 import { Ingredient } from "../../interfaces/Ingredient";
+import IngredientHelper from "../../helpers/ingredientHelper";
 
 
 const schema = yup.object().shape({
@@ -32,10 +33,12 @@ const IngredientForm = ({ recipe, onHide }: Props) => {
     const ingredientsSearchBar = useRef<HTMLInputElement>(null);
     const [alternativeGroup, setAlternativeGroup] = useState<number | null>(null);
     const [searchBarQuery, setSearchBarQuery] = useState<string | undefined>(undefined);
+    const [loading, setLoading] = useState<boolean>(false);
 
     const onSubmit = async (data: RecipeIngredientDataData) => {
+        setLoading(true);
         await axios.delete(`/api/groups/recipe/${recipe.id}`);
-        data.recipeIngredientsGroups.forEach(async (ingredientGroup) => {
+        for (const ingredientGroup of data.recipeIngredientsGroups) {
             if (ingredientGroup.ingredientsInGroup.length > 0) {
                 await axios.post('/api/groups', {
                     recipeId: ingredientGroup.recipeId,
@@ -47,31 +50,11 @@ const IngredientForm = ({ recipe, onHide }: Props) => {
                     })
                 });
             }
-        });
+        };
+
+        setLoading(false);
 
         onHide();
-    }
-
-    const ingredientToShow = (group: RecipeIngredientsGroup) => {
-        return group.ingredientsInGroup.reduce((prev, curr) => {
-            if (prev.ingredient.isBonus && !curr.ingredient.isBonus) {
-                return prev;
-            }
-
-            if (curr.ingredient.isBonus && !prev.ingredient.isBonus) {
-                return curr;
-            }
-
-            if (curr.ingredient.bonusPrice && prev.ingredient.bonusPrice) {
-                return curr.ingredient.bonusPrice < prev.ingredient.bonusPrice ? curr : prev;
-            }
-
-            return curr.ingredient.price < prev.ingredient.price ? curr : prev;
-        });
-    }
-
-    const alternatives = (group: RecipeIngredientsGroup) => {
-        return group.ingredientsInGroup.filter(ingr => ingr !== ingredientToShow(group));
     }
 
     return (
@@ -102,7 +85,7 @@ const IngredientForm = ({ recipe, onHide }: Props) => {
                         arrayHelpers.replace(index, {
                             ...group,
                             ingredientsInGroup: [
-                                ...group.ingredientsInGroup.filter(ingr => ingr !== ingredientToShow(group)),
+                                ...group.ingredientsInGroup.filter(ingr => ingr !== IngredientHelper.ingredientToShow(group)),
                             ]
                         })
 
@@ -112,9 +95,9 @@ const IngredientForm = ({ recipe, onHide }: Props) => {
                     arrayHelpers.replace(index, {
                         ...group,
                         ingredientsInGroup: [
-                            ...group.ingredientsInGroup.filter(ingr => ingr !== ingredientToShow(group)),
+                            ...group.ingredientsInGroup.filter(ingr => ingr !== IngredientHelper.ingredientToShow(group)),
                             {
-                                ...group.ingredientsInGroup.find(ingr => ingr === ingredientToShow(group)),
+                                ...group.ingredientsInGroup.find(ingr => ingr === IngredientHelper.ingredientToShow(group)),
                                 amount: amount
                             }
                         ]
@@ -161,15 +144,15 @@ const IngredientForm = ({ recipe, onHide }: Props) => {
                     }
 
                     ingredientsSearchBar.current.focus();
-                    setSearchBarQuery(ingredientToShow(values.recipeIngredientsGroups[index]).ingredient.name);
+                    setSearchBarQuery(IngredientHelper.ingredientToShow(values.recipeIngredientsGroups[index]).ingredient.name);
                     setAlternativeGroup(index);
                 }
 
                 return (<Form noValidate onSubmit={handleSubmit} className="ingredient-form">
                     {alternativeGroup !== null &&
                         <>
-                            <span className="alternative-help-text">Alternatief voor {ingredientToShow(values.recipeIngredientsGroups[alternativeGroup]).ingredient.name} aan het toevoegen...</span>
-                            <Button onClick={() => { setAlternativeGroup(null); setSearchBarQuery(""); }} className="add-alternative-cancel-button">Annuleren</Button>
+                            <span className="alternative-help-text">Alternatief voor {IngredientHelper.ingredientToShow(values.recipeIngredientsGroups[alternativeGroup]).ingredient.name} aan het toevoegen </span>
+                            <Button variant="" onClick={() => { setAlternativeGroup(null); setSearchBarQuery(""); }} className="add-alternative-cancel-button">Annuleren</Button>
                         </>
                     }
                     <IngredientsSearchBar
@@ -187,16 +170,17 @@ const IngredientForm = ({ recipe, onHide }: Props) => {
                                         <div className="grid-item">
                                             <IngredientComponent
                                                 key={index}
-                                                ingredientInGroup={ingredientToShow(group)}
-                                                alternativeIngredientInGroups={group.ingredientsInGroup.length > 1 ? alternatives(group) : undefined}
+                                                ingredientInGroup={IngredientHelper.ingredientToShow(group)}
+                                                alternativeIngredientInGroups={group.ingredientsInGroup.length > 1 ? IngredientHelper.alternatives(group) : undefined}
                                                 showAmount={false}
                                                 ButtonIcon={Plus}
                                                 onButtonClick={() => handleAddAlternativeButtonClick(index)}
                                             />
                                             <div className="ingredient-amt-buttons">
                                                 <Button
+                                                    variant=""
                                                     className="subtract-button"
-                                                    onClick={() => updateIngredientAmt(arrayHelpers, index, ingredientToShow(group).amount - 1)}
+                                                    onClick={() => updateIngredientAmt(arrayHelpers, index, IngredientHelper.ingredientToShow(group).amount - 1)}
                                                 >
                                                     <Dash size={24} />
                                                 </Button>
@@ -206,12 +190,13 @@ const IngredientForm = ({ recipe, onHide }: Props) => {
                                                     pattern="[0-9]{1,2}"
                                                     maxLength={2}
                                                     max={99}
-                                                    value={ingredientToShow(group).amount}
+                                                    value={IngredientHelper.ingredientToShow(group).amount}
                                                     onChange={(event) => updateIngredientAmt(arrayHelpers, index, parseInt(event.target.value))}
                                                 ></input>
                                                 <Button
+                                                    variant=""
                                                     className="add-button"
-                                                    onClick={() => updateIngredientAmt(arrayHelpers, index, ingredientToShow(group).amount + 1)}
+                                                    onClick={() => updateIngredientAmt(arrayHelpers, index, IngredientHelper.ingredientToShow(group).amount + 1)}
                                                 >
                                                     <Plus size={24} />
                                                 </Button>
@@ -225,7 +210,11 @@ const IngredientForm = ({ recipe, onHide }: Props) => {
 
                         )}
                     />
-                    <Button type="submit" className="done-button" disabled={isSubmitting}><Check2 size={32} /></Button>
+                    <Button variant="" type="submit" className="done-button secondary" disabled={isSubmitting}>
+                        {loading ?
+                            <Spinner animation="border" size="sm" className="done-button-spinner" /> :
+                            <Check2 size={32} />}
+                    </Button>
                 </Form>
                 )
             }

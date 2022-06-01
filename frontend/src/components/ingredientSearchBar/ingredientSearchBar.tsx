@@ -2,8 +2,7 @@ import React, { LegacyRef } from "react";
 import { useState } from "react";
 import axios from "axios";
 import "./ingredientSearchBar.css";
-import { Button, Badge } from "react-bootstrap";
-import { Plus, Search } from "react-bootstrap-icons";
+import { Search } from "react-bootstrap-icons";
 import { Ingredient } from "../../interfaces/Ingredient";
 import { AhIngredient } from "../../interfaces/AhIngredient";
 import IngredientListItem from "../ingredientListItem/ingredientListItem";
@@ -21,7 +20,6 @@ const IngredientsSearchBar = ({ onClick, refVar, query }: Props) => {
   const [value, setValue] = useState("");
 
   useEffect(() => {
-    console.log(query);
     if (query !== undefined) {
       handleChange(query);
     }

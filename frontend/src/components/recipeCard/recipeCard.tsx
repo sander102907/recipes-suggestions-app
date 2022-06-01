@@ -75,12 +75,14 @@ const RecipeCard = ({ recipe, SecondButtonIcon, onRemove, onSecondButtonClick, o
             <div className="card-bottom">
               <div className="card-buttons">
                 <Button
+                  variant=""
                   className="card-button"
                   onClick={(event) => handleRemove(event, recipe.id)}
                 >
                   <XLg size={14} />
                 </Button>
                 <Button
+                  variant=""
                   className="card-button"
                   onClick={(event) =>
                     handleSecondButtonClick(event, recipe)

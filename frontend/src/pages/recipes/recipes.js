@@ -125,10 +125,10 @@ const Recipes = () => {
           Are you sure that you want to delete this recipe?
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" style={{ border: '0' }} onClick={handleRemoveCancel}>
+          <Button variant="" style={{ border: '0' }} onClick={handleRemoveCancel}>
             cancel
           </Button>
-          <Button variant="primary" style={{ backgroundColor: 'darkred', border: '0' }} onClick={handleRemoveConfirm}>
+          <Button variant="" style={{ backgroundColor: 'darkred', border: '0' }} onClick={handleRemoveConfirm}>
             Delete
           </Button>
         </Modal.Footer>

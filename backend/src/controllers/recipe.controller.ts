@@ -17,6 +17,7 @@ import {
     TsoaResponse,
     Delete,
     Patch,
+    Put,
 } from "tsoa";
 import { WithPrices } from '../types/withPrices';
 import { Recipe } from '@prisma/client';
@@ -67,14 +68,10 @@ export class RecipeController extends Controller {
     */
     @Get("/suggest")
     public async suggestRecipes(): Promise<WithPrices<RecipeWithIngredientsAndImage>[]> {
-        const bonusRecipes = await RecipeService.getBonusRecipes();
-        const nonBonusRecipes = await RecipeService.getNonBonusRecipes();
+        const recipes = await RecipeService.getSuggestedRecipes();
+        const recipesWithPrices = recipes.map(RecipeHelper.computePrices)
 
-        const randNonBonusRecipes = nonBonusRecipes.sort(() => 0.5 - Math.random()).slice(0, 7 - bonusRecipes.length);
-
-        const recipesWithPrices = [...bonusRecipes, ...randNonBonusRecipes].map(RecipeHelper.computePrices);
-
-        return recipesWithPrices
+        return recipesWithPrices;
     }
 
     /**
@@ -234,5 +231,16 @@ export class RecipeController extends Controller {
         } else {
             return notFoundResponse(404, { reason: `No recipe with ID ${id} exists in the database` });
         }
+    }
+
+    /**
+     * Set new recipe suggestions based on current bonus ingrediënts and randomization.
+     * @summary Set new recipe suggestions
+     */
+    @Put("/suggest")
+    public async setSuggestions() {
+        await RecipeHelper.setRecipeSuggestions();
+
+        return { message: "Recipe suggestions updated" };
     }
 }

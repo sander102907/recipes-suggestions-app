@@ -17,7 +17,7 @@ a.bottom-nav-link {
 }
 
 .bottom-nav-link.active {
-  color: #6a00bb;
+  color: darkred;
 }
 
 .bottom-tab-label {
@@ -29,7 +29,7 @@ nav.fixed-bottom {
 }
 
 .navbar-logo {
-  color: #ae44ff;
+  color: darkred;
   text-decoration: none;
   font-size: xx-large;
   font-weight: 300;

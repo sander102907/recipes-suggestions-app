@@ -13,8 +13,13 @@
     right: 20px;
     border-radius: 50%;
     background-color: darkred;
+    color: white;
     border: 0;
     padding: 8px;
+}
+
+.done-button-spinner {
+    padding: 12px;
 }
 
 .grid {
@@ -47,6 +52,7 @@
     font-size: 12px;
     background-color: orangered;
     border: 0;
+    color: white;
 }
 
 .subtract-button.btn {
@@ -84,6 +90,8 @@ input[type="number"] {
     font-size: 12px;
     padding: 1px 10px;
     margin: 4px 5px;
+    background-color: darkred;
+    color: white;
 }
 
 @media screen and (max-width: 768px) {

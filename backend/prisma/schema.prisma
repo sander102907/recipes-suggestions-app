@@ -22,6 +22,7 @@ model Ingredient {
   ingredientsInGroup IngredientsInGroup[]
 
   IngredientPriceHistory IngredientPriceHistory[]
+  GroceryList            GroceryList?
   @@map("ingredient")
 }
 
@@ -81,4 +82,14 @@ model IngredientPriceHistory {
   ingredient     Ingredient @relation(fields: [ingredientId], references: [id])
 
   ingredientId Int
+}
+
+model GroceryList {
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
+  isCheckedOff Boolean
+  isPermanent  Boolean
+  amount       Int
+
+  ingredientId Int
+  @@id([ingredientId])
 }

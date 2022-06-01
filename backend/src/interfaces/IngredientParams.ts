@@ -4,13 +4,6 @@
 
 export default interface IngredientParams {
     /**
-     * The name of the ingredient
-     * @minLength 1 name may not be empty
-     * @example "Salami"
-     */
-    name: string;
-
-    /**
      * The Albert Heijn Product ID
      * @isInt ahId should be an integer value
      */
@@ -60,4 +53,9 @@ export default interface IngredientParams {
      * @pattern https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*) image should be a URL
      */
     image?: string;
+
+    /**
+     * A boolean value indicating whether the ingredient is currently in your card (checked off on the grocery list)
+     */
+    isInCart?: boolean;
 }

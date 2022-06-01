@@ -1,5 +1,6 @@
 import prisma from '../client';
-import IngredientParams from '../interfaces/IngredientParams';
+import IngredientCreateParams from '../interfaces/IngredientCreateParams';
+import IngredientUpdateParams from '../interfaces/IngredientUpdateParams';
 
 export class IngredientService {
     static getAllIngredients(take = 20, page = 0) {
@@ -25,13 +26,13 @@ export class IngredientService {
         })
     }
 
-    static createIngredient(ingredientParams: IngredientParams) {
+    static createIngredient(ingredientParams: IngredientCreateParams) {
         return prisma.ingredient.create({
             data: ingredientParams
         })
     }
 
-    static updateIngredient(id: number, ingredientParams: IngredientParams) {
+    static updateIngredient(id: number, ingredientParams: IngredientUpdateParams) {
         return prisma.ingredient.update({
             where: {
                 id: id
@@ -40,7 +41,7 @@ export class IngredientService {
         })
     }
 
-    static updateOrCreateIngredients(ingredientParams: IngredientParams[]) {
+    static updateOrCreateIngredients(ingredientParams: IngredientCreateParams[]) {
         const transactions = ingredientParams.map(param => {
             return prisma.ingredient.upsert({
                 where: {

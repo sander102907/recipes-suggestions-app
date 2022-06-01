@@ -128,7 +128,7 @@ const RecipeForm = ({ recipe, setRecipe, onNextPage }: Props) => {
                         <img className="image-preview" src={imagePreview || `/api/files/${values.imageId}`} />}
 
                     <div className="image-button-container">
-                        <Button className="image-button">
+                        <Button variant="" className="image-button">
                             <CloudArrowUp /> {(values.imageId || imagePreview) ? 'Wijzig foto' : 'Kies foto'}
                         </Button>
 
@@ -155,7 +155,7 @@ const RecipeForm = ({ recipe, setRecipe, onNextPage }: Props) => {
                         />
                     </div>
 
-                    <Button type="submit" className="next-button" disabled={isSubmitting}><ArrowRight size={32} /></Button>
+                    <Button variant="" type="submit" className="next-button" disabled={isSubmitting}><ArrowRight size={32} /></Button>
                 </Form>
             )
             }

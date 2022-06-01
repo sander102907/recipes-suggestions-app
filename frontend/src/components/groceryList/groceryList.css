@@ -1,0 +1,12 @@
+.grocery-list {
+  padding: 0 10px;
+}
+
+.grocery-list-container {
+  padding-top: 15px;
+}
+
+.grocery-list-options {
+  display: flex;
+  align-items: center;
+}

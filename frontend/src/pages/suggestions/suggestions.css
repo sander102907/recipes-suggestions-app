@@ -1,0 +1,10 @@
+.suggestions-tabs .nav-link {
+    font-size: 16px;
+    color: darkred;
+    font-weight: 500;
+    width: 100%;
+}
+
+.suggestions-tabs .nav-item {
+    width: 50%;
+}
