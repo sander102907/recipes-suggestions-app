@@ -6,10 +6,8 @@ export default async function clearDatabase() {
     const deleteGroups = prisma.recipeIngredientsGroup.deleteMany();
     const deleteIngredientsInGroups = prisma.ingredientsInGroup.deleteMany();
     const deleteFiles = prisma.file.deleteMany();
-    const deletePriceHistories = prisma.ingredientPriceHistory.deleteMany();
 
     await prisma.$transaction([
-        deletePriceHistories,
         deleteRecipes,
         deleteIngredients,
         deleteGroups,
