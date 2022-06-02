@@ -1,0 +1,10 @@
+.alternatives-container {
+    text-align: center;
+    padding: 0;
+}
+
+.alternatives-list {
+    overflow-y: auto;
+    max-height: 600px;
+    padding: 0 10px;
+}

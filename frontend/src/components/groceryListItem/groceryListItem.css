@@ -1,0 +1,105 @@
+.grocery-item-image {
+  width: 80px;
+  padding: 16px;
+  display: block;
+}
+
+.grocery-list-item.card {
+  padding: 5px 10px;
+  text-align: left;
+  display: inline-block;
+  white-space: normal;
+  margin: 10px auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  cursor: pointer;
+}
+
+.grocery-list-item.card.checkedoff {
+  background-color: rgb(228, 228, 228);
+}
+
+.grocery-image-container {
+  margin: auto;
+  border-radius: 50%;
+  border: 1px solid rgb(238, 238, 238);
+  width: 80px;
+  height: 80px;
+  position: relative;
+  background-color: white;
+}
+
+.grocery-image-container .bonus-badge {
+  position: absolute;
+  right: -20px;
+  top: 5px;
+  font-size: 10px;
+  background-color: orangered !important;
+}
+
+.grocery-list-item-checkbox {
+  margin-left: 2rem;
+}
+
+.grocery-list-item-checkbox,
+.grocery-list-item-checkbox .form-check-input {
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-top: 0;
+}
+
+.grocery-item-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: flex-start;
+  margin-left: 30px;
+  min-width: 1%;
+}
+
+.grocery-image-container .amount-badge {
+  position: absolute;
+  left: 7px;
+  bottom: -3px;
+  border-radius: 50%;
+  background-color: rgb(81, 156, 255) !important;
+}
+
+.grocery-item-name.checkedoff {
+  text-decoration: line-through;
+}
+
+.grocery-recipes-info {
+  cursor: pointer;
+  margin-left: 4px;
+  color: rgb(187, 187, 187);
+}
+
+.tooltip>.tooltip-inner {
+  text-align: left;
+}
+
+.grocery-edit-buttons {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: flex-end;
+}
+
+.grocery-amt-buttons {
+  display: flex;
+}
+
+.grocery-amt.ingredient-amt {
+  margin: 0 4px;
+  width: 38px;
+}
+
+.grocery-edit-buttons .permanent-button-badge {
+  font-size: 11px;
+  width: fit-content;
+  margin-top: 10px;
+}

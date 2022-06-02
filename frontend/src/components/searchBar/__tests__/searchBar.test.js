@@ -24,7 +24,7 @@ describe("SearchBar", () => {
 
         // Get the search bar and the button
         const searchBar = screen.getByPlaceholderText(placeholderText);
-        const button = screen.getByRole("button", { name: /Search/i });
+        const button = screen.getByRole("button", { name: /Zoeken/i });
 
         // Click the search bar and fill it with the search string
         fireEvent.click(searchBar)

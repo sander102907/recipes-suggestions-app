@@ -40,7 +40,7 @@ const SearchBar = ({
         className="search-button"
         onClick={() => onSearch(value)}
       >
-        Search
+        Zoeken
       </button>
     </div>
   );

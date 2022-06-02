@@ -58,7 +58,7 @@ export default {
   globalSetup: "./src/tests/integration/setup.ts",
 
   // A path to a module which exports an async function that is triggered once after all test suites
-  globalTeardown: "./src/tests/integration/teardown.ts",
+  // globalTeardown: "./src/tests/integration/teardown.ts",
 
   // A set of global variables that need to be available in all test environments
   // globals: {},

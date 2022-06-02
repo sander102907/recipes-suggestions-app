@@ -253,7 +253,10 @@ describe('delete a recipe', () => {
 })
 
 describe('suggest recipes', () => {
-    it('should send several recipes and return with an OK response status', async () => {
+    it('should set and then send several recipes and return with an OK response status', async () => {
+        await agent
+            .put('/recipes/suggest')
+            .expect(StatusCodes.OK)
 
         const response = await agent
             .get('/recipes/suggest')

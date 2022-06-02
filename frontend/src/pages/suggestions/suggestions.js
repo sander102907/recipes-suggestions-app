@@ -1,78 +1,36 @@
-import React, { useEffect, useState } from "react";
 import "./suggestions.css";
-import axios from "axios";
-import { Container, Row, Card, Button } from "react-bootstrap";
+import RecipeList from "../../components/recipeList/recipeList";
 import { Shuffle } from "react-bootstrap-icons";
-import RecipeCard from "../../components/recipeCard/recipeCard";
-import { WhatsappShareButton, WhatsappIcon } from "react-share";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import GroceryList from "../../components/groceryList/groceryList";
+import { Tabs, Tab } from "react-bootstrap";
+
 
 const Suggestions = () => {
-  const [suggestedRecipes, setsuggestedRecipes] = useState([]);
-  const [shareText, setShareText] = useState("");
-
-  const getTotalCost = () => {
-    return suggestedRecipes
-      .map((recipe) => Number(recipe.minPrice))
-      .reduce((a, b) => a + b, 0)
-      .toFixed(2);
-  };
-
-  const getTotalBonus = () => {
-    return suggestedRecipes
-      .map((recipe) => Number(recipe.minPrice) - Number(recipe.bonusPrice))
-      .reduce((a, b) => a + b, 0)
-      .toFixed(2);
-  };
+  const [recipes, setRecipes] = useState([]);
 
   useEffect(() => {
-    getSuggestions();
+    getRecipes();
   }, []);
 
-  const getSuggestions = () => {
-    axios.get("/api/recipes/suggest").then((response) => {
-      setsuggestedRecipes(response.data);
-      setShareText(response.data.shareText);
+  const getRecipes = () => {
+    axios.get('/api/recipes/suggest').then((response) => {
+      setRecipes(response.data);
     });
   };
 
-  const suggestedRecipeCards = suggestedRecipes.map((val, key) => {
-    return <RecipeCard recipe={val} key={key} secondButtonIcon={Shuffle} />;
-  });
 
   return (
     <div className="Suggestions">
-      <Container className="info" fluid>
-        <Row>
-          <Card className="info-item">
-            <div className="card-body info-body">
-              <span className="info-card-text">Total cost:</span>
-              <span className="info-card-amount">€{getTotalCost()}</span>
-            </div>
-          </Card>
-
-          <Card className="info-item">
-            <div className="card-body info-body">
-              <span className="info-card-text">Bonus:</span>
-              <span className="info-card-amount">€{getTotalBonus()}</span>
-            </div>
-          </Card>
-          <WhatsappShareButton
-            url={"https://recipes.sdebruin.nl"}
-            title={shareText}
-            className="info-item"
-          >
-            <WhatsappIcon size={32} round />
-          </WhatsappShareButton>
-          {/* <Button className='info-item'><Share size={24} /> Ingredients</Button> */}
-          <Button className="info-item">
-            {/* <Shuffle size={24} />  */}
-            Re-suggest
-          </Button>
-        </Row>
-      </Container>
-      <Container className="suggestion-cards" fluid>
-        <Row>{suggestedRecipeCards}</Row>
-      </Container>
+      <Tabs defaultActiveKey="recipes" className="mb-3 suggestions-tabs">
+        <Tab eventKey="recipes" title="Menu van deze week">
+          <RecipeList recipes={recipes} SecondButtonIcon={Shuffle} onRemove={() => { }} onSecondButtonClick={() => { }} />
+        </Tab>
+        <Tab eventKey="groceries" title="Boodschappenlijstje">
+          <GroceryList recipes={recipes} />
+        </Tab>
+      </Tabs>
     </div>
   );
 };

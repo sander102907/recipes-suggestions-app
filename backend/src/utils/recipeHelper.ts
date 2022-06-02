@@ -1,5 +1,8 @@
 import { WithPrices } from "../types/withPrices";
 import { RecipeWithIngredientsAndImage } from "../types/recipeWithIngredients";
+import { RecipeService } from "../services/recipe.service";
+import { GroceryListService } from "../services/grocerylist.service";
+import { Ingredient, IngredientsInGroup, RecipeIngredientsGroup } from "@prisma/client";
 
 export class RecipeHelper {
     // Filter out any empty values of a list of any type
@@ -45,6 +48,60 @@ export class RecipeHelper {
             bonusPrice: RecipeHelper.roundPrice(bonusPrice),
             minPrice: RecipeHelper.roundPrice(minPrice),
             maxPrice: RecipeHelper.roundPrice(maxPrice)
+        }
+    }
+
+    static getCurrentPreferredIngredient(group: RecipeIngredientsGroup & {
+        ingredientsInGroup: (IngredientsInGroup & {
+            ingredient: Ingredient;
+        })[]
+    }) {
+        return group.ingredientsInGroup.reduce((prev, curr) => {
+            if (prev.ingredient.isBonus && !curr.ingredient.isBonus) {
+                return prev;
+            }
+
+            if (curr.ingredient.isBonus && !prev.ingredient.isBonus) {
+                return curr;
+            }
+
+            if (curr.ingredient.bonusPrice && prev.ingredient.bonusPrice) {
+                return curr.ingredient.bonusPrice < prev.ingredient.bonusPrice ? curr : prev;
+            }
+
+            if (!curr.ingredient.price || !prev.ingredient.price) {
+                return curr
+            }
+
+            return curr.ingredient.price < prev.ingredient.price ? curr : prev;
+        });
+    }
+
+    static async setRecipeSuggestions() {
+        const bonusRecipes = await RecipeService.getBonusRecipes();
+        const nonBonusRecipes = await RecipeService.getNonBonusRecipes();
+
+        const randBonusRecipe = bonusRecipes.sort(() => 0.5 - Math.random()).slice(0, 7);
+        const randNonBonusRecipes = nonBonusRecipes.sort(() => 0.5 - Math.random()).slice(0, 7 - randBonusRecipe.length);
+
+
+        const recipeIds = [...randBonusRecipe, ...randNonBonusRecipes].map(recipe => recipe.id);
+        await RecipeService.resetSuggested();
+        await RecipeService.setSuggested(recipeIds);
+
+        await GroceryListService.resetGroceryList();
+        for (const recipe of [...randBonusRecipe, ...randNonBonusRecipes]) {
+            for (const recipeIngrGrp of recipe.recipeIngredientsGroups) {
+                if (recipeIngrGrp.ingredientsInGroup.length > 0) {
+                    const ingr = this.getCurrentPreferredIngredient(recipeIngrGrp);
+                    await GroceryListService.addGroceryListIngredient({
+                        ingredientId: ingr.ingredientId,
+                        amount: ingr.amount,
+                        isCheckedOff: false,
+                        isPermanent: false
+                    });
+                }
+            }
         }
     }
 }

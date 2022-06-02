@@ -1,35 +1,61 @@
 .card.recipeCard {
-  width: 25rem;
-  max-width: 90%;
-  margin: 10px auto;
+  padding: 0;
+  border-radius: 1.5rem;
+  cursor: pointer;
+  -webkit-box-shadow: 0px 1px 1px 0px rgba(150, 150, 150, 0.9);
+  box-shadow: 0px 1px 1px 0px rgba(150, 150, 150, 0.9);
+  width: 20rem;
+  max-width: 98%;
+  margin: 0 auto 0 auto;
+}
+
+.card.recipeCard:hover {
+  -webkit-box-shadow: 2px 4px 4px 0px rgba(150, 150, 150, 0.9);
+  box-shadow: 2px 4px 4px 0px rgba(150, 150, 150, 0.9);
+}
+
+.recipe-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 1rem 1rem 0 0;
+}
+
+svg {
+  position: relative;
+  bottom: 2px;
+}
+
+.btn svg {
+  margin-right: 0;
+}
+
+.card-body {
+  padding-top: 0.5rem;
 }
 
 .card .card-title {
-  font-size: x-large;
-}
-
-.card .ingredients-title {
-  color: purple;
-}
-
-.ingredients {
-  padding: 12px 0;
-  text-align: left;
-}
-
-.ingredient {
-  min-height: 30px;
-  padding: 4px 16px;
-}
-
-.item {
-  padding: 0 10px;
+  font-size: 17px;
+  font-weight: 600;
+  justify-content: space-between;
   display: flex;
-  flex-direction: column;
 }
 
-.itemBonusBadge {
-  margin-left: 8px;
+.recipe-image-container {
+  position: relative;
+  display: inline-block;
+}
+
+.bonus.badge {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  background-color: orangered !important;
+}
+
+.rating {
+  font-size: medium;
+  min-width: 28px;
 }
 
 .itemDetails {
@@ -45,19 +71,15 @@
   color: rgb(94, 94, 94);
 }
 
-.btn.card-button-delete {
-  width: 34px;
-  height: 34px;
-  background-color: rgb(133, 0, 0);
-  padding: 0 32px 3px 8px;
+.btn.card-button {
+  color: black;
+  border: 0;
+  background-color: transparent;
 }
 
-.btn.card-button-second {
-  width: 34px;
-  height: 34px;
-  background-color: purple;
-  padding: 0 32px 3px 8px;
-  margin-left: 10px;
+.btn.card-button:hover,
+.btn.card-button:target {
+  background-color: lightgrey;
 }
 
 .full-price {
@@ -68,7 +90,6 @@
 }
 
 .current-price {
-  color: purple;
   font-size: 22px;
   text-align: right;
   margin-left: 10px;
@@ -77,17 +98,15 @@
 .card-bottom {
   display: flex;
   justify-content: space-between;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 .suggestion-card-body {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
 }
 
-.card-data {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+.ingredients {
+  font-size: 14px;
 }

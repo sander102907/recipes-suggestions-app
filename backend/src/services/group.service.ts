@@ -4,7 +4,12 @@ import IngredientsInGroupParams from '../interfaces/IngredientsInGroupParams';
 
 export class GroupService {
     static readonly withIngredients = {
-        ingredientsInGroup: true
+        ingredientsInGroup: {
+            include: {
+                ingredient: true
+            }
+        }
+
     }
 
     static getAllGroups() {

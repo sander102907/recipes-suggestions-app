@@ -9,6 +9,7 @@ import notFoundHandler from './middleware/notfound-handler';
 import fs from 'fs';
 import path from 'path';
 import { IngredientCronjobs } from './cronjobs/ingredient.cronjobs';
+import { RecipeCronjobs } from './cronjobs/recipe.cronjobs';
 
 const app = express();
 app.use(express.json())
@@ -37,5 +38,8 @@ app.use(errorHandler);
 
 const ingredientCronjobs = new IngredientCronjobs();
 ingredientCronjobs.syncIngredients();
+
+const recipeCronjobs = new RecipeCronjobs();
+recipeCronjobs.setRecipeSuggestions();
 
 export default app;

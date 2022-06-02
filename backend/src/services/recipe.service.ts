@@ -62,6 +62,15 @@ export class RecipeService {
         });
     }
 
+    static getSuggestedRecipes() {
+        return prisma.recipe.findMany({
+            include: this.withIngredientsAndImage,
+            where: {
+                isSuggested: true
+            },
+        });
+    }
+
 
     static getRecipe(id: number) {
         return prisma.recipe.findUnique({
@@ -121,6 +130,27 @@ export class RecipeService {
                         }
                     }
                 ]
+            }
+        })
+    }
+
+    static setSuggested(ids: number[]) {
+        return prisma.recipe.updateMany({
+            where: {
+                id: {
+                    in: ids
+                }
+            },
+            data: {
+                isSuggested: true
+            }
+        })
+    }
+
+    static resetSuggested() {
+        return prisma.recipe.updateMany({
+            data: {
+                isSuggested: false
             }
         })
     }

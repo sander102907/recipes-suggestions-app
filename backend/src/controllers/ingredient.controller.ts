@@ -1,4 +1,3 @@
-import IngredientParams from "../interfaces/IngredientParams";
 import { StatusCodes } from 'http-status-codes';
 import {
     Body,
@@ -23,6 +22,8 @@ import { IngredientHelper } from "../utils/ingredientHelper";
 import { IngredientPriceHistoryService } from "../services/ingredientPriceHistory.service";
 import { AhError } from "../errors/AhError";
 import { AxiosError } from "axios";
+import IngredientCreateParams from "../interfaces/IngredientCreateParams";
+import IngredientUpdateParams from "../interfaces/IngredientUpdateParams";
 
 @Route("ingredients")
 @Tags("Ingredient")
@@ -140,7 +141,7 @@ export class IngredientController extends Controller {
     @Post("/")
     @SuccessResponse(StatusCodes.CREATED, "Created")
     public async createIngredient(
-        @Body() ingredientParams: IngredientParams,
+        @Body() ingredientParams: IngredientCreateParams,
         @Res() conflictResponse: TsoaResponse<StatusCodes.CONFLICT, { reason: string }>
     ): Promise<Ingredient> {
         if (ingredientParams.ahId != undefined) {
@@ -163,7 +164,7 @@ export class IngredientController extends Controller {
     @Patch("/{id}")
     public async updateIngredient(
         @Path() id: number,
-        @Body() ingredientParams: IngredientParams,
+        @Body() ingredientParams: IngredientUpdateParams,
         @Res() notFoundResponse: TsoaResponse<StatusCodes.NOT_FOUND, { reason: string }>
     ): Promise<Ingredient> {
         const ingredient = await IngredientService.getIngredient(id);

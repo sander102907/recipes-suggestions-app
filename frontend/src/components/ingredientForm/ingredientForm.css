@@ -1,0 +1,107 @@
+.ingredient-form {
+    text-align: left;
+    margin-bottom: 30px;
+}
+
+.form-label {
+    margin: 12px 0 0 0;
+}
+
+.done-button.btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    border-radius: 50%;
+    background-color: darkred;
+    color: white;
+    border: 0;
+    padding: 8px;
+}
+
+.done-button-spinner {
+    padding: 12px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 10px;
+    row-gap: 20px;
+}
+
+.grid-item {
+    margin: auto;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.ingredient-amt-buttons {
+    width: 75%;
+    margin: auto;
+    margin-top: -10px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.add-button.btn,
+.subtract-button.btn {
+    border-radius: 50%;
+    width: fit-content;
+    padding: 3px;
+    font-size: 12px;
+    background-color: orangered;
+    border: 0;
+    color: white;
+}
+
+.subtract-button.btn {
+    background-color: rgb(253, 221, 208);
+    color: orangered;
+}
+
+.ingredient-amt {
+    text-align: center;
+    border: 1px solid orangered;
+    padding: 0 10px;
+    color: orangered;
+    font-weight: 600;
+    font-size: 18px;
+    border-radius: 1rem;
+    width: 55px;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+.alternative-help-text {
+    color: rgb(126, 125, 125);
+    font-size: 12px;
+}
+
+.add-alternative-cancel-button.btn {
+    font-size: 12px;
+    padding: 1px 10px;
+    margin: 4px 5px;
+    background-color: darkred;
+    color: white;
+}
+
+@media screen and (max-width: 768px) {
+    .grid {
+        max-width: 100px;
+        row-gap: 0px;
+    }
+
+    .grid-item {
+        transform: scale(0.9);
+        margin-left: -20px;
+    }
+}

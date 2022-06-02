@@ -1,0 +1,13 @@
+.recipe-card-container {
+    transition: all 300ms ease-in-out;
+    display: flex;
+    margin: 0 auto 0 auto;
+}
+
+.recipe-cards {
+    margin: 2rem auto 2rem auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    column-gap: 10px;
+    row-gap: 30px;
+}
