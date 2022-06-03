@@ -1,14 +1,11 @@
 # recipes subdomain frontend
-FROM arm32v7/node:18-slim as builder
+FROM arm32v7/node:18 as builder
 # Create app directory
 WORKDIR /frontend
 
 # Install app dependencies
 COPY ./package.json ./
 COPY ./yarn.lock ./
-
-RUN apt-get update
-RUN apt-get -y install python2-minimal
 
 RUN yarn install --network-timeout=1000000
 
