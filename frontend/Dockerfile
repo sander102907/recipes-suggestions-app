@@ -1,5 +1,5 @@
 # recipes subdomain frontend
-FROM arm32v7/node:18-alpine as builder
+FROM arm32v7/node:18-slim as builder
 # Create app directory
 WORKDIR /frontend
 
