@@ -19,6 +19,7 @@ export default class FileHelper {
         try {
             fs.writeFileSync(writePath, buffer, { flag: "wx" })
         } catch (err) {
+            console.log(err);
             return FileHelper.writeFile(filePath, buffer, attempt + 1)
         }
 
