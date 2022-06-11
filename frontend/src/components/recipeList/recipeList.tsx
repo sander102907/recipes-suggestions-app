@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState } from "react";
 import "./recipeList.css";
-import { Icon, Plus, PlusCircle } from "react-bootstrap-icons";
-import { Container, Row, Col, Card } from "react-bootstrap";
+import { Icon, PlusCircle } from "react-bootstrap-icons";
+import { Card } from "react-bootstrap";
 import { Recipe } from "../../interfaces/Recipe";
 import RecipeCard from "../recipeCard/recipeCard";
 import RecipeDetailModal from "../recipeDetailModal/recipeDetailModal";
@@ -13,10 +12,11 @@ type Props = {
   SecondButtonIcon: Icon,
   onRemove: (recipeId: number) => void,
   onSecondButtonClick: (recipe: Recipe) => void,
+  onThirdButtonClick?: (recipe: Recipe) => void,
   onNewRecipeButtonClick?: () => void
 }
 
-const RecipeList = ({ recipes, SecondButtonIcon, onRemove, onSecondButtonClick, onNewRecipeButtonClick }: Props) => {
+const RecipeList = ({ recipes, SecondButtonIcon, onRemove, onSecondButtonClick, onThirdButtonClick, onNewRecipeButtonClick }: Props) => {
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe>();
   const [showModal, setShowModal] = useState<boolean>(false);
 
@@ -63,6 +63,7 @@ const RecipeList = ({ recipes, SecondButtonIcon, onRemove, onSecondButtonClick, 
         SecondButtonIcon={SecondButtonIcon}
         onRemove={() => onRemove(recipe.id)}
         onSecondButtonClick={onSecondButtonClick}
+        onThirdButtonClick={onThirdButtonClick}
         key={index}
         onClick={() => onClickRecipeCard(recipe)}
       />

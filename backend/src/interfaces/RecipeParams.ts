@@ -4,12 +4,6 @@
 
 export default interface RecipeParams {
     /**
-     * The name of the recipe
-     * @minLength 1 name may not be empty
-     * @example "Pizza"
-     */
-    name: string;
-    /**
      * A description of the recipe, may include html context for rich text
      * @example "Home-cooked pizza with fresh tomato sauce. <a href='example.com/recipe/1'>Recipe steps</a>"
      */
@@ -28,4 +22,14 @@ export default interface RecipeParams {
      * @maximum 5 rating should be a value from 1 to 5
      */
     rating?: number;
+
+    /**
+     * A boolean indicating whether the recipe is currently suggested (on the current weekly menu)
+     */
+    isSuggested?: boolean;
+
+    /**
+     * A boolean indicating whether the recipe should be excluded from the next suggestion cycle
+     */
+    excludeFromSuggestions?: boolean;
 }

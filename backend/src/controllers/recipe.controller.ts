@@ -1,7 +1,6 @@
 import { RecipeWithIngredientsAndImage } from '../types/recipeWithIngredients';
 import { RecipeHelper } from '../utils/recipeHelper';
 import { RecipeService } from '../services/recipe.service';
-import RecipeParams from "../interfaces/RecipeParams";
 import { StatusCodes } from 'http-status-codes';
 import {
     Body,
@@ -25,6 +24,8 @@ import { FileService } from '../services/file.service';
 import { AH } from '../apis/ah';
 import { AhError } from '../errors/AhError';
 import { AxiosError } from 'axios';
+import RecipeUpdateParams from '../interfaces/RecipeUpdateParams';
+import RecipeCreateParams from '../interfaces/RecipeCreateParams';
 
 @Route("recipes")
 @Tags("Recipe")
@@ -170,7 +171,7 @@ export class RecipeController extends Controller {
     @SuccessResponse(StatusCodes.CREATED, "Created")
     @Post("/")
     public async createRecipe(
-        @Body() recipeParams: RecipeParams,
+        @Body() recipeParams: RecipeCreateParams,
         @Res() notFoundResponse: TsoaResponse<StatusCodes.NOT_FOUND, { reason: string }>
     ): Promise<Recipe> {
         if (recipeParams.imageId != undefined) {
@@ -193,7 +194,7 @@ export class RecipeController extends Controller {
     @Patch("/{id}")
     public async updateRecipe(
         @Path() id: number,
-        @Body() recipeParams: RecipeParams,
+        @Body() recipeParams: RecipeUpdateParams,
         @Res() notFoundResponse: TsoaResponse<StatusCodes.NOT_FOUND, { reason: string }>
     ): Promise<Recipe> {
         const recipe = await RecipeService.getRecipe(id);
@@ -243,4 +244,16 @@ export class RecipeController extends Controller {
 
         return { message: "Recipe suggestions updated" };
     }
+
+    /**
+     * Set one new recipe suggestion based on current bonus ingrediënts and randomization.
+     * @summary Set new recipe suggestions
+     */
+    @Put("/suggest-single")
+    public async setSuggestion() {
+        await RecipeHelper.setRecipeSuggestions(1, false);
+
+        return { message: "Recipe suggestion added" };
+    }
+
 }

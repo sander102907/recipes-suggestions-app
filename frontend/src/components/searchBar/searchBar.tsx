@@ -3,14 +3,19 @@ import { useState } from "react";
 import "./searchBar.css";
 import { XLg } from "react-bootstrap-icons";
 
+type Props = {
+  placeholderText: string,
+  onSearch: (query: string) => void
+}
+
 const SearchBar = ({
   placeholderText,
   onSearch,
 
-}) => {
+}: Props) => {
   const [value, setValue] = useState("");
 
-  const handleKeyDown = (event) => {
+  const handleKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === 'Enter') {
       onSearch(value);
     }
