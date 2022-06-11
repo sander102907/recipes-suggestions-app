@@ -1,5 +1,6 @@
 import prisma from '../client';
-import RecipeParams from '../interfaces/RecipeParams';
+import RecipeCreateParams from '../interfaces/RecipeCreateParams';
+import RecipeUpdateParams from '../interfaces/RecipeUpdateParams';
 
 export class RecipeService {
     static readonly withIngredientsAndImage = {
@@ -81,13 +82,13 @@ export class RecipeService {
         });
     }
 
-    static createRecipe(recipeParams: RecipeParams) {
+    static createRecipe(recipeParams: RecipeCreateParams) {
         return prisma.recipe.create({
             data: recipeParams
         });
     }
 
-    static updateRecipe(id: number, recipeParams: RecipeParams) {
+    static updateRecipe(id: number, recipeParams: RecipeUpdateParams) {
         return prisma.recipe.update({
             where: {
                 id: id
@@ -142,7 +143,8 @@ export class RecipeService {
                 }
             },
             data: {
-                isSuggested: true
+                isSuggested: true,
+                excludeFromSuggestions: true
             }
         })
     }
@@ -150,7 +152,8 @@ export class RecipeService {
     static resetSuggested() {
         return prisma.recipe.updateMany({
             data: {
-                isSuggested: false
+                isSuggested: false,
+                excludeFromSuggestions: false
             }
         })
     }

@@ -77,19 +77,29 @@ export class RecipeHelper {
         });
     }
 
-    static async setRecipeSuggestions() {
+    static async setRecipeSuggestions(amount = 7, reset = true) {
         const bonusRecipes = await RecipeService.getBonusRecipes();
         const nonBonusRecipes = await RecipeService.getNonBonusRecipes();
 
-        const randBonusRecipe = bonusRecipes.sort(() => 0.5 - Math.random()).slice(0, 7);
-        const randNonBonusRecipes = nonBonusRecipes.sort(() => 0.5 - Math.random()).slice(0, 7 - randBonusRecipe.length);
+        const randBonusRecipe = bonusRecipes
+            .filter(r => !r.excludeFromSuggestions)
+            .sort(() => 0.5 - Math.random())
+            .slice(0, amount);
+        const randNonBonusRecipes = nonBonusRecipes
+            .filter(r => !r.excludeFromSuggestions)
+            .sort(() => 0.5 - Math.random())
+            .slice(0, amount - randBonusRecipe.length);
 
 
         const recipeIds = [...randBonusRecipe, ...randNonBonusRecipes].map(recipe => recipe.id);
-        await RecipeService.resetSuggested();
+
+        if (reset) {
+            await RecipeService.resetSuggested();
+            await GroceryListService.resetGroceryList();
+        }
+
         await RecipeService.setSuggested(recipeIds);
 
-        await GroceryListService.resetGroceryList();
         for (const recipe of [...randBonusRecipe, ...randNonBonusRecipes]) {
             for (const recipeIngrGrp of recipe.recipeIngredientsGroups) {
                 if (recipeIngrGrp.ingredientsInGroup.length > 0) {

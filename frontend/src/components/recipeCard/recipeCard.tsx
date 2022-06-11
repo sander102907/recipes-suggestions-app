@@ -1,6 +1,6 @@
-import React, { MouseEventHandler } from "react";
+import React from "react";
 import "./recipeCard.css";
-import { XLg, StarFill, Icon } from "react-bootstrap-icons";
+import { XLg, StarFill, Icon, HeartFill, Heart } from "react-bootstrap-icons";
 import { Button, Card, Badge } from "react-bootstrap";
 import { Recipe } from "../../interfaces/Recipe";
 import { motion } from "framer-motion";
@@ -10,6 +10,7 @@ type Props = {
   SecondButtonIcon: Icon,
   onRemove: (recipeId: number) => void,
   onSecondButtonClick: (recipe: Recipe) => void
+  onThirdButtonClick?: (recipe: Recipe) => void
   onClick: (recipe: Recipe) => void
 }
 
@@ -33,7 +34,7 @@ function isBonusRecipe(recipe: Recipe): boolean {
     );
 }
 
-const RecipeCard = ({ recipe, SecondButtonIcon, onRemove, onSecondButtonClick, onClick }: Props) => {
+const RecipeCard = ({ recipe, SecondButtonIcon, onRemove, onSecondButtonClick, onThirdButtonClick, onClick }: Props) => {
   function handleRemove(event: React.SyntheticEvent, recipeId: number) {
     event.stopPropagation();
     onRemove(recipeId);
@@ -42,6 +43,13 @@ const RecipeCard = ({ recipe, SecondButtonIcon, onRemove, onSecondButtonClick, o
   function handleSecondButtonClick(event: React.SyntheticEvent, recipe: Recipe) {
     event.stopPropagation();
     onSecondButtonClick(recipe);
+  }
+
+  function handleThirdButtonClick(event: React.SyntheticEvent, recipe: Recipe) {
+    event.stopPropagation();
+    if (onThirdButtonClick != undefined) {
+      onThirdButtonClick(recipe);
+    }
   }
 
   return (
@@ -90,6 +98,15 @@ const RecipeCard = ({ recipe, SecondButtonIcon, onRemove, onSecondButtonClick, o
                 >
                   <SecondButtonIcon size={14} />
                 </Button>
+                {onThirdButtonClick && <Button
+                  variant=""
+                  className="card-button"
+                  onClick={(event) =>
+                    handleThirdButtonClick(event, recipe)
+                  }
+                >
+                  {recipe.isSuggested ? <HeartFill size={14} /> : <Heart size={14} />}
+                </Button>}
               </div>
               <div className="card-price">
                 {parseFloat(recipe.bonusPrice) < parseFloat(recipe.minPrice) &&
