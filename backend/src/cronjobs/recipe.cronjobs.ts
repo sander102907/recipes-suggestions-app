@@ -1,4 +1,4 @@
-import { CronJob } from "cron";
+import cron from "node-cron";
 import { RecipeHelper } from "../utils/recipeHelper";
 
 export class RecipeCronjobs {
@@ -7,16 +7,14 @@ export class RecipeCronjobs {
     }
 
     // Default cronTime: every monday at 3:00 AM
-    public setRecipeSuggestions(cronTime = '00 00 3 * * 1') {
+    public setRecipeSuggestions(cronTime = '0 0 3 * * 1') {
         // Synchronize all ingredients
-        new CronJob(cronTime, async () => {
+        cron.schedule(cronTime, async () => {
             console.log("running weekly cron schedule to update recipe suggestions");
 
             await RecipeHelper.setRecipeSuggestions();
-        },
-            null, // onComplete
-            true, // start (Specifies whether to start the job just before exiting the constructor)
-            'Europe/Amsterdam' // timezone
-        );
+        }, {
+            timezone: "Europe/Amsterdam"
+        });
     }
 }
