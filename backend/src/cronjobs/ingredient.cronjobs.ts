@@ -13,7 +13,6 @@ export class IngredientCronjobs {
 
     // Default cronTime: every night at 1:00 AM UTC
     public syncIngredients(cronTime = '0 0 1 * * *') {
-        cronTime = '*/30 * * * * *'
         // Synchronize all ingredients
         schedule.scheduleJob('sync ingredients', cronTime, () => {
             console.log("running daily cron schedule to update ingredients");
