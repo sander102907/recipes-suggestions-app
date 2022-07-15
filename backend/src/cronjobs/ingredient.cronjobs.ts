@@ -1,4 +1,4 @@
-import cron from "node-cron";
+import schedule from "node-schedule";
 import { AH } from "../apis/ah";
 import { IngredientHelper } from "../utils/ingredientHelper";
 
@@ -11,14 +11,12 @@ export class IngredientCronjobs {
         this.ingredientHelper = new IngredientHelper(this.ahClient);
     }
 
-    // Default cronTime: every night at 2:00 AM
-    public syncIngredients(cronTime = '0 0 2 * * *') {
+    // Default cronTime: every night at 1:00 AM UTC
+    public syncIngredients(cronTime = '0 0 1 * * *') {
         // Synchronize all ingredients
-        cron.schedule(cronTime, () => {
+        schedule.scheduleJob('sync ingredients', cronTime, () => {
             console.log("running daily cron schedule to update ingredients");
             this.ingredientHelper.syncAllIngredients();
-        }, {
-            timezone: "Europe/Amsterdam"
         });
     }
 }
