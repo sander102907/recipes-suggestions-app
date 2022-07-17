@@ -10,11 +10,14 @@ import { useEffect } from "react";
 
 type Props = {
   onClick: (ingredient: Ingredient) => void,
+  includeButton: boolean,
+  placeholderText?: string,
   refVar: LegacyRef<HTMLInputElement>,
-  query?: string
+  query?: string,
+  style?: React.CSSProperties
 }
 
-const IngredientsSearchBar = ({ onClick, refVar, query }: Props) => {
+const IngredientsSearchBar = ({ onClick, includeButton, placeholderText = 'Ingrediënten toevoegen...', refVar, query, style }: Props) => {
   const [suggestions, setSuggestions] = useState<Ingredient[]>([]);
   const [suggestionsActive, setSuggestionsActive] = useState(false);
   const [value, setValue] = useState("");
@@ -80,7 +83,7 @@ const IngredientsSearchBar = ({ onClick, refVar, query }: Props) => {
       <div className="dropdown suggestions">
         <>
           {suggestions.map((suggestion, index) =>
-            <IngredientListItem ingredient={suggestion} handleClick={handleClick} key={index} />
+            <IngredientListItem ingredient={suggestion} includeButton={includeButton} handleClick={handleClick} key={index} />
           )}
         </>
       </div>
@@ -88,14 +91,14 @@ const IngredientsSearchBar = ({ onClick, refVar, query }: Props) => {
   };
 
   return (
-    <div className="autocomplete" tabIndex={0} onFocus={expand} onBlur={close}>
+    <div className="autocomplete" tabIndex={0} onFocus={expand} onBlur={close} style={style}>
       <Search size={16} color="darkgrey" className="searchIcon" />
       <input
         className="searchBar"
         type="text"
         value={value}
         onChange={event => handleChange(event.currentTarget.value.toLowerCase())}
-        placeholder="Ingrediënten toevoegen.."
+        placeholder={placeholderText}
         ref={refVar}
       />
       {suggestionsActive && suggestions.length > 0 && <Suggestions />}

@@ -1,7 +1,7 @@
 import React from "react";
 import { Nav, NavItem } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
-import { Basket, Star, Gear, StarFill } from "react-bootstrap-icons";
+import { Basket, Star, Gear, StarFill, TagsFill } from "react-bootstrap-icons";
 import "./navigation.css";
 
 const tabs = [
@@ -16,9 +16,9 @@ const tabs = [
     label: "My Recipes",
   },
   {
-    route: "/settings",
-    icon: Gear,
-    label: "Settings",
+    route: "/pricewatch",
+    icon: TagsFill,
+    label: "Price Watch",
   },
 ];
 
@@ -64,6 +64,22 @@ const Navigation = (props) => {
                     <div className="nav-item-bottom">Recipes</div>
                   </div>
                   <StarFill className="icon" size={24} />
+                </div>
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink
+                to="/pricewatch"
+                className={({ isActive }) =>
+                  isActive ? " nav-link active" : "nav-link"
+                }
+              >
+                <div className="nav-item top">
+                  <div className="nav-item-text">
+                    <div className="nav-item-top">Price</div>
+                    <div className="nav-item-bottom">Watch</div>
+                  </div>
+                  <TagsFill className="icon" size={24} />
                 </div>
               </NavLink>
             </NavItem>

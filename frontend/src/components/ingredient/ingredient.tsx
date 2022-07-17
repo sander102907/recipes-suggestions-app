@@ -7,6 +7,7 @@ type Props = {
   ingredientInGroup: IngredientsInGroup,
   alternativeIngredientInGroups?: IngredientsInGroup[],
   showAmount?: boolean,
+  align?: 'row' | 'column',
   ButtonIcon?: Icon,
   onButtonClick?: () => void
 }
@@ -15,6 +16,7 @@ const Ingredient = ({
   ingredientInGroup,
   alternativeIngredientInGroups,
   showAmount = true,
+  align = 'column',
   ButtonIcon,
   onButtonClick
 }: Props) => {
@@ -27,7 +29,7 @@ const Ingredient = ({
   </Popover> : undefined);
 
   return (
-    <div className="ingredient-item">
+    <div className="ingredient-item" style={{ 'flexDirection': align, maxWidth: align == 'row' ? '200px' : '150px' }}>
       <div className="image-container">
         <img src={ingredient.image} className="image" alt={`${ingredient.name}`} />
         {ingredient.isBonus && (

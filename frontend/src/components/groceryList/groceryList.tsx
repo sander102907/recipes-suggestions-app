@@ -95,6 +95,7 @@ const GroceryList = ({ recipes }: Props) => {
         <IngredientsSearchBar
           onClick={addIngredient}
           refVar={ingredientsSearchBar}
+          includeButton={true}
         />
         {editing ?
           <Check2Circle size={22} style={{ margin: '12px', cursor: 'pointer' }} onClick={() => setEditing(false)} /> :
