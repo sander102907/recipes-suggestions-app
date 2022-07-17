@@ -157,6 +157,7 @@ const IngredientForm = ({ recipe, onHide }: Props) => {
                     }
                     <IngredientsSearchBar
                         onClick={addIngredient}
+                        includeButton={true}
                         refVar={ingredientsSearchBar}
                         query={searchBarQuery}
                     />

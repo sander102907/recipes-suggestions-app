@@ -1,0 +1,87 @@
+.card.ingr-price-info {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.price-statistics {
+    font-size: 14px;
+    color: rgb(53, 53, 53);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin: 20px;
+}
+
+.price-statistics>p {
+    margin: 0;
+}
+
+.pricewatch-options {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pricewatch-options>.autocomplete {
+    width: fit-content;
+}
+
+.pricewatch-options .dropdown {
+    position: absolute;
+}
+
+.pricechart-container {
+    height: 300px;
+    position: relative;
+    padding: 10px;
+}
+
+.ingr-price-info,
+.pricechart-container {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+
+
+@media screen and (max-width: 992px) {
+    .pricewatch-options {
+        margin-left: 10px;
+        margin-right: 10px;
+        margin-top: 10px;
+    }
+
+    .ingr-price-info,
+    .pricechart-container {
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    .card.ingr-price-info {
+        justify-content: space-around;
+    }
+
+    .pricewatch-options .searchBar {
+        padding-right: 0px;
+    }
+
+    .pricewatch-options>.autocomplete:focus {
+        width: 100%;
+    }
+
+    .dropdown.suggestions {
+        width: 100%;
+    }
+
+    .ingr-price-info>.ingredient-item {
+        margin: 0;
+    }
+
+    .price-statistics {
+        margin: 0;
+    }
+}

@@ -38,7 +38,9 @@ export class IngredientHelper {
                 const currentPriceHistory = await IngredientPriceHistoryService.getCurrentPrice(ingredient.id);
                 const isBonus = this.isInBonus(product);
 
-                if (currentPriceHistory?.price != product.price.now || isBonus != currentPriceHistory.isBonus) {
+                if ((currentPriceHistory?.price != product.price.now && !isBonus && product.price.was === null) ||
+                    isBonus != currentPriceHistory?.isBonus ||
+                    currentPriceHistory === null) {
                     if (currentPriceHistory) {
                         // If the price has updated, set the until date of the old price record to the current date
                         await IngredientPriceHistoryService.addUntilDateToIngredientPrice(currentPriceHistory.id, new Date())

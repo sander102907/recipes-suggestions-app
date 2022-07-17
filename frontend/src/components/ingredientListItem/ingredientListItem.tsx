@@ -5,12 +5,17 @@ import { Ingredient } from "../../interfaces/Ingredient";
 
 type Props = {
   ingredient: Ingredient,
+  includeButton: boolean,
   handleClick: (ingredient: Ingredient) => void
 }
 
-const IngredientListItem = ({ ingredient, handleClick }: Props) => {
+const IngredientListItem = ({ ingredient, includeButton, handleClick }: Props) => {
   return (
-    <div className="dropdownItem">
+    <div
+      className="dropdownItem"
+      onClick={() => { !includeButton && handleClick(ingredient) }}
+      style={{ 'cursor': includeButton ? '' : 'pointer' }}
+    >
       <div>
         <img
           src={ingredient.image}
@@ -35,12 +40,12 @@ const IngredientListItem = ({ ingredient, handleClick }: Props) => {
           </div>
         </div>
       </div>
-      <button
+      {includeButton && <button
         className="dropdownItemButton"
         onClick={() => handleClick(ingredient)}
       >
         <Plus size={24} />
-      </button>
+      </button>}
     </div>
   );
 };
