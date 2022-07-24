@@ -39,4 +39,47 @@ export class IngredientPriceHistoryService {
             }
         })
     }
+
+    static async getAvgPriceHistory(date: Date, inclBonus: boolean) {
+        const bonusFilter = inclBonus ? {} : {
+            isBonus: {
+                equals: false
+            }
+        };
+
+        return prisma.ingredientPriceHistory.aggregate({
+            _avg: {
+                price: true
+            },
+            where: {
+                AND: [{
+                    from: {
+                        lte: date
+                    }
+                },
+                {
+                    OR: [{
+                        until: {
+                            gte: date
+                        }
+                    },
+                    {
+                        until: {
+                            equals: null
+                        }
+                    }]
+                },
+                    bonusFilter
+                ]
+            }
+        });
+    }
+
+    static getFirstPriceHistoryRecord() {
+        return prisma.ingredientPriceHistory.findFirst({
+            orderBy: {
+                from: 'asc'
+            }
+        });
+    }
 }
