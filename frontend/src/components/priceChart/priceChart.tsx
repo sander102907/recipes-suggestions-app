@@ -37,6 +37,22 @@ const PriceChart = ({ priceHistory, includeBonus }: Props) => {
       legend: {
         display: false,
       },
+      tooltip: {
+        callbacks: {
+          label: (context: any) => {
+            const item = items[context.dataIndex];
+
+            const tooltipText = [` €${item.price}`];
+
+            if (item.isBonus) {
+              tooltipText.push('Bonus:');
+              tooltipText.push(`${item.bonusMechanism}`);
+            }
+
+            return tooltipText;
+          }
+        }
+      }
     },
     scales: {
       y: {
@@ -45,8 +61,7 @@ const PriceChart = ({ priceHistory, includeBonus }: Props) => {
           callback: (value: string | number) => '€' + parseFloat(value.toString()).toFixed(2)
         }
       }
-    }
-
+    },
   };
 
   const items = priceHistory
@@ -65,6 +80,9 @@ const PriceChart = ({ priceHistory, includeBonus }: Props) => {
         data: items.map(hist => `${hist.price}`),
         borderColor: 'darkred',
         backgroundColor: 'darkred',
+        pointBackgroundColor: items.map(hist => hist.isBonus ? '#00aaff' : 'darkred'),
+        pointBorderColor: items.map(hist => hist.isBonus ? '#00aaff' : 'darkred'),
+        pointRadius: items.map(hist => hist.isBonus ? 5 : 4),
       },
     ],
   };

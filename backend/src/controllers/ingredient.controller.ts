@@ -78,6 +78,36 @@ export class IngredientController extends Controller {
     }
 
     /**
+     * Get the average price of an all ingredients over time
+     * @summary Get the average price of all ingredients over time
+     * @param includeBonus whether to include bonus prices in averages of the price history
+     */
+    @Get("/avg/priceHistory")
+    public async getAverageIngredientPriceHistory(
+        @Query("includeBonus") includeBonus: boolean = true,
+    ) {
+        const firstRecord = await IngredientPriceHistoryService.getFirstPriceHistoryRecord();
+
+        let startDate = firstRecord!.from;
+        startDate.setDate(startDate.getDate() + 1);
+
+        const now = new Date();
+        const prices = []
+
+        console.log((await IngredientPriceHistoryService.getAvgPriceHistory(new Date(), includeBonus))._avg.price)
+
+        for (let d = startDate; d <= now; d.setDate(d.getDate() + 1)) {
+            const result = await IngredientPriceHistoryService.getAvgPriceHistory(d, includeBonus);
+            prices.push({
+                'from': d.toISOString(),
+                'price': parseFloat((result._avg.price!.toFixed(2))),
+                'count': result._count
+            });
+        }
+        return prices;
+    }
+
+    /**
      * Get the price history of an ingredient
      * @summary Get the price history of an ingredient
      * @param id The ingredient's identifier

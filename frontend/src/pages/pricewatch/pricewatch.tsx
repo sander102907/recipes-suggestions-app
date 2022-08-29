@@ -7,12 +7,13 @@ import axios from "axios";
 import PriceChart from "../../components/priceChart/priceChart";
 import { Card, Form } from "react-bootstrap";
 import Ingredient from "../../components/ingredient/ingredient";
+import ahLogo from "../../assets/logo-ah.png";
 
 const Pricewatch = () => {
   const [ingredient, setIngredient] = useState<IIngredient>();
   const [priceHistory, setPriceHistory] = useState<PriceHistory[]>([]);
   const ingredientsSearchBar = useRef<HTMLInputElement>(null);
-  const [includeBonus, setIncludeBonus] = useState<boolean>(false);
+  const [includeBonus, setIncludeBonus] = useState<boolean>(true);
   const [width, setWidth] = useState<string>('fit-content');
   const [showBonusSwitch, setShowBonusSwitch] = useState<boolean>(true);
 
@@ -26,6 +27,23 @@ const Pricewatch = () => {
     setPriceHistory(response.data);
   }
 
+  const getAveragePriceHistory = async () => {
+    const response = await axios.get(`/api/ingredients/avg/priceHistory?includeBonus=${includeBonus}`);
+
+    setPriceHistory(response.data);
+    setIngredient({
+      name: "Albert Heijn prijsverloop",
+      ahId: 0,
+      unitSize: "",
+      price: response.data.at(-1).price,
+      category: "",
+      isBonus: false,
+      bonusMechanism: null,
+      bonusPrice: null,
+      image: ahLogo
+    });
+  }
+
   useEffect(() => {
     ingredientsSearchBar.current?.addEventListener('click', () => {
       setWidth(ingredientsSearchBar.current?.parentElement?.parentElement?.offsetWidth.toString() + 'px');
@@ -37,8 +55,14 @@ const Pricewatch = () => {
         setWidth('fit-content');
         setShowBonusSwitch(true);
       }, 100);
-    })
-  });
+    });
+  }, []);
+
+  useEffect(() => {
+    if (ingredient === undefined || ingredient.name === "Albert Heijn prijsverloop") {
+      getAveragePriceHistory();
+    }
+  }, [includeBonus]);
 
 
 
