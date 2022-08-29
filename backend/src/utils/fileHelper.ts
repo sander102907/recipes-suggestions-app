@@ -25,4 +25,23 @@ export default class FileHelper {
 
         return writePath;
     }
+
+    /**
+     * Append to a file on disk or create the file if it does not exist yet
+     * @param filePath to write file to
+     * @param content of the file
+     */
+    static appendFile(filePath: string, content: string) {
+        const dirPath = path.dirname(filePath);
+
+        if (!fs.existsSync(dirPath)) {
+            fs.mkdirSync(dirPath, { recursive: true });
+        }
+
+        try {
+            fs.writeFileSync(filePath, content, { flag: "a+" });
+        } catch (err) {
+            console.log(err);
+        }
+    }
 }

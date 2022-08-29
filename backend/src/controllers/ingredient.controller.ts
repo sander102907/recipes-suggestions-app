@@ -94,10 +94,14 @@ export class IngredientController extends Controller {
         const now = new Date();
         const prices = []
 
+        console.log((await IngredientPriceHistoryService.getAvgPriceHistory(new Date(), includeBonus))._avg.price)
+
         for (let d = startDate; d <= now; d.setDate(d.getDate() + 1)) {
+            const result = await IngredientPriceHistoryService.getAvgPriceHistory(d, includeBonus);
             prices.push({
                 'from': d.toISOString(),
-                'price': parseFloat((await IngredientPriceHistoryService.getAvgPriceHistory(d, includeBonus))._avg.price!.toFixed(2))
+                'price': parseFloat((result._avg.price!.toFixed(2))),
+                'count': result._count
             });
         }
         return prices;

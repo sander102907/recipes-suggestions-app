@@ -12,15 +12,16 @@ export class IngredientHelper {
         this.ahClient = ahClient;
     }
 
-    async syncAllIngredients(): Promise<void> {
+    async syncAllIngredients(): Promise<number> {
         // Do not synchronize in parallel
         if (this.synchronizing) {
-            return;
+            return 0;
         }
 
         this.synchronizing = true;
 
         const categoriesResponse = await this.ahClient.getCategories();
+        let updatedCount = 0;
 
         for (const category of categoriesResponse.data) {
             const products = await this.getAllProductsOfCategory(category.id);
@@ -53,11 +54,15 @@ export class IngredientHelper {
                         from: new Date(),
                         ingredientId: ingredient.id
                     });
+
+                    updatedCount++;
                 }
             }
 
             await IngredientPriceHistoryService.addIngredientPrices(priceHistoryParams);
         }
+
+        return updatedCount;
     }
 
     private async getAllProductsOfCategory(categoryId: number, page = 0, products: Product[] = []): Promise<Product[]> {

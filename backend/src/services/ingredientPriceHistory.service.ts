@@ -51,6 +51,9 @@ export class IngredientPriceHistoryService {
             _avg: {
                 price: true
             },
+            _count: {
+                price: true
+            },
             where: {
                 AND: [{
                     from: {
