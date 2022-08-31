@@ -6,20 +6,12 @@ import { IngredientPriceHistoryService } from "../services/ingredientPriceHistor
 
 export class IngredientHelper {
     private readonly ahClient: AH;
-    private synchronizing = false;
 
     constructor(ahClient: AH) {
         this.ahClient = ahClient;
     }
 
     async syncAllIngredients(): Promise<number> {
-        // Do not synchronize in parallel
-        if (this.synchronizing) {
-            return 0;
-        }
-
-        this.synchronizing = true;
-
         const categoriesResponse = await this.ahClient.getCategories();
         let updatedCount = 0;
 
