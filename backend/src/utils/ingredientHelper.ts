@@ -11,8 +11,7 @@ export class IngredientHelper {
         this.ahClient = ahClient;
     }
 
-    async syncAllIngredients(): Promise<void> {
-
+    async syncAllIngredients(): Promise<number> {
         const categoriesResponse = await this.ahClient.getCategories();
         let updatedCount = 0;
 

@@ -33,6 +33,7 @@ jobs:
           platforms: linux/amd64,linux/arm64,linux/386,linux/arm/v7
           tags: |
             ghcr.io/sander102907/backend-recipes-app:latest
+            
   Deploy-Frontend:
     runs-on: ubuntu-latest
     steps:
