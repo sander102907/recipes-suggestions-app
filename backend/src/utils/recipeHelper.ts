@@ -2,7 +2,7 @@ import { WithPrices } from "../types/withPrices";
 import { RecipeWithIngredientsAndImage } from "../types/recipeWithIngredients";
 import { RecipeService } from "../services/recipe.service";
 import { GroceryListService } from "../services/grocerylist.service";
-import { Ingredient, IngredientsInGroup, RecipeIngredientsGroup } from "@prisma/client";
+import { Ingredient, IngredientsInGroup, Prisma, RecipeIngredientsGroup } from "@prisma/client";
 
 export class RecipeHelper {
     // Filter out any empty values of a list of any type
@@ -25,21 +25,21 @@ export class RecipeHelper {
         recipe.recipeIngredientsGroups.forEach((group) => {
             if (group.ingredientsInGroup.length > 0) {
                 // Get all non-empty prices of the ingredient group
-                const prices: number[] = group.ingredientsInGroup.map(x => x.ingredient.price).filter(RecipeHelper.notEmpty);
+                const prices: Prisma.Decimal[] = group.ingredientsInGroup.map(x => x.ingredient.price).filter(RecipeHelper.notEmpty);
 
                 // Compute the minimum group price
-                const group_min = Math.min(...prices);
+                const group_min = Math.min(...prices.map(x => x.toNumber()));
 
                 // Get all non-empty bonus prices of the ingredient group
-                const bonusPrices: number[] = group.ingredientsInGroup.map(x => x.ingredient.bonusPrice).filter(RecipeHelper.notEmpty);
+                const bonusPrices: Prisma.Decimal[] = group.ingredientsInGroup.map(x => x.ingredient.bonusPrice).filter(RecipeHelper.notEmpty);
 
                 // Compute the minimum group bonus price
-                const group_bonus = Math.min(...bonusPrices);
+                const group_bonus = Math.min(...bonusPrices.map(x => x.toNumber()));
 
                 // update the total bonus price with the group bonus price, or group minimum price if this is lower than the bonus price
                 bonusPrice += group_bonus > 0 && group_bonus < group_min ? group_bonus : group_min;
                 minPrice += group_min;
-                maxPrice += Math.max(...prices);
+                maxPrice += Math.max(...prices.map(x => x.toNumber()));
             }
         });
 

@@ -1,4 +1,3 @@
-import React from "react";
 import { Nav, NavItem } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import { Basket, Star, Gear, StarFill, TagsFill } from "react-bootstrap-icons";

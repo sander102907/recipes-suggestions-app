@@ -1,3 +1,5 @@
+import { Prisma } from "@prisma/client";
+
 export default interface AhProductsResponse {
     cards: Card[];
     page: Page;
@@ -91,8 +93,8 @@ interface ProductImage {
 
 interface ProductPrice {
     unitInfo?: UnitInfo;
-    now: number;
-    was?: number;
+    now: Prisma.Decimal;
+    was?: Prisma.Decimal;
     unitSize: string;
 }
 

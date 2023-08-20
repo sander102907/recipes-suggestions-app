@@ -77,7 +77,7 @@ const GroceryList = ({ recipes }: Props) => {
 
   const addIngredient = async (ingredient: Ingredient) => {
     const ingrResponse = await axios.get(`/api/ingredients/ah/${ingredient.ahId}`);
-    const itemResponse = await axios.post('/api/grocerylist', {
+    await axios.post('/api/grocerylist', {
       ingredientId: ingrResponse.data.id,
       amount: 1,
       isCheckedOff: false,

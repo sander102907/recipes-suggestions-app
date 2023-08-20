@@ -2,6 +2,8 @@
  * Parameters to create/update a Ingredient Price History record
  */
 
+import { Prisma } from "@prisma/client";
+
 export default interface IngredientPriceHistoryParams {
     /**
      * The (new) price of the ingredient
@@ -9,7 +11,7 @@ export default interface IngredientPriceHistoryParams {
      * @minimum 0.00 price should be larger than 0.00
      * @example "1.29"
      */
-    price: number;
+    price: Prisma.Decimal;
 
     /**
      * Whether the ingredient price is a bonus price

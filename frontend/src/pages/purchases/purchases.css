@@ -1,0 +1,112 @@
+.form {
+  display: inline-block;
+  justify-content: center;
+}
+
+.form input {
+  width: 250px;
+  margin: 10px;
+}
+
+.receipt-container {
+  padding: 1rem;
+  box-shadow: 0.1em 0.1em 0.1em 0.1em rgba(58, 58, 58, 0.067);
+}
+
+.receipt-totals-title,
+.receipt-totals-price {
+  display: inline-block;
+  padding-bottom: 0.05em;
+  color: rgb(85, 77, 77);
+}
+
+.receipt-totals-title {
+  width: 7rem;
+}
+
+.receipt-totals-price.total-price,
+.receipt-totals-title.total-price {
+  color: black;
+}
+
+.receipt-totals-price.discount,
+.receipt-totals-title.discount {
+  color: rgb(189, 93, 58);
+}
+
+.receipt-items-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+}
+
+@media screen and (max-width: 768px) {
+  .upload-receipt-button-container {
+    position: absolute;
+    width: 3em;
+    height: 3em;
+    bottom: 1em;
+    right: 1em;
+  }
+
+  .image-button.upload-receipt-button {
+    border-radius: 50%;
+    padding: 0.5em;
+  }
+}
+
+.crop {
+  display: none;
+}
+
+.scan-container {
+  width: 10em;
+  text-align: center;
+  padding: 6px 2px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin: auto;
+  transform: translate(-50%, -50%);
+}
+
+.scan {
+  border: dashed .25em rgb(90, 85, 85);
+  margin-bottom: 10px;
+}
+
+.scan::after {
+  content: '';
+  background: darkred;
+  width: 0.25em;
+  height: 3.5em;
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  margin: 0 auto;
+  opacity: 7;
+  z-index: 2;
+  animation: 2s infinite ease-in-out roll;
+}
+
+.scan svg {
+  height: 30px;
+  width: 98%;
+  transform: translate(-0.5em, -0.4em);
+}
+
+@keyframes roll {
+  0% {
+    transform: translateX(-50px);
+  }
+
+  50% {
+    transform: translateX(50px);
+  }
+
+  100% {
+    transform: translateX(-50px);
+  }
+}
