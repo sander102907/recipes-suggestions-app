@@ -1,8 +1,11 @@
 # recipes subdomain backend
 # build the backend first
-FROM node:18-alpine
+FROM node:18-slim
 # Create app directory
 WORKDIR /backend
+
+RUN apt-get update
+RUN apt-get -y install openssl
 
 # Install app dependencies
 COPY ./package*.json ./
