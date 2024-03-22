@@ -40,7 +40,8 @@ const Pricewatch = () => {
       isBonus: false,
       bonusMechanism: null,
       bonusPrice: null,
-      image: ahLogo
+      image: ahLogo,
+      inAssortment: true
     });
   }
 

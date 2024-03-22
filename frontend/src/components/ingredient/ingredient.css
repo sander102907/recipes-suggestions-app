@@ -109,3 +109,18 @@ img {
   color: rgb(46, 46, 46);
   margin-right: 3px;
 }
+
+.discontinued-ingr-notification {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  z-index: 1;
+}
+
+.discontinued-ingr-text {
+  text-decoration: line-through;
+}
+
+.discontinued-ingr-image {
+  filter: grayscale(100%);
+}

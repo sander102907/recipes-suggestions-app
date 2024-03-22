@@ -1,0 +1,71 @@
+version: '2.4'
+
+services:
+  mysql_db:
+    image: mysql:latest
+    restart: always
+    hostname: $MYSQL_HOST
+    volumes:
+      - db:/var/lib/mysql
+    ports:
+      - $MYSQL_LOCAL_PORT:$MYSQL_DOCKER_PORT
+    env_file: ./.env
+    environment:
+      - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
+      - MYSQL_DATABASE=$MYSQL_DATABASE
+      - MYSQL_USER=placeholder
+    cap_add:
+      - SYS_NICE
+
+  nginx:
+    depends_on:
+      - backend
+      - frontend
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: ./nginx
+    ports:
+      - "3052:80"
+
+  backend:
+    build:
+      dockerfile: Dockerfile.dev
+      context: "./backend"
+    restart: unless-stopped
+    depends_on:
+      - mysql_db
+    env_file: ./.env
+    environment:
+      - MYSQL_HOST=mysql_db
+      - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
+      - MYSQL_DATABASE=$MYSQL_DATABASE
+      - MYSQL_DOCKER_PORT=$MYSQL_DOCKER_PORT
+      - DATABASE_URL=mysql://root:${MYSQL_ROOT_PASSWORD}@mysql_db:${MYSQL_DOCKER_PORT}/${MYSQL_DATABASE}
+    volumes:
+      - ./backend:/backend
+      - /backend/node_modules/
+
+  frontend:
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - FAST_REFRESH=false
+    build:
+      dockerfile: Dockerfile.dev
+      context: "./frontend"
+    restart: unless-stopped
+    volumes:
+      - './frontend:/frontend'
+
+  adminer:
+    image: adminer:latest
+    restart: unless-stopped
+    ports:
+      - 8000:8080
+    depends_on:
+      - mysql_db
+    environment:
+      ADMINER_DEFAULT_SERVER: mysql_db
+
+volumes:
+  db:

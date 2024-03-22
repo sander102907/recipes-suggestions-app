@@ -13,16 +13,18 @@ model Ingredient {
   ahId               Int?                 @unique @map("ah_id")
   name               String               @db.VarChar(100)
   unitSize           String?              @map("unit_size") @db.VarChar(50)
-  price              Float?               @db.Float
+  price              Decimal?             @db.Decimal(15, 2)
   category           String?              @db.VarChar(50)
   isBonus            Boolean?             @map("is_bonus")
   bonusMechanism     String?              @map("bonus_mechanism") @db.VarChar(50)
-  bonusPrice         Float?               @map("bonus_price") @db.Float
+  bonusPrice         Decimal?             @map("bonus_price") @db.Decimal(15, 2)
   image              String?              @db.VarChar(200)
+  inAssortment       Boolean?             @default(true)
   ingredientsInGroup IngredientsInGroup[]
 
   IngredientPriceHistory IngredientPriceHistory[]
   GroceryList            GroceryList?
+
   @@map("ingredient")
 }
 
@@ -50,6 +52,7 @@ model Recipe {
   recipeIngredientsGroups RecipeIngredientsGroup[]
 
   imageId Int?
+
   @@map("recipe")
 }
 
@@ -74,7 +77,7 @@ model File {
 
 model IngredientPriceHistory {
   id             Int        @id @default(autoincrement())
-  price          Float
+  price          Decimal    @db.Decimal(15, 2)
   isBonus        Boolean
   bonusMechanism String?
   from           DateTime
@@ -91,5 +94,27 @@ model GroceryList {
   amount       Int
 
   ingredientId Int
+
   @@id([ingredientId])
+}
+
+model IngredientCategory {
+  id   Int    @id
+  name String @db.VarChar(255)
+}
+
+model LogsCronjobs {
+  id        Int      @id @default(autoincrement())
+  level     String   @db.VarChar(16)
+  message   String   @db.VarChar(2048)
+  metadata  String   @db.VarChar(2048)
+  timestamp DateTime @db.DateTime()
+}
+
+model LogsPrisma {
+  id        Int      @id @default(autoincrement())
+  level     String   @db.VarChar(16)
+  message   String   @db.VarChar(2048)
+  metadata  String   @db.VarChar(2048)
+  timestamp DateTime @db.DateTime()
 }

@@ -2,6 +2,8 @@
  * Ingredient parameters to create/update a ingredient entity
  */
 
+import { Prisma } from "@prisma/client";
+
 export default interface IngredientParams {
     /**
      * The Albert Heijn Product ID
@@ -21,7 +23,7 @@ export default interface IngredientParams {
      * @minimum 0.00 price should be larger than 0.00
      * @example "1.29"
      */
-    price?: number;
+    price?: Prisma.Decimal;
 
     /**
      * The category of the ingredient
@@ -46,7 +48,7 @@ export default interface IngredientParams {
      * @minimum 0.00 bonusPrice should be larger than 0.00 
      * @example "0.97"
      */
-    bonusPrice?: number;
+    bonusPrice?: Prisma.Decimal;
 
     /**
      * A URL to a image of the ingredient

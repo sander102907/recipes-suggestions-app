@@ -1,6 +1,6 @@
 import React from "react";
 import "./recipeCard.css";
-import { XLg, StarFill, Icon, HeartFill, Heart } from "react-bootstrap-icons";
+import { XLg, StarFill, Icon, HeartFill, Heart, ExclamationCircleFill } from "react-bootstrap-icons";
 import { Button, Card, Badge } from "react-bootstrap";
 import { Recipe } from "../../interfaces/Recipe";
 import { motion } from "framer-motion";
@@ -34,6 +34,13 @@ function isBonusRecipe(recipe: Recipe): boolean {
     );
 }
 
+function containsDiscontinuedIngredient(recipe: Recipe): boolean {
+  return recipe.recipeIngredientsGroups
+    .some(group => group.ingredientsInGroup
+      .some(ingredient => !ingredient.ingredient.inAssortment)
+    );
+}
+
 const RecipeCard = ({ recipe, SecondButtonIcon, onRemove, onSecondButtonClick, onThirdButtonClick, onClick }: Props) => {
   function handleRemove(event: React.SyntheticEvent, recipeId: number) {
     event.stopPropagation();
@@ -61,6 +68,8 @@ const RecipeCard = ({ recipe, SecondButtonIcon, onRemove, onSecondButtonClick, o
         }}
         style={{ display: 'flex' }}>
         <Card className="recipeCard" onClick={() => { onClick(recipe) }}>
+          {containsDiscontinuedIngredient(recipe) && 
+          <ExclamationCircleFill className="discontinued-notification" color="darkred" size={24} />}
           <div className="recipe-image-container">
             <img className="recipe-image" src={`/api/files/${recipe.image?.id}`} alt="" />
             {isBonusRecipe(recipe) && <Badge className="bonus">BONUS</Badge>}

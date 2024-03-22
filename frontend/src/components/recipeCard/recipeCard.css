@@ -110,3 +110,11 @@ svg {
 .ingredients {
   font-size: 14px;
 }
+
+.discontinued-notification {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  z-index: 1;
+  margin: -10px;
+}

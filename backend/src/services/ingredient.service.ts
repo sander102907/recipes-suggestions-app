@@ -26,6 +26,14 @@ export class IngredientService {
         })
     }
 
+    static getAllIngredientAhIds() {
+        return prisma.ingredient.findMany({
+            select: {
+                ahId: true
+            }
+        })
+    }
+
     static createIngredient(ingredientParams: IngredientCreateParams) {
         return prisma.ingredient.create({
             data: ingredientParams
@@ -49,6 +57,21 @@ export class IngredientService {
                 },
                 update: param,
                 create: param
+            });
+        });
+
+        return prisma.$transaction(transactions);
+    }
+
+    static updateIngredientsInAssortment(ahIds: number[], inAssortment: boolean) {
+        const transactions = ahIds.map(ahId => {
+            return prisma.ingredient.update({
+                where: {
+                    ahId: ahId
+                },
+                data: {
+                    inAssortment: inAssortment
+                }
             });
         });
 

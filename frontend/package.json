@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@melloware/react-logviewer": "^5.0.1",
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
@@ -29,7 +30,7 @@
     "yup": "^0.32.11"
   },
   "scripts": {
-    "start": "node ./src/setup && react-scripts start",
+    "start": "node ./src/setup && react-scripts --openssl-legacy-provider start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

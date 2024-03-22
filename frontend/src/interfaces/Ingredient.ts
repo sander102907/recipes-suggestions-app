@@ -10,4 +10,5 @@ export interface Ingredient {
     bonusMechanism: null | string;
     bonusPrice: number | null;
     image: string;
+    inAssortment: boolean;
 }

@@ -1,0 +1,97 @@
+version: "2.4"
+
+services:
+    personalwebsite:
+        image: ghcr.io/sander102907/personal-website:latest
+        container_name: personalwebsite
+        restart: unless-stopped
+        depends_on:
+            - recipes_app_backend
+            - recipes_app_frontend
+        platform: linux/arm/v7
+        ports:
+            - 8080:80
+            - 443:443
+        volumes:
+            - ./ssl:/etc/ssl
+
+    mysql_db:
+        image: beercan1989/arm-mysql:latest
+        restart: unless-stopped
+        volumes:
+            - db:/var/lib/mysql
+        ports:
+            - 3307:3306
+        environment:
+            - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
+            - MYSQL_DATABASE=$MYSQL_DATABASE
+            - MYSQL_USER=placeholder
+
+    recipes_app_backend:
+        image: ghcr.io/sander102907/backend-recipes-app:latest
+        restart: unless-stopped
+        platform: linux/arm/v7
+        depends_on:
+            - mysql_db
+        env_file: ./.env
+        environment:
+            - MYSQL_HOST=mysql_db
+            - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
+            - MYSQL_DATABASE=$MYSQL_DATABASE
+            - MYSQL_DOCKER_PORT=$MYSQL_DOCKER_PORT
+            - DATABASE_URL=mysql://root:${MYSQL_ROOT_PASSWORD}@mysql_db:${MYSQL_DOCKER_PORT}/${MYSQL_DATABASE}
+        volumes:
+            - backend:/backend/uploads
+
+    recipes_app_frontend:
+        stdin_open: true
+        platform: linux/arm/v7
+        restart: unless-stopped
+        environment:
+            - NODE_OPTIONS=--max-old-space-size=200
+        image: ghcr.io/sander102907/frontend-recipes-app:latest
+        ports:
+            - 3000:80
+        volumes:
+            - /app/node_modules
+            - ./frontend:/app
+
+    adminer:
+        image: adminer:latest
+        restart: unless-stopped
+        ports:
+            - 8000:8080
+        depends_on:
+            - mysql_db
+        environment:
+            ADMINER_DEFAULT_SERVER: mysql_db
+
+    watchtower:
+        image: containrrr/watchtower
+        restart: unless-stopped
+        container_name: watchtower
+        environment:
+            - WATCHTOWER_POLL_INTERVAL=$WATCHTOWER_POLL_INTERVAL
+            - WATCHTOWER_CLEANUP=$WATCHTOWER_CLEANUP
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - /root/.docker/config.json:/config.json
+
+    db_backup:
+        image: tiredofit/db-backup
+        restart: unless-stopped
+        environment:
+            - DB_TYPE=mysql
+            - DB_DUMP_FREQ=1440
+            - DB_HOST=mysql_db
+            - DB_NAME=$MYSQL_DATABASE
+            - DB_USER=root
+            - DB_PASS=$MYSQL_ROOT_PASSWORD
+            - DB_PORT=$MYSQL_DOCKER_PORT
+            - DB_CLEANUP_TIME=43200
+        volumes:
+            - ./backup:/backup
+
+volumes:
+  db:
+  backend:

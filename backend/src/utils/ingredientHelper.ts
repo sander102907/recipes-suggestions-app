@@ -3,6 +3,9 @@ import { AH } from "../apis/ah";
 import { Product } from "../interfaces/AhProductsResponse";
 import { IngredientService } from "../services/ingredient.service";
 import { IngredientPriceHistoryService } from "../services/ingredientPriceHistory.service";
+import { IngredientCategoryService } from "../services/ingredientCategory.service";
+import logger from "../logger";
+import { AxiosError } from "axios";
 
 export class IngredientHelper {
     private readonly ahClient: AH;
@@ -12,11 +15,19 @@ export class IngredientHelper {
     }
 
     async syncAllIngredients(): Promise<number> {
-        const categoriesResponse = await this.ahClient.getCategories();
+        logger.info("Start syncing ingredients..");
+        const categories = await IngredientCategoryService.getAllIngredientCategories();
         let updatedCount = 0;
+        let productAhIds: number[] = [];
 
-        for (const category of categoriesResponse.data) {
+        await this.ahClient.getBaseSite();
+
+        for (const category of categories) {
+            let updatedCategoryCount = 0;
+            logger.info(`Syncing ingredients of category "${category.name}" (${category.id})`);
             const products = await this.getAllProductsOfCategory(category.id);
+
+            logger.info(`Retrieved ${products.length} products in category "${category.name}" (${category.id})`);
 
             const ingredientParams = products.map(this.productToIngredient, this);
 
@@ -27,6 +38,8 @@ export class IngredientHelper {
             for (let index = 0; index < ingredients.length; index++) {
                 const ingredient = ingredients[index];
                 const product = products[index];
+
+                productAhIds.push(product.id);
 
                 const currentPriceHistory = await IngredientPriceHistoryService.getCurrentPrice(ingredient.id);
                 const isBonus = this.isInBonus(product);
@@ -48,17 +61,34 @@ export class IngredientHelper {
                     });
 
                     updatedCount++;
+                    updatedCategoryCount++;
                 }
             }
 
             await IngredientPriceHistoryService.addIngredientPrices(priceHistoryParams);
+
+            logger.info(`Updated ${updatedCategoryCount}/${products.length} ingredients of category "${category.name}" (${category.id})`);
+
+            break;
+
         }
+
+        const ingredientAhIdsObj = await IngredientService.getAllIngredientAhIds();
+        const ingredientAhIds = ingredientAhIdsObj.map(i => i.ahId);
+
+        const outOfAssortmentAhIds = ingredientAhIds.filter((i): i is number => i !== null && !productAhIds.includes(i));
+
+        await IngredientService.updateIngredientsInAssortment(outOfAssortmentAhIds, false);
+
+        logger.info(`Syncing ingredients finished. Updated and/or created ${updatedCount} ingredients and
+            ${outOfAssortmentAhIds.length} ingredients have been discontinued (total ${productAhIds.length} 
+            ingredients retrieved from AH)`);
 
         return updatedCount;
     }
 
     private async getAllProductsOfCategory(categoryId: number, page = 0, products: Product[] = []): Promise<Product[]> {
-        const prodResponse = await this.ahClient.searchProducts(undefined, categoryId, 1000, page);
+        const prodResponse = await this.ahClient.searchProducts(undefined, categoryId, 1000, page).catch((err: Error | AxiosError) => { throw(err) });
 
         products.push(...prodResponse.data.cards.filter(card => card.type == "default").map(card => card.products[0]));
 

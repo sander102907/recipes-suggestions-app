@@ -70,7 +70,8 @@ const IngredientsSearchBar = ({ onClick, includeButton, placeholderText = 'Ingre
       isBonus: !!ahIngredient.discount,
       category: ahIngredient.taxonomies[0].name,
       bonusMechanism: ahIngredient.shield ? ahIngredient.shield.text : null,
-      image: ahIngredient.images[0].url
+      image: ahIngredient.images[0].url,
+      inAssortment: true
     }
   }
 

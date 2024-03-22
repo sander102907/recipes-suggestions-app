@@ -1,7 +1,7 @@
 import { Badge, OverlayTrigger, Popover } from "react-bootstrap";
 import "./ingredient.css";
 import { IngredientsInGroup } from "../../interfaces/IngredientsInGroup";
-import { Icon, Shuffle } from "react-bootstrap-icons";
+import { ExclamationCircleFill, Icon, Shuffle } from "react-bootstrap-icons";
 import IngredientAlternatives from "../ingredientAlternatives/ingredientAlternatives";
 type Props = {
   ingredientInGroup: IngredientsInGroup,
@@ -31,7 +31,14 @@ const Ingredient = ({
   return (
     <div className="ingredient-item" style={{ 'flexDirection': align, maxWidth: align == 'row' ? '200px' : '150px' }}>
       <div className="image-container">
-        <img src={ingredient.image} className="image" alt={`${ingredient.name}`} />
+        <img src={ingredient.image} className={ingredient.inAssortment ? "image" : "image discontinued-ingr-image"} alt={`${ingredient.name}`} />
+        {!ingredient.inAssortment && (
+          <ExclamationCircleFill
+            className="discontinued-ingr-notification"
+            color="darkred"
+            size={20}
+          />
+        )}
         {ingredient.isBonus && (
           <Badge
             className="bonus-badge"
@@ -54,7 +61,7 @@ const Ingredient = ({
         }
       </div>
       <div className="info">
-        <div>
+        <div className={ingredient.inAssortment ? "" : "discontinued-ingr-text"}>
           {ingredient.name}
         </div>
         <div>

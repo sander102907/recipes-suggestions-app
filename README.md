@@ -7,3 +7,6 @@
     <a href="https://github.com/sander102907/recipes-suggestions-app/actions/workflows/deploy-docker-images.yml"><img alt="Build status" src="https://img.shields.io/github/workflow/status/sander102907/recipes-suggestions-app/Deploy%20Docker%20images"></img></a>
     <a href="https://github.com/sander102907/recipes-suggestions-app/issues"><img alt="Issues" src="https://img.shields.io/github/issues/sander102907/recipes-suggestions-app"></img></a>
 </p>
+
+## Run locally
+`docker-compose -f .\dev.docker-compose.yaml up`

@@ -8,6 +8,11 @@ import { AhRecipeIngredientsResponse } from "../interfaces/AhRecipeIngredientsRe
 import AhRecipeResponse from "../interfaces/AhRecipeResponse";
 import AhRecipesResponse from "../interfaces/AhRecipesResponse";
 import AhToken from "../interfaces/AhToken";
+import { CookieJar  } from "tough-cookie";
+import { wrapper } from "axios-cookiejar-support";
+// import { fetch } from "node-fetch";
+// globalThis.fetch = fetch
+
 
 const publicBaseUrl = "https://www.ah.nl";
 const apiBaseUrl = "https://api.ah.nl"
@@ -20,7 +25,9 @@ export class AH {
     private tokenExpireDate?: Date;
 
     constructor() {
-        this.publicClient = axios.create({ baseURL: publicBaseUrl });
+        const jar = new CookieJar();
+
+        this.publicClient = wrapper(axios.create({ jar, baseURL: publicBaseUrl, headers: {'Accept-Encoding': 'gzip, deflate, br' } }));
         this.apiClient = axios.create({ baseURL: apiBaseUrl });
     }
 
@@ -65,6 +72,14 @@ export class AH {
                 webshopId: webshopId
             }
         });
+    }
+
+    /**
+
+     */
+    public async getBaseSite(): Promise<void> {
+        // console.log(await fetch("https://ah.nl"));
+        return await axios.get("https://www.ah.nl");
     }
 
     /**
